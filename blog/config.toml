@@ -1,0 +1,56 @@
+baseURL = "http://taqkarim.dev/"
+title = "Taq Karim"
+theme = "etch"
+languageCode = "en-US"
+enableInlineShortcodes = true
+pygmentsCodeFences = true
+pygmentsUseClasses = true
+
+[params]
+  description = ""
+  copyright = "Copyright © 2020 Taq Karim"
+  dark = "auto"
+  highlight = true
+
+[menu]
+  [[menu.main]]
+    identifier = "github"
+    name = "<i class='fab fa-github'></i>"
+    title = "github"
+    url = "https://github.com/mottaquikarim"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "linkedin"
+    name = "<i class='fab fa-linkedin'></i>"
+    title = "linkedin"
+    url = "https://www.linkedin.com/in/mottaqui-karim-5b01212a/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "twitter"
+    name = "<i class='fab fa-twitter'></i>"
+    title = "twitter"
+    url = "https://twitter.com/taqkarim"
+    weight = 30
+
+  [[menu.secondary]]
+    identifier = "home"
+    name = "home"
+    title = "home"
+    url = "/"
+    weight = 10
+
+  [[menu.secondary]]
+    identifier = "about"
+    name = "about"
+    title = "about"
+    url = "/about/"
+    weight = 20
+
+[permalinks]
+  posts = "/posts/:title/"
+
+[markup.goldmark.renderer]
+  # Allows HTML in Markdown
+  unsafe = true

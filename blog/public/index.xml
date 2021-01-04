@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Taq Karim</title>
+    <link>http://taqkarim.dev/</link>
+    <description>Recent content on Taq Karim</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sun, 03 Jan 2021 18:25:11 +0000</lastBuildDate>
+    
+	<atom:link href="http://taqkarim.dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    
+    
+    <item>
+      <title>Custom Args in Makefile</title>
+      <link>http://taqkarim.dev/posts/custom-args-in-makefile/</link>
+      <pubDate>Sun, 03 Jan 2021 00:59:04 +0000</pubDate>
+      
+      <guid>http://taqkarim.dev/posts/custom-args-in-makefile/</guid>
+      <description>Table of Contents  TL;DR: use $(eval ARGS=${ARGS} [some additional arg]) within a make target to build custom argument sequences for commands wrapped by make targets - like make test
+I expound further on the usecase and methodology below 👇
+I like to wrap common tasks, such as running unit tests, around a make target.
+This way, I can minimize the length of the command I need to run (ie: make test vs go test .</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Integrating Code Climate w/go pkgs</title>
+      <link>http://taqkarim.dev/posts/integrating-code-climate-w/go-pkgs/</link>
+      <pubDate>Fri, 01 Jan 2021 14:28:32 +0000</pubDate>
+      
+      <guid>http://taqkarim.dev/posts/integrating-code-climate-w/go-pkgs/</guid>
+      <description>Table of Contents  TL; DR: When integrating golang code coverage with Code Climate, be sure to set the --prefix arg (set it to your pkg github prefix, ie: &amp;ldquo;github.com/mottaquikarim/esquerydsl&amp;rdquo;) in the after-build stage in order for your src code to be recognized by the test reporter.
+If ^^ that didn&amp;rsquo;t make sense, read on below for the full background 👍
+I&amp;rsquo;ve recently published a golang pkg, called esquerydsl, which facillitates safe construction of elasticsearch queries in golang.</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Generate Lambda Layer Artifacts w/Docker</title>
+      <link>http://taqkarim.dev/posts/generate-lambda-layer-artifacts-w/docker/</link>
+      <pubDate>Tue, 22 Dec 2020 16:41:25 +0000</pubDate>
+      
+      <guid>http://taqkarim.dev/posts/generate-lambda-layer-artifacts-w/docker/</guid>
+      <description>Table of Contents  This post (and accompanying code) was inspired by this tutorial and a need to easily generate lambda layer artifacts for a grad course I teach at Baruch University.
+Github
+TL;DR: Generate a lambda layer artifact for python using this:
+➜ cat &amp;gt;&amp;gt; requirements.txt requests==2.24.0 ➜ docker run -v $PWD:/data mottaquikarim/pkglambdalayer:latest On completion, expect the following:
+➜ ls -ahl total 1792 drwxr-xr-x 5 tkarim staff 160B Dec 21 08:36 .</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Safely Construct Elasticsearch Queries w/Golang</title>
+      <link>http://taqkarim.dev/posts/safely-construct-elasticsearch-queries-w/golang/</link>
+      <pubDate>Wed, 16 Dec 2020 14:28:28 +0000</pubDate>
+      
+      <guid>http://taqkarim.dev/posts/safely-construct-elasticsearch-queries-w/golang/</guid>
+      <description>Table of Contents  TL; DR: ya boy wrote a golang elasticsearch query dsl utility. Find it here!
+The Why If you&amp;rsquo;ve used elasticsearch with golang, then you&amp;rsquo;ve probably used the official elasticsearch go client.
+The es go client is exhaustive and generally, pretty great. However, it can be a bit&amp;hellip;scary when having to deal with constructing search queries using the elasticsearch query dsl
+Take for instance the following (from here in the docs):</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Gotcha w/comparing base64 encoded strs</title>
+      <link>http://taqkarim.dev/posts/gotcha-w/comparing-base64-encoded-strs/</link>
+      <pubDate>Sun, 13 Dec 2020 09:29:57 +0000</pubDate>
+      
+      <guid>http://taqkarim.dev/posts/gotcha-w/comparing-base64-encoded-strs/</guid>
+      <description>Table of Contents  Here&amp;rsquo;s a fun experiment - consider two &amp;ldquo;numerical&amp;rdquo; strings such as:
+a = &amp;#34;1004&amp;#34; b = &amp;#34;1053&amp;#34; Is a &amp;lt; b? Why yes, of course it is!
+Ok, let&amp;rsquo;s try this again, this time b64encoding our two strings.
+import base64 a_b64 = base64.b64encode(a.encode(&amp;#34;utf8&amp;#34;)).decode(&amp;#34;utf8&amp;#34;) # MTAwNA== b_b64 = base64.b64encode(b.encode(&amp;#34;utf8&amp;#34;)).decode(&amp;#34;utf8&amp;#34;) # MTA1Mw== How about now?
+Is a_b64 &amp;lt; b_b64? NOPE.
+What gives?!
+And more importantly, this observation implies that:</description>
+    </item>
+    
+    
+  </channel>
+</rss>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
+    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Integrating Code Climate w/go pkgs</title>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>Integrating Code Climate w/go pkgs</h1><time>January 1, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#step-0-write-and-run-some-tests">Step 0: Write and run some tests!</a>
+<ul>
+<li><a href="#track-code-coverage">Track code coverage</a></li>
+<li><a href="#sidebar-generating-code-coverage-results-as-html">Sidebar: generating code coverage results as HTML</a></li>
+<li><a href="#getting-started-with-codeclimate">Getting started with CodeClimate</a></li>
+</ul></li>
+<li><a href="#step-1-downloading-the-test-reporter">Step 1: Downloading the test reporter</a></li>
+<li><a href="#step-2-running-the-tests-with-code-coverage">Step 2: Running the tests with code coverage</a></li>
+<li><a href="#step-3-running-the-after-build">Step 3: Running the after build</a></li>
+<li><a href="#the-code">The Code</a>
+<ul>
+<li><a href="#makefile"><code>Makefile</code></a></li>
+<li><a href="#github-action"><code>Github Action</code></a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>TL; DR: When integrating golang code coverage with Code Climate, be sure to set the <code>--prefix</code> arg (set it to your pkg github prefix, ie: &ldquo;github.com/mottaquikarim/esquerydsl&rdquo;) in the <code>after-build</code> stage in order for your src code to be recognized by the test reporter.</p>
+
+<p>If ^^ that didn&rsquo;t make sense, read on below for the full background 👍</p>
+
+<hr />
+
+<p>I&rsquo;ve recently published a golang pkg, called <a href="https://github.com/mottaquikarim/esquerydsl">esquerydsl</a>, which facillitates safe construction of elasticsearch queries in golang.</p>
+
+<p>In order to ensure future stability, I wanted to integrate <a href="https://codeclimate.com/">Code Climate</a> for tracking maintainability and test coverage.</p>
+
+<p>I&rsquo;ve used CC before on python projects but never for go and while integrating, I ran into a gotcha that I thought I ought to document / share.</p>
+
+<h2 id="step-0-write-and-run-some-tests">Step 0: Write and run some tests!</h2>
+
+<p>I won&rsquo;t expound on the actual source code and instead focus on how to run and export test + results to code climate.</p>
+
+<p>Running tests in go is super easy:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./...</code></pre></div>
+<p>I prefer to work in docker so I usually run the above as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 go <span class="nb">test</span> ./...</code></pre></div>
+<p>(All examples here on out will be run in docker)</p>
+
+<p>Let&rsquo;s break this down before continuing:</p>
+
+<ul>
+<li><code>docker run</code>: within a docker container, let&rsquo;s run some stuff</li>
+<li><code>-w /app</code>: our &ldquo;working directory&rdquo; will be the <code>app</code> folder</li>
+<li><code>-v ${PWD}:/app</code>: we volume mount our current working directory into the &ldquo;working directory&rdquo; in the container. This is a nice trick for quickly running tests on source code you are writing during dev</li>
+<li><code>golang:1.15</code>: the image we want to run - in this case, golang v1.15</li>
+<li><code>go test ./...</code>: finally, the command we want to run in our docker container - which is of course our go test command</li>
+</ul>
+
+<h3 id="track-code-coverage">Track code coverage</h3>
+
+<p>Tracking code coverage in golang is also super easy. We just need to add a single arg to your <code>go test</code> command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">-coverprofile<span class="o">=</span>c.out</code></pre></div>
+<p>The <code>-coverprofile</code> arg tells go where to publish the test coverage results, which can be parsed later on to help visualize your source code&rsquo;s coverage results.</p>
+
+<p>Putting it all together:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 go <span class="nb">test</span> ./... -coverprofile<span class="o">=</span>c.out</code></pre></div>
+<p>Now, there is a file called <code>c.out</code> which is available in your current working directory that encodes your line-by-line test coverage data. Great! All we have to do now is upload this to code climate and we are golden.</p>
+
+<h3 id="sidebar-generating-code-coverage-results-as-html">Sidebar: generating code coverage results as HTML</h3>
+
+<p>This is a proper tangent, so feel free to ignore.</p>
+
+<hr />
+
+<p>I find it super useful to understand/view which lines I missed in my unit tests. While line by line test coverage does not necessarily guarantee stability, I find it to be a useful benchmark for knowing when to <em>stop</em> writing unit tests (somewhere around 90+% is my 👍 point)</p>
+
+<p>To visualize this in go, run the following after your tests:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 go tool cover -html<span class="o">=</span>c.out -o coverage.html</code></pre></div>
+<p><code>coverage.html</code> can be opened in your browser to walk through your src code and it will visually indicate which lines have been covered by your tests and which lines have been missed.</p>
+
+<h3 id="getting-started-with-codeclimate">Getting started with CodeClimate</h3>
+
+<p>I&rsquo;m going to skip this because otherwise this post will get <em>long</em>. My assumption is folks reading this already have a CC Quality account and have a (golang!) repo set up for usage.</p>
+
+<h2 id="step-1-downloading-the-test-reporter">Step 1: Downloading the test reporter</h2>
+
+<p>Download and run the Code Climate test reporter. Of course, we want to do this in our docker container (there are plenty of examples available on how to do this &ldquo;bare&rdquo; around the internet). For me, this entailed:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 1. download CC test reported</span>
+<span class="nv">CC_URL</span><span class="o">=</span>https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 <span class="se">\
+</span><span class="se"></span>	/bin/bash -c <span class="se">\
+</span><span class="se"></span>	<span class="s2">&#34;curl -L </span><span class="si">${</span><span class="nv">CC_URL</span><span class="si">}</span><span class="s2"> &gt; ./cc-test-reporter&#34;</span>
+	
+<span class="c1"># 2. update perms</span>
+docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 chmod +x ./cc-test-reporter
+
+<span class="c1"># 3. run before build</span>
+docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>	-e <span class="nv">CC_TEST_REPORTER_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">CC_TEST_REPORTER_ID</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>	golang:1.15 ./cc-test-reporter before-build</code></pre></div>
+<p>The three main parts here:</p>
+
+<ol>
+<li>We need to download the test reporter, which is available to <code>curl</code> via the <code>CC_URL</code>. I run this in two steps in a single docker <code>run</code> command which is why I have the <code>/bin/bash -c &quot;...steps to run...&quot;</code> line (you can do it in two lines if needed as well)</li>
+<li>Update perms to make this download executable. Notice that I run <code>chmod</code> on the renamed file <code>cc-test-reporter</code> (you can call this whatever you want) within the container itself.</li>
+<li>Finally, run <code>before-build</code> which sets up the test reporter to send the coverage data. The <code>CC_TEST_REPORTER_ID</code> is significant - this is how CC authenticates your repo&rsquo;s code coverage as really from you. I have it as an envvar since it should not be committed to code anywhere</li>
+</ol>
+
+<h2 id="step-2-running-the-tests-with-code-coverage">Step 2: Running the tests with code coverage</h2>
+
+<p>This step is easy, basically Step 0:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app golang:1.15 go <span class="nb">test</span> ./... -coverprofile<span class="o">=</span>c.out</code></pre></div>
+<h2 id="step-3-running-the-after-build">Step 3: Running the after build</h2>
+
+<p>This is where I ran into my issue. The easy / documented step is this:</p>
+
+<pre><code># upload data to CC
+docker run -w /app -v ${PWD}:/app \
+	-e CC_TEST_REPORTER_ID=${CC_TEST_REPORTER_ID} \
+	golang:1.15 ./cc-test-reporter after-build
+</code></pre>
+
+<p>This is pretty standard at this point: we run the <code>cc-test-reporter</code> with the <code>after-build</code> arg as directed by CodeClimate. And, we pass along the <code>CC_TEST_REPORTER_ID</code> to property identify ourselves. However, the kicker is the command above <em>alone</em> will not work!</p>
+
+<p>When I ran the line above for my <code>esquerydsl</code> package (heads up, I temporarily added the <code>--debug</code> flag too), I ended up with the following output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2020-12-31T19:52:57Z&#34;</span> <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;failed to read file github.com/mottaquikarim/esquerydsl/esquerydsl.go\nopen github.com/mottaquikarim/esquerydsl/esquerydsl.go: no such file or directory&#34;</span>
+Error: open github.com/mottaquikarim/esquerydsl/esquerydsl.go: no such file or directory</code></pre></div>
+<p>To fix, it looks like the <code>--prefix</code> is required, as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -w /app -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>	-e <span class="nv">CC_TEST_REPORTER_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">CC_TEST_REPORTER_ID</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>	golang:1.15 ./cc-test-reporter after-build --prefix<span class="o">=</span>github.com/mottaquikarim/esquerydsl</code></pre></div>
+<p>Note the <code>--prefix=github.com/mottaquikarim/esquerydsl</code>. The <em>full</em> package prefix url is needed for this to work. Once I added this arg, I was able to upload code coverage stats for my pkg just fine. (Check it out <a href="https://codeclimate.com/github/mottaquikarim/esquerydsl">here</a>).</p>
+
+<h2 id="the-code">The Code</h2>
+
+<p>I have this thing tied up in a neat bow at this point and thought I&rsquo;d share. I use make targets to handle running this in Github Actions. I&rsquo;ll share the recipes below in the hopes maybe it can help someone else in the future.</p>
+
+<h3 id="makefile"><code>Makefile</code></h3>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c"># Definitions
+</span><span class="c"></span><span class="nv">ROOT</span>                    <span class="o">:=</span> <span class="k">$(</span>PWD<span class="k">)</span>
+<span class="nv">GO_HTML_COV</span>             <span class="o">:=</span> ./coverage.html
+<span class="nv">GO_TEST_OUTFILE</span>         <span class="o">:=</span> ./c.out
+<span class="nv">GOLANG_DOCKER_IMAGE</span>     <span class="o">:=</span> golang:1.15
+<span class="nv">GOLANG_DOCKER_CONTAINER</span> <span class="o">:=</span> goesquerydsl-container
+<span class="nv">CC_TEST_REPORTER_ID</span>	<span class="o">:=</span> <span class="si">${</span><span class="nv">CC_TEST_REPORTER_ID</span><span class="si">}</span>
+<span class="nv">CC_PREFIX</span>		<span class="o">:=</span> github.com/mottaquikarim/esquerydsl
+
+<span class="c">#   Usage:
+</span><span class="c">#       make test
+</span><span class="c"></span><span class="nf">test</span><span class="o">:</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go <span class="nb">test</span> ./... -coverprofile<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go tool cover -html<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">GO_HTML_COV</span><span class="si">}</span>
+
+<span class="c"># custom logic for code climate, gross but necessary
+</span><span class="c"></span><span class="nf">_before-cc</span><span class="o">:</span>
+	<span class="c1"># download CC test reported</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>		/bin/bash -c <span class="se">\
+</span><span class="se"></span>		<span class="s2">&#34;curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 &gt; ./cc-test-reporter&#34;</span>
+	
+	<span class="c1"># update perms</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> chmod +x ./cc-test-reporter
+
+	<span class="c1"># run before build</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>		 -e <span class="nv">CC_TEST_REPORTER_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">CC_TEST_REPORTER_ID</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>		<span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> ./cc-test-reporter before-build
+
+<span class="nf">_after-cc</span><span class="o">:</span>
+	<span class="c1"># handle custom prefix</span>
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">PREFIX</span><span class="o">=</span><span class="si">${</span><span class="nv">CC_PREFIX</span><span class="si">}</span><span class="k">)</span>
+<span class="err">ifdef</span> prefix
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">PREFIX</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span><span class="k">)</span>
+<span class="err">endif</span>
+	<span class="c1"># upload data to CC</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>		-e <span class="nv">CC_TEST_REPORTER_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">CC_TEST_REPORTER_ID</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>		<span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> ./cc-test-reporter after-build --prefix <span class="si">${</span><span class="nv">PREFIX</span><span class="si">}</span>
+
+<span class="c"># this runs tests with cc reporting built in
+</span><span class="c"></span><span class="nf">test-ci</span><span class="o">:</span> <span class="n">_before</span>-<span class="n">cc</span> <span class="n">test</span> <span class="n">_after</span>-<span class="n">cc</span>
+</code></pre></div>
+<h3 id="github-action"><code>Github Action</code></h3>
+
+<p>I saved this file in: <code>.github/workflows/run-build.yml</code> and in my repo secrets, I saved my <code>CC_TEST_REPORTER_ID</code> so that I can export it as envvar on build time.</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml">name<span class="p">:</span><span class="w"> </span>Build<span class="w"> </span>Status<span class="w">
+</span><span class="w">
+</span><span class="w"></span>on<span class="p">:</span><span class="w">
+</span><span class="w">  </span>push<span class="p">:</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>jobs<span class="p">:</span><span class="w">
+</span><span class="w">  </span>build<span class="p">:</span><span class="w">
+</span><span class="w">    </span>runs-on<span class="p">:</span><span class="w"> </span>ubuntu-latest<span class="w">
+</span><span class="w">    </span>steps<span class="p">:</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Checkout<span class="w"> </span>master<span class="w">
+</span><span class="w">      </span>uses<span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
+</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Run<span class="w"> </span>unit<span class="w"> </span>tests<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="sd">        make clean test-ci</span><span class="w">
+</span><span class="w">      </span>env<span class="p">:</span><span class="w">
+</span><span class="w">        </span>CC_TEST_REPORTER_ID<span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.CC_TEST_REPORTER_ID<span class="w"> </span>}}</code></pre></div>
+<p>Note that running <code>make test-ci</code> will run tests with the codeclimate reporter running and <code>make test</code> just runs normal unit tests for dev/debugging.</p>
+
+<p>The results of the configs above should be viewable in the following:</p>
+
+<ul>
+<li><a href="https://github.com/mottaquikarim/esquerydsl/runs/1631500119?check_suite_focus=true">Github Action run ex</a></li>
+<li><a href="https://github.com/mottaquikarim/esquerydsl">README ex</a></li>
+</ul>
+
+<p>Happy coding!</p>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2020 Taq Karim
+</footer>
+</body>
+</html>

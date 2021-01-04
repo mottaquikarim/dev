@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
+    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Generate Lambda Layer Artifacts w/Docker</title>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>Generate Lambda Layer Artifacts w/Docker</h1><time>December 22, 2020</time></header>
+
+<p><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#the-backstory"><strong>The Backstory</strong></a></li>
+<li><a href="#the-problem"><strong>The Problem</strong></a></li>
+<li><a href="#lambda-layers-and-docker"><strong>Lambda Layers and Docker</strong></a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+This post (and accompanying code) was inspired by <a href="https://towardsdatascience.com/how-to-install-python-packages-for-aws-lambda-layer-74e193c76a91">this</a> tutorial and a need to easily generate lambda layer artifacts for a grad course I teach at Baruch University.</p>
+
+<p><strong><a href="https://github.com/mottaquikarim/pkglambdalayer">Github</a></strong></p>
+
+<p><strong>TL;DR</strong>: Generate a lambda layer artifact for python using this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  cat &gt;&gt; requirements.txt
+<span class="nv">requests</span><span class="o">==</span><span class="m">2</span>.24.0
+➜  docker run -v <span class="nv">$PWD</span>:/data mottaquikarim/pkglambdalayer:latest</code></pre></div>
+<p>On completion, expect the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  ls -ahl
+total <span class="m">1792</span>
+drwxr-xr-x   <span class="m">5</span> tkarim  staff   160B Dec <span class="m">21</span> <span class="m">08</span>:36 .
+drwxr-xr-x  <span class="m">23</span> tkarim  staff   736B Dec <span class="m">21</span> <span class="m">08</span>:31 ..
+drwxr-xr-x  <span class="m">13</span> tkarim  staff   416B Dec <span class="m">21</span> <span class="m">08</span>:36 pkg
+-rw-r--r--   <span class="m">1</span> tkarim  staff   879K Dec <span class="m">21</span> <span class="m">08</span>:36 pkg.zip
+-rw-r--r--   <span class="m">1</span> tkarim  staff    17B Dec <span class="m">21</span> <span class="m">08</span>:36 requirements.txt</code></pre></div>
+<p><strong>pkg.zip</strong> can be uploaded into your own Lambda Layer using the AWS Console 👍👍</p>
+
+<h2 id="the-backstory"><strong>The Backstory</strong></h2>
+
+<p>I teach a course at Baruch University where I introduce folks to various AWS technologies in the context of &ldquo;Big Data&rdquo; processing.</p>
+
+<p>So of course, Lambdas are a topic I cover. In order to keep the course load from being <em>too</em> technical, I try to lean hard on AWS console whenever possible vs going too deeply into the infra-as-code  approach.</p>
+
+<p>As such, most of our explorations in Lambda-land are done through the AWS Lambda UI.</p>
+
+<h2 id="the-problem"><strong>The Problem</strong></h2>
+
+<blockquote>
+<p>You can&rsquo;t <em>actually</em> load in dependencies into the AWS Lambda UI!</p>
+</blockquote>
+
+<p>While I totally understand perhaps <em>why</em> this is so, it definitely throws a bit of a curveball in my class as I want folks to write useful lambda funcs but without having to delve too deeply into the packaging process.</p>
+
+<h2 id="lambda-layers-and-docker"><strong>Lambda Layers and Docker</strong></h2>
+
+<p>I found Lambda Layers to be an acceptable compromise - last semester I just generated a single artifact similar to above which I shared via Google Drive and had folks go through the motions of uploading and leveraging the dependencies.</p>
+
+<p>This process seemed to be a good candidate for automation so as a first step, I packaged it into a docker image. Folks in my class have basic working knowledge of pulling / running docker images so next semester I hope to leverage this without having to pre-gen a single build artifact on my own.</p>
+
+<p>Plus, this will empower folks in class to perhaps do more with lambda if it is easier to create various combinations of dependencies in thier layers.</p>
+
+<p>I figured maybe this would be interesting/useful to others so I wrapped into a <a href="https://github.com/mottaquikarim/pkglambdalayer">Github repo</a> and am publishing/sharing.</p>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2020 Taq Karim
+</footer>
+</body>
+</html>

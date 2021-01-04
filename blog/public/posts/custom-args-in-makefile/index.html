@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
+    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Custom Args in Makefile</title>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>Custom Args in Makefile</h1><time>January 3, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#run-tests-w-race-conditions-https-golang-org-doc-articles-race-detector-html-check">Run tests w/<a href="https://golang.org/doc/articles/race_detector.html">race conditions</a> check</a></li>
+<li><a href="#run-tests-in-short-https-golang-org-pkg-testing-short-mode">Run tests in <a href="https://golang.org/pkg/testing/#Short">&ldquo;short&rdquo;</a> mode</a></li>
+<li><a href="#run-tests-w-verbose-results-in-terminal">Run tests w/verbose results in terminal</a></li>
+<li><a href="#run-tests-for-a-specific-package">Run tests for a specific package</a></li>
+<li><a href="#run-a-specific-test-func-in-a-specific-package">Run a specific test func in a specific package</a></li>
+<li><a href="#a-better-way">A better way</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>TL;DR: use <code>$(eval ARGS=${ARGS} [some additional arg])</code> within a make target to build custom argument sequences for commands wrapped by make targets - like <code>make test</code></p>
+
+<p>I expound further on the usecase and methodology below 👇</p>
+
+<hr />
+
+<p>I like to wrap common tasks, such as running unit tests, around a make target.</p>
+
+<p>This way, I can minimize the length of the command I need to run (ie: <code>make test</code> vs <code>go test ./... -race -coverprofile=c.out</code>)</p>
+
+<p>However, as a project grows, it becomes necessary or just preferable to support a variety of permutations of the above.</p>
+
+<p>(Note: I am not advocating that one <em>ought</em> to use make targets in this manner, just that if this route is chosen, there are patterns available to simplify things a bit).</p>
+
+<p>For the sake of go, here are a few potential tests I&rsquo;d like to be able to run:</p>
+
+<h2 id="run-tests-w-race-conditions-https-golang-org-doc-articles-race-detector-html-check">Run tests w/<a href="https://golang.org/doc/articles/race_detector.html">race conditions</a> check</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./... -race</code></pre></div>
+<h2 id="run-tests-in-short-https-golang-org-pkg-testing-short-mode">Run tests in <a href="https://golang.org/pkg/testing/#Short">&ldquo;short&rdquo;</a> mode</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./... -short</code></pre></div>
+<h2 id="run-tests-w-verbose-results-in-terminal">Run tests w/verbose results in terminal</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./... -v</code></pre></div>
+<h2 id="run-tests-for-a-specific-package">Run tests for a specific package</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./my_awesome_pkg/...</code></pre></div>
+<h2 id="run-a-specific-test-func-in-a-specific-package">Run a specific test func in a specific package</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">go <span class="nb">test</span> ./my_awesome_pkg/... -r<span class="o">=</span>TestFoobar</code></pre></div>
+<h2 id="a-better-way">A better way</h2>
+
+<p>Of course, the main issue that comes up here is: what if we wanted to mix and match some of these opts? (For instance, we might want to run tests on a specific package with verbose test output with race condition checks enabled.)</p>
+
+<p>Again, assuming we&rsquo;d like to reuse the <code>make test</code> interface, our make target can get really messy really quickly:</p>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Usage:
+</span><span class="c">#       make test-dev
+</span><span class="c">#       make test-dev package=my_awesome_pkg
+</span><span class="c"></span><span class="nf">test</span><span class="o">:</span>
+<span class="err">ifdef</span> package 
+	go <span class="nb">test</span> -v ./<span class="si">${</span><span class="nv">package</span><span class="si">}</span>/... -coverprofile<span class="o">=</span>c.out
+<span class="err">else</span>
+	go <span class="nb">test</span> ./... -coverprofile<span class="o">=</span>c.out
+<span class="err">endif</span>
+</code></pre></div>
+<p>In this example, we only support two use cases, run all tests in a single package and run all tests in all packages in current working directory. Even so, as you can probably see, it is easy to miss stuff (for instance, package tests have the verbose flag) and repetition can start to seep in (note the -coverprofile arg in both conditions).</p>
+
+<p>An alternative (and personally, preferable approach might be):</p>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Usage:
+</span><span class="c"># 		make test norace=1
+</span><span class="c"># 			Expl: run WITHOUT race conditions
+</span><span class="c"># 		make test ftest=1
+</span><span class="c"># 			Explt: run WITH &#34;ftests&#34;, long lived non unit tests
+</span><span class="c"># 		make test v=1
+</span><span class="c"># 			Explt: run in verbose mode
+</span><span class="c"># 		make test package=my_awesome_pkg
+</span><span class="c"># 			Explt: run tests in a single package only
+</span><span class="c"># 			NOTE: if omitted, will run ALL tests
+</span><span class="c"># 		make test package=my_awesome_pkg func=TestViews
+</span><span class="c"># 			Explt: run a single test func (needs package as well)
+</span><span class="c"></span><span class="nf">test</span><span class="o">:</span>
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="k">)</span>
+<span class="c"># by default, run with race conditions
+</span><span class="c"></span><span class="err">ifndef</span> norace
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> -race<span class="k">)</span>
+<span class="err">endif</span>
+<span class="c"># by default, run in &#34;short&#34; mode
+</span><span class="c"></span><span class="err">ifndef</span> ftest
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> -short<span class="k">)</span>
+<span class="err">endif</span>
+<span class="err">ifdef</span> v
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> -v<span class="k">)</span>
+<span class="err">endif</span>
+<span class="c"># if package provided, run the package
+</span><span class="c"></span><span class="err">ifdef</span> package
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> ./<span class="si">${</span><span class="nv">package</span><span class="si">}</span>/...<span class="k">)</span>
+<span class="err">else</span>
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> ./...<span class="k">)</span>
+<span class="err">endif</span>
+<span class="c"># if func provided, run the func only
+</span><span class="c"></span><span class="err">ifdef</span> func
+	<span class="k">$(</span><span class="nb">eval</span> <span class="nv">ARGS</span><span class="o">=</span><span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> -run<span class="o">=</span><span class="si">${</span><span class="nv">func</span><span class="si">}</span><span class="k">)</span>
+<span class="err">endif</span>
+	go <span class="nb">test</span> <span class="si">${</span><span class="nv">ARGS</span><span class="si">}</span> -coverprofile<span class="o">=</span>c.out
+</code></pre></div>
+<p>In this approach, we use <code>$(eval ARGS=${ARGS} [append an arg]</code> to build the actual args for our <code>go test</code> invocation based on make target args.</p>
+
+<p>What&rsquo;s nice about this approach is we can choose to make certain things default vs non default by leveraging make&rsquo;s <code>ifdef</code> and <code>ifndef</code> (if not defined) conditionals.</p>
+
+<p>The last line is the actual test invocation and if we wanted to, we could always echo <code>${ARGS}</code> right before for debugging purposes, etc.</p>
+
+<p>I really like this approach and have started using it in a lot of my makefile target patterns where I leverage <code>make test</code> for dev-ing or ci related tasks. While I&rsquo;ve walked through a golang based usecase, this pattern can be used for more or less any make target usage (though personally, I really only use this for running tests during dev/ci).</p>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2020 Taq Karim
+</footer>
+</body>
+</html>
