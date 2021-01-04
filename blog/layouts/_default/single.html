@@ -1,0 +1,14 @@
+{{ define "main" }}
+<article>
+    <header id="post-header">
+        <h1>{{ .Title }}</h1>
+        {{- if isset .Params "date" -}}
+            <time>{{ .Date.Format "January 2, 2006" }}</time>
+        {{- end -}}
+    </header>
+    {{- .Content -}}
+    <h2>Share</h2>
+    <a href="https://twitter.com/intent/tweet?original_referer={{ .Permalink }}&text=Check out this article by @taqkarim: {{ .Permalink }}" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+    <a href="https://www.linkedin.com/shareArticle?mini=false&url={{ .Permalink }}" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+{{ end }}

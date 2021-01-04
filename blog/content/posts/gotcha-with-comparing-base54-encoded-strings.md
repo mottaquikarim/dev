@@ -117,15 +117,15 @@ The key to understanding why `b64(a) !< b64(b)` has to do with **Step 6**.
 
 We convert our new, transformed decimal values according to the base64 characters table - which places numbers such as `1-9` as _higher_ than characters (in terms of index value).
 
-![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/w9bi3we0hlb75gbgq3cy.png)
+![Alt Text](/dev/img/b64encoding.png)
 
 Notice how `1` has decimal value `53` and `w` has decimal value `48`. Contrast this to the ASCII table:
 
-![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/zln3xr8oy13i5ysguoqg.png)
+![Alt Text](/dev/img/asciiencoding.png)
 
 Note that `"1"` has a decimal value of **49**.
 
-![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/44cwso2s9neqzvpejp3e.png)
+![Alt Text](/dev/img/asciiencoding_w.png)
 
 But `"w"` has a decimal value of **77**!
 
@@ -152,5 +152,5 @@ I feel slightly better now.
 ---
 
 **PS**: in py3 we compare unicode values not ascii when performing string comparison ops - but for the purposes of this post the [decimal values are the same](https://www.ssec.wisc.edu/~tomw/java/unicode.html) since we are only contending with `A-Z, a-z,0-9,+,/`
-**PPS**: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I've yet to explain why (8N mod 6) == 4 does not seem to this problem.
 
+**PPS**: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I've yet to explain why (8N mod 6) == 4 does not seem to this problem.
