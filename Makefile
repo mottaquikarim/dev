@@ -41,7 +41,7 @@ endif
 	docker run --rm -it -v ${SITEPATH}:/src -u hugo jguyomard/hugo-builder hugo new ${page_name}/index.md
 
 build:
-	docker run --rm -it -v ${SITEPATH}:/src -u hugo jguyomard/hugo-builder hugo
+	docker run --rm -v ${SITEPATH}:/src -u hugo jguyomard/hugo-builder hugo
 
 develop:
 	docker run \
