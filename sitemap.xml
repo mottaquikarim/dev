@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://taqkarim.dev/about/</loc>
+    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/</loc>
+    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/custom-args-in-makefile/</loc>
+    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/</loc>
+    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/integrating-code-climate-w/go-pkgs/</loc>
+    <lastmod>2021-01-01T14:28:32+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/generate-lambda-layer-artifacts-w/docker/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
+    <lastmod>2020-12-16T14:28:28+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/posts/gotcha-w/comparing-base64-encoded-strs/</loc>
+    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://taqkarim.dev/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>
