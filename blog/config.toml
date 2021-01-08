@@ -7,9 +7,9 @@ pygmentsCodeFences = true
 pygmentsUseClasses = true
 
 [params]
-  description = ""
+  description = "Thoughts on code and building things."
   copyright = "Copyright © 2020 Taq Karim"
-  dark = "auto"
+  dark = "on"
   highlight = true
 
 [menu]
