@@ -11,6 +11,20 @@
     
     
     
+    <item>
+      <title>Using Makefile &#43; Docker for Golang dev</title>
+      <link>https://mottaquikarim.github.io/dev/posts/using-makefile-docker-for-golang-dev/</link>
+      <pubDate>Fri, 08 Jan 2021 02:29:26 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/using-makefile-docker-for-golang-dev/</guid>
+      <description>Table of Contents  (This post was inspired by this article on medium.)
+For starters, I&amp;rsquo;d highly recommend reading the article I linked to first. Leo&amp;rsquo;s points about why he chooses Make resonate strongly with me.
+In this post, I&amp;rsquo;ll expand slightly on his Makefile and share how make targets can be leveraged with docker for golang development.
+(Of course, we can apply this principle to dev with other langs too, but for now let&amp;rsquo;s stick with go).</description>
+    </item>
+    
+    
+    
     
     
     <item>

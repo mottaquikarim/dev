@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Using Makefile &#43; Docker for Golang dev</title>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>Using Makefile &#43; Docker for Golang dev</h1><time>January 8, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#tl-dr-the-makefile">TL;DR: the <strong>Makefile</strong></a></li>
+<li><a href="#why-docker">Why Docker?</a></li>
+<li><a href="#definitions">Definitions</a></li>
+<li><a href="#make-clean">make <strong>clean</strong></a></li>
+<li><a href="#make-fmt">make <strong>fmt</strong></a></li>
+<li><a href="#make-lint">make <strong>lint</strong></a></li>
+<li><a href="#make-test">make <strong>test</strong></a></li>
+<li><a href="#bonus-make-bash">BONUS: make <strong>bash</strong></a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>(This post was inspired by this <a href="https://leogtzr.medium.com/how-to-use-makefiles-for-your-golang-development-b4c438fe0bdd">article</a> on medium.)</p>
+
+<hr />
+
+<p>For starters, I&rsquo;d highly recommend reading the article I linked to <em>first</em>. Leo&rsquo;s points about <em>why</em> he chooses Make resonate strongly with me.</p>
+
+<p>In this post, I&rsquo;ll expand slightly on his Makefile and share how make targets can be leveraged with docker for golang development.</p>
+
+<p>(Of course, we can apply this principle to dev with other langs too, but for now let&rsquo;s stick with go).</p>
+
+<p>In particular, the <code>Makefile</code> I&rsquo;ll share can be used to quickly set up a golang pkg repo for dev, etc.</p>
+
+<h2 id="tl-dr-the-makefile">TL;DR: the <strong>Makefile</strong></h2>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c"># Definitions
+</span><span class="c"></span><span class="nv">ROOT</span>                    <span class="o">:=</span> <span class="k">$(</span>PWD<span class="k">)</span>
+<span class="nv">GO_HTML_COV</span>             <span class="o">:=</span> ./coverage.html
+<span class="nv">GO_TEST_OUTFILE</span>         <span class="o">:=</span> ./c.out
+<span class="nv">GOLANG_DOCKER_IMAGE</span>     <span class="o">:=</span> golang:1.15
+<span class="nv">GOLANG_DOCKER_CONTAINER</span> <span class="o">:=</span> goesquerydsl-container
+
+<span class="c">#   Format according to gofmt: https://github.com/cytopia/docker-gofmt
+</span><span class="c">#   Usage:
+</span><span class="c">#       make fmt
+</span><span class="c">#       make fmt path=src/elastic/index_setup.go
+</span><span class="c"></span><span class="nf">fmt</span><span class="o">:</span>
+<span class="err">ifdef</span> path
+	docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/gofmt -s -w <span class="si">${</span><span class="nv">path</span><span class="si">}</span>
+<span class="err">else</span>
+	docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/gofmt -s -w .
+<span class="err">endif</span>
+
+<span class="c">#   Deletes container if exists
+</span><span class="c">#   Usage:
+</span><span class="c">#       make clean
+</span><span class="c"></span><span class="nf">clean</span><span class="o">:</span>
+	docker rm -f <span class="si">${</span><span class="nv">GOLANG_DOCKER_CONTAINER</span><span class="si">}</span> <span class="o">||</span> <span class="nb">true</span>
+
+<span class="c">#   Usage:
+</span><span class="c">#       make test
+</span><span class="c"></span><span class="nf">test</span><span class="o">:</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go <span class="nb">test</span> ./... -coverprofile<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span>
+	docker run -w /app -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go tool cover -html<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">GO_HTML_COV</span><span class="si">}</span>
+
+<span class="c">#   Usage:
+</span><span class="c">#       make lint
+</span><span class="c"></span><span class="nf">lint</span><span class="o">:</span>
+	docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/golint .
+</code></pre></div>
+<h2 id="why-docker">Why Docker?</h2>
+
+<p>I really, really like wrapping all of my dev work these days into containers. This makes it super easy for me to bootstrap my work anywhere - from a dev box or EC2 instance to my local machine.</p>
+
+<p>With docker, I can defined custom images and other dependencies that will ensure that I (or, anyone really) can get the service or project running (ie: unit/integration tests run and system can be built) without worrying too much about anything except which make targets to run.</p>
+
+<h2 id="definitions">Definitions</h2>
+
+<p>Let&rsquo;s begin by going over some defintions.</p>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c"># Definitions
+</span><span class="c"></span><span class="nv">ROOT</span>                    <span class="o">:=</span> <span class="k">$(</span>PWD<span class="k">)</span>
+<span class="nv">GO_HTML_COV</span>             <span class="o">:=</span> ./coverage.html
+<span class="nv">GO_TEST_OUTFILE</span>         <span class="o">:=</span> ./c.out
+<span class="nv">GOLANG_DOCKER_IMAGE</span>     <span class="o">:=</span> golang:1.15
+<span class="nv">GOLANG_DOCKER_CONTAINER</span> <span class="o">:=</span> goesquerydsl-container
+</code></pre></div>
+<p>The <code>walrus</code> operator is used to define default values for some variables we will be using in our targets.</p>
+
+<p><strong><code>ROOT</code></strong>: We usually place our <code>Makefile</code> in the folder root - as such, we define the <code>${ROOT}</code> dir to be current working dir</p>
+
+<p><strong><code>GO_HTML_COV</code></strong>: When running golang tests, it is useful to generate coverage data to better understand which parts of the codebase could use unit testing coverage.</p>
+
+<p><strong><code>GO_TEST_OUTFILE</code></strong>: This file is lower level, GO_HTML_COV outputs HTML code that we can render in the browser. The GO_TEST_OUTFILE can be used to generate other types of coverage reports or as a way to public test coverage data to static code analysis tools such as <a href="https://codeclimate.com/">code climate</a>. <strong>PS</strong>: I write about getting started with golang and CC test coverage in <a href="./posts/integrating-code-climate-w/go-pkgs/">this post</a></p>
+
+<p><strong><code>GOLANG_DOCKER_IMAGE</code></strong>: this aligns with official golang docker image available on <a href="https://hub.docker.com/_/golang">dockerhub</a>.</p>
+
+<p><strong><code>GOLANG_DOCKER_CONTAINER</code></strong>: This is a label for the container you will be running off of the golang docker image. I would pick something meaningful to your pkg itself. For instance, this example is derived from my <a href="https://github.com/mottaquikarim/esquerydsl">esquerydsl</a> golang pkg and the naming structure reflects this. (Heads up, this current Makefile ex doesn&rsquo;t really use <code>GOLANG_DOCKER_CONTAINER</code> all that much but useful to have for more complex projects)</p>
+
+<h2 id="make-clean">make <strong>clean</strong></h2>
+
+<p>Generally, we want the <code>clean</code> target to remove any output artifacts and the like. This one is super simple and it merely removes the docker container instance.</p>
+
+<h2 id="make-fmt">make <strong>fmt</strong></h2>
+
+<p>This target encapsulates the <a href="https://golang.org/cmd/gofmt/"><code>go fmt</code></a> command which will prettify your golang src as per the golang best practices. Mainly, tabs are true tabs and spaces are alinged. I usually run this target as part of my CI/CD pipeline as well.</p>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Format according to gofmt: https://github.com/cytopia/docker-gofmt
+</span><span class="c">#   Usage:
+</span><span class="c">#       make fmt
+</span><span class="c">#       make fmt path=src/elastic/index_setup.go
+</span><span class="c"></span><span class="nf">fmt</span><span class="o">:</span>
+<span class="err">ifdef</span> path
+    docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/gofmt -s -w <span class="si">${</span><span class="nv">path</span><span class="si">}</span>
+<span class="err">else</span>
+    docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/gofmt -s -w .
+<span class="err">endif</span>
+</code></pre></div>
+<p>To expound on the code itself:</p>
+
+<p><strong><code>ifdef path</code></strong> is a common way to check to see if the target was called with a named argument. If so, we can conditionally determine a different course of action for our target.</p>
+
+<p><strong><code>--rm</code></strong> (<a href="https://docs.docker.com/engine/reference/run/#clean-up---rm">docs</a>) will remove the container once it has stopped running.</p>
+
+<p><strong><code>-v ${ROOT}:/data</code></strong> this will mount our current working dir (in host) to the container&rsquo;s filesystem in <code>/data</code>. This is a nice and quick way to share the contents of our src code with the container itself so that <code>go fmt</code> can be applied to our go files <em>and</em> the effects of the fmt changes are <strong>available outside</strong> the container&rsquo;s <code>/data</code> folder.</p>
+
+<p><strong><code>cytopia/gofmt -s -w ${path}</code></strong> <a href="https://hub.docker.com/r/cytopia/gofmt/"><code>cytopia/gofmt</code></a> is a docker image that wraps the <a href="https://godoc.org/cmd/gofmt"><code>gofmt</code></a> command line utility.</p>
+
+<ul>
+<li><strong><code>-w</code></strong>: I usually run <code>gofmt</code> with <code>-w</code> to overwrite my files that are not fmt complaint vs having the reformatted output print to stdin</li>
+<li><strong><code>-s</code></strong>: This tries to <a href="https://godoc.org/cmd/gofmt#hdr-The_simplify_command">simplify code</a> if applicable.</li>
+</ul>
+
+<h2 id="make-lint">make <strong>lint</strong></h2>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Usage:
+</span><span class="c">#       make lint
+</span><span class="c"></span><span class="nf">lint</span><span class="o">:</span>
+    docker run --rm -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/data cytopia/golint .
+</code></pre></div>
+<p><strong>golint</strong> is a <a href="https://github.com/golang/lint">linter</a> for golang src code.</p>
+
+<p>I typically run this and <code>fmt</code> together as a step in CI, like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">make fmt lint</code></pre></div>
+<h2 id="make-test">make <strong>test</strong></h2>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Usage:
+</span><span class="c">#       make test
+</span><span class="c"></span><span class="nf">test</span><span class="o">:</span>
+    docker run <span class="se">\
+</span><span class="se"></span>        -w /app <span class="se">\
+</span><span class="se"></span>        -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>        <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go <span class="nb">test</span> ./... <span class="se">\
+</span><span class="se"></span>            -coverprofile<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span>
+    docker run <span class="se">\
+</span><span class="se"></span>        -w /app <span class="se">\
+</span><span class="se"></span>        -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>        <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> go tool <span class="se">\
+</span><span class="se"></span>            cover -html<span class="o">=</span><span class="si">${</span><span class="nv">GO_TEST_OUTFILE</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">GO_HTML_COV</span><span class="si">}</span>
+</code></pre></div>
+<p>(Heads up, the <strong><code>\</code></strong> is mainly to make the code a bit easier to format+read on this blog&rsquo;s design)</p>
+
+<p>Here, we run <code>go test</code> within the golang docker image. If our package supported a specific version of docker, we would only have to update <strong><code>GOLANG_DOCKER_IMAGE</code></strong> and re-run.</p>
+
+<p>Additionally, we take advantage of volume mounting here for two reasons:</p>
+
+<ol>
+<li>Make the test coverage HTML and output files available to the host (so that we can view the stats in our browser, for instance)</li>
+<li>By mounting our <code>src</code> into the container, we can run our tests within the docker container but <em>develop our code</em> in our preferred code editor/environment on the host.</li>
+</ol>
+
+<h2 id="bonus-make-bash">BONUS: make <strong>bash</strong></h2>
+<div class="highlight"><pre class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="c">#   Usage:
+</span><span class="c">#       make bash
+</span><span class="c"></span><span class="nf">bash</span><span class="o">:</span>
+    docker run -it <span class="se">\
+</span><span class="se"></span>        -w /app <span class="se">\
+</span><span class="se"></span>        -v <span class="si">${</span><span class="nv">ROOT</span><span class="si">}</span>:/app <span class="se">\
+</span><span class="se"></span>        <span class="si">${</span><span class="nv">GOLANG_DOCKER_IMAGE</span><span class="si">}</span> /bin/bash
+</code></pre></div>
+<p><strong><code>-it</code></strong> this allows us to &ldquo;log in&rdquo; to our docker container, with our src code mounted into the <code>/app</code> dir. From here, we can run normal golang ops as normal (ie: <code>go test</code> or <code>go get</code>, etc).</p>
+
+<p>I use this to directly run / test / debug stuff and I just enjoy having the flexibility and option to get into the container itself and futz around.</p>
+
+<hr />
+
+<p>Ok and there you have it! Feel free to take this <code>Makefile</code> and use/abuse.</p>
+
+<p>Having coding, fam.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fusing-makefile-docker-for-golang-dev%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fusing-makefile-docker-for-golang-dev%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fusing-makefile-docker-for-golang-dev%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2020 Taq Karim
+</footer>
+</body>
+</html>
