@@ -6,9 +6,11 @@
     <description>Recent content on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Fri, 08 Jan 2021 02:29:26 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 09 Jan 2021 06:35:04 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     
     
     
@@ -95,6 +97,34 @@ import base64 a_b64 = base64.b64encode(a.encode(&amp;#34;utf8&amp;#34;)).decode(
 Is a_b64 &amp;lt; b_b64? NOPE.
 What gives?!
 And more importantly, this observation implies that:</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Connecting to Elasticsearch Configured via Docker</title>
+      <link>https://mottaquikarim.github.io/dev/posts/connecting-to-elasticsearch-configured-via-docker/</link>
+      <pubDate>Mon, 16 Mar 2020 06:37:08 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/connecting-to-elasticsearch-configured-via-docker/</guid>
+      <description>Table of Contents  Elastic Search and Docker Setting up an elasticsearch + kibana runtime is very easy to do with docker-compose:
+version:&amp;#39;3&amp;#39;services:elasticsearch:image:docker.elastic.co/elasticsearch/elasticsearch:6.3.2environment:-cluster.name=docker-cluster-bootstrap.memory_lock=true-&amp;#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&amp;#34;ulimits:memlock:soft:-1hard:-1ports:-&amp;#34;9200:9200&amp;#34;kibana:image:docker.elastic.co/kibana/kibana:6.3.2ports:-&amp;#34;5601:5601&amp;#34; For more information on the defaults (ulimits or environment variables, please see this post)
+To run, you simply:
+docker-compose up -d And then navigate over to http://localhost:9200 for elasticsearch or http://localhost:5601 for kibana.
+Gotchas As with all things, there may be some gotchas associated with this setup.</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Self Grading Quizzes With Airtable</title>
+      <link>https://mottaquikarim.github.io/dev/posts/self-grading-quizzes-with-airtable/</link>
+      <pubDate>Mon, 16 Mar 2020 06:31:03 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/self-grading-quizzes-with-airtable/</guid>
+      <description>Table of Contents  This semester, I am teaching a course at Baruch University on Big Data Technologies.
+I resolved to administer a small quiz at the start of class to get a feel for how the class is doing overall in terms of comprehension of key materials.
+However, grading quizzes - especially at such a recurring cadence - will definitely be time consuming, even for a small class of say 15 people (my class has 47 students).</description>
     </item>
     
     
