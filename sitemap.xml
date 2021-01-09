@@ -20,11 +20,6 @@
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/about/</loc>
-    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/custom-args-in-makefile/</loc>
     <lastmod>2021-01-03T00:59:04+00:00</lastmod>
   </url>
@@ -57,6 +52,10 @@
   <url>
     <loc>https://mottaquikarim.github.io/dev/tags/</loc>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/about/</loc>
   </url>
   
 </urlset>

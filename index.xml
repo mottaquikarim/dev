@@ -26,8 +26,6 @@ In this post, I&amp;rsquo;ll expand slightly on his Makefile and share how make 
     
     
     
-    
-    
     <item>
       <title>Custom Args in Makefile</title>
       <link>https://mottaquikarim.github.io/dev/posts/custom-args-in-makefile/</link>
@@ -98,6 +96,8 @@ Is a_b64 &amp;lt; b_b64? NOPE.
 What gives?!
 And more importantly, this observation implies that:</description>
     </item>
+    
+    
     
     
   </channel>
