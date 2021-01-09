@@ -1,6 +1,7 @@
 ---
 title: "👋👋, wrold."
 type: "bulkhead"
+date: 2021-01-09T14:28:28Z
 ---
 
 I am an immigrant originally from [Bangladesh](https://en.wikipedia.org/wiki/Bangladesh); my family moved to the US in the mid 90s when I was 5 years old.

@@ -1,3 +1,4 @@
+@media (prefers-color-scheme: dark) {
 html {
     scrollbar-color: #6c6c6c #2e2e2e;
 }
@@ -42,4 +43,4 @@ main#content ul#posts li a:hover {
 
 main#content header#post-header time {
     color: #a7a7a7;
-}
+}}
