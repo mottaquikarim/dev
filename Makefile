@@ -51,3 +51,9 @@ develop:
 		-u hugo \
 		jguyomard/hugo-builder hugo server -w --bind=0.0.0.0
 
+# Usage
+# 	make import-medium medium_url_path=[PATH/TO/MEDIUM] post_slug=[POST_TITLE_SLUG]
+import-medium:
+	docker run -v ${PWD}:/app mottaquikarim/medium2markdown:latest \
+		-m ${medium_url_path} \
+		-o ${POSTSPATH}/${post_slug}.md

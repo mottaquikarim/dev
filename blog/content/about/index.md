@@ -1,8 +1,10 @@
 ---
-title: "👋👋, wrold."
+title: "About Me"
+date: 2021-01-09T06:35:04Z
 type: "bulkhead"
-date: 2021-01-09T14:28:28Z
 ---
+
+👋👋, Wrold.
 
 I am an immigrant originally from [Bangladesh](https://en.wikipedia.org/wiki/Bangladesh); my family moved to the US in the mid 90s when I was 5 years old.
 As a Queens native, I have had the fortune to attend and graduate from two top tier academic institutions in NYC: [Stuyvesant High School](https://en.wikipedia.org/wiki/Stuyvesant_High_School) and [the Cooper Union](https://en.wikipedia.org/wiki/Cooper_Union).

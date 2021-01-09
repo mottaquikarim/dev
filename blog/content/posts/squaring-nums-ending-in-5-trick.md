@@ -5,6 +5,10 @@ katex: true
 draft: true
 ---
 
+<!-- https://katex.org/docs/supported.html#units -->
+<!-- https://bluestnight.com/docs/midnight/users/shortcodes/math/ -->
+<!-- https://eankeen.github.io/blog/posts/render-latex-with-katex-in-hugo-blog/ -->
+
 {{<toc>}}
 
 
