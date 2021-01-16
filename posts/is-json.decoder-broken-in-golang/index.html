@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Is json.Decoder broken in golang?!</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>Is json.Decoder broken in golang?!</h1><time>January 14, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#the-issue">The &ldquo;Issue&rdquo;</a></li>
+<li><a href="#how-json-decode-works">How <strong><code>json.Decode</code></strong> works</a></li>
+<li><a href="#understanding-json-scanner-state-transition-functions">Understanding <strong><code>json.scanner</code></strong> state transition functions</a></li>
+<li><a href="#understanding-json-decode-behavior-but-really-tho">Understanding <strong><code>json.Decode(...)</code></strong> behavior, but really tho</a>
+<ul>
+<li><a href="#1-init-decoder">1. Init Decoder.</a></li>
+<li><a href="#2-invoke-json-decoder-decode-calls-readvalue">2. Invoke <strong><code>json.Decoder.Decode(...)</code></strong> (calls <strong><code>readValue()</code></strong>)</a></li>
+<li><a href="#3-readvalue-begins-advancing-scanp-from-0">3. <strong><code>readValue()</code></strong> begins advancing scanp from 0.</a></li>
+<li><a href="#4-scanp-advances-us-to-the-next-and-final-char">4. <strong><code>scanp</code></strong> advances us to the next and final char: <code>}</code></a></li>
+</ul></li>
+<li><a href="#cleaning-up">Cleaning up</a></li>
+<li><a href="#explaining-our-intial-observation">Explaining our intial observation</a></li>
+<li><a href="#final-remarks">Final Remarks</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p><strong>TL;DR</strong>: No.</p>
+
+<p>Although unintuitive, <strong><code>json.Decoder</code></strong> isn&rsquo;t actually (<em>that</em>) evil! However, it can be unintuitive and <strong>seemingly</strong> wrong if used incorrectly. So - tread carefully.</p>
+
+<p>In this post, I will dive into how <strong><code>json.Decoder</code></strong> seems to work and try and make sense of some observed behaviors.</p>
+
+<p>&ndash;</p>
+
+<h2 id="the-issue">The &ldquo;Issue&rdquo;</h2>
+
+<p>Consider the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+	<span class="s">&#34;github.com/alecthomas/repr&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">bad_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}&#34;, &#34;foobaz&#34;],
+</span><span class="s">  &#34;world&#34;: [&#34;some other str&#34;],
+</span><span class="s">}`</span>
+	<span class="kd">var</span> <span class="nx">fields</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span>
+	<span class="nx">reader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">bad_json</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">reader</span><span class="p">).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">fields</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">repr</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>(<a href="https://play.golang.org/p/8al6NRe96jw">playground</a>)</p>
+
+<p>Clearly, we have a JSON string that is invalid here. So, what should we expect this code to do?</p>
+
+<p>And more importantly, empirically speaking, what does it <em>seem</em> to do?</p>
+
+<p>Let us begin by first looking at our JSON string more closely:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">	<span class="nx">bad_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}&#34;, &#34;foobaz&#34;],
+</span><span class="s">  &#34;world&#34;: [&#34;some other str&#34;],
+</span><span class="s">}`</span></code></pre></div>
+<p>This JSON string is clearly malformatted. In particular, the issue is here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="p">}</span><span class="s">&#34;, &#34;</span><span class="nx">foobaz</span><span class="err">&#34;</span><span class="p">],</span></code></pre></div>
+<p>We have a closing bracket <code>}</code> which shouldn&rsquo;t be followed by anything, but it is!</p>
+
+<p>As such, we would expect any attempt at parsing to fail. Indeed, <strong>json.Unmarshal</strong>-ing this dude expectedly fails:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">bad_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}&#34;, &#34;foobaz&#34;],
+</span><span class="s">  &#34;world&#34;: [&#34;some other str&#34;],
+</span><span class="s">}`</span>
+
+	<span class="kd">var</span> <span class="nx">fields</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span>
+	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">bad_json</span><span class="p">),</span> <span class="o">&amp;</span><span class="nx">fields</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>(<a href="https://play.golang.org/p/k-v9F9tjglZ">playground</a>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">invalid character <span class="s1">&#39;&#34;&#39;</span> after top-level value</code></pre></div>
+<p><code>&lt;whomp&gt;&lt;/whomp&gt;</code></p>
+
+<p>However, when running this &ldquo;bad&rdquo; json string against the the <code>json.NewDecoder</code> method, there is no error! Instead, everything after the offensive line is simply ignored!</p>
+
+<p>Here&rsquo;s an excerpt from the codeblock above:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// ... set up code here
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">fields</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span>
+	<span class="nx">reader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">bad_json</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">reader</span><span class="p">).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">fields</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="c1">// no error!
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nx">repr</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span> <span class="o">//</span> <span class="nx">instead</span><span class="p">,</span> <span class="nx">we</span> <span class="nx">get</span> <span class="nx">this</span></code></pre></div>
+<p>This code above outputs the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">{</span>
+  <span class="s">&#34;hello&#34;</span><span class="p">:</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span>
+    <span class="s">&#34;foobar&#34;</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">}</span></code></pre></div>
+<p>(<a href="https://play.golang.org/p/8al6NRe96jw">playground</a>)</p>
+
+<p><strong>WTF!</strong></p>
+
+<p>This is unexpected! We would <strong>expect</strong> the <code>err != nil</code> condition to be true, forcing the <code>fmt.Println(...)</code> line to run and for <code>fields</code> to be empty.</p>
+
+<p>But like&hellip; <strong>WHY?!</strong> tho?</p>
+
+<p>To find the answer, let&rsquo;s take a dive into the <code>json.Decoder</code> source.</p>
+
+<p>(Heads up, <a href="https://ahmet.im/blog/golang-json-decoder-pitfalls/#2-jsondecoder-silently-ignores-invalid-syntax">others</a> have also warned about the behavior we are seeing here. But we will see by the end of this post that the behavior highligted is in fact expected and not <em>really</em> wrong.)</p>
+
+<p>Alright. Let&rsquo;s do this.</p>
+
+<h2 id="how-json-decode-works">How <strong><code>json.Decode</code></strong> works</h2>
+
+<p>There are two major files in the <strong><code>json</code></strong> pkg we will want to consider for our exploration:</p>
+
+<ul>
+<li><strong><a href="https://golang.org/src/encoding/json/stream.go">src/encoding/json/stream.go</a></strong></li>
+<li><strong><a href="https://golang.org/src/encoding/json/scanner.go">src/encoding/json/scanner.go</a></strong></li>
+</ul>
+
+<p>Let&rsquo;s begin with this line of code from our playground example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">reader</span><span class="p">).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">fields</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="c1">// no error!
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p>and start tracing it from <strong>stream.go</strong>. <strong><code>json.NewDecoder()</code></strong> simply returns a <strong>Decoder</strong> struct, which looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// A Decoder reads and decodes JSON values from an input stream.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Decoder</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">r</span>       <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span>
+	<span class="nx">buf</span>     <span class="p">[]</span><span class="kt">byte</span>
+	<span class="nx">d</span>       <span class="nx">decodeState</span>
+	<span class="nx">scanp</span>   <span class="kt">int</span>   <span class="c1">// start of unread data in buf
+</span><span class="c1"></span>	<span class="nx">scanned</span> <span class="kt">int64</span> <span class="c1">// amount of data already scanned
+</span><span class="c1"></span>	<span class="nx">scan</span>    <span class="nx">scanner</span>
+	<span class="nx">err</span>     <span class="kt">error</span>
+
+	<span class="nx">tokenState</span> <span class="kt">int</span>
+	<span class="nx">tokenStack</span> <span class="p">[]</span><span class="kt">int</span>
+<span class="p">}</span></code></pre></div>
+<p>(<a href="https://golang.org/src/encoding/json/stream.go#L14">sauce</a>)</p>
+
+<p>For the purposes of this analysis, we really only care about the following fields:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">type</span> <span class="nx">Decoder</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">scanp</span>   <span class="kt">int</span>   <span class="c1">// start of unread data in buf
+</span><span class="c1"></span>	<span class="nx">scan</span>    <span class="nx">scanner</span>
+	<span class="nx">err</span>     <span class="kt">error</span>
+<span class="p">}</span></code></pre></div>
+<ul>
+<li><strong>scanp</strong>: The Decoder will track the current index of str in buffer</li>
+<li><strong>scar</strong>: An instance of the internal <code>json.scanner</code> struct - this manages the logic of JSON parsing (mainly)</li>
+<li><strong>err</strong>: We expect <code>err</code> to be NOT <code>nil</code> when we run into malformed JSON, clearly as it stands from our observations, <code>err</code> <strong>IS</strong> <code>nil</code> which is the problem.</li>
+</ul>
+
+<p>Our goal then, is to <strong>figure out why</strong> <code>Decoder.err</code> is <code>nil</code> when we run into the first character in our JSON string that is invalid.</p>
+
+<p>Let&rsquo;s now consider <strong><code>json.Decder.Decode()</code></strong>, our entrypoint invoked to actually decode our JSON string into a go datastruct:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="p">(</span><span class="nx">dec</span> <span class="o">*</span><span class="nx">Decoder</span><span class="p">)</span> <span class="nf">Decode</span><span class="p">(</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">tokenPrepareForDecode</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">!</span><span class="nx">dec</span><span class="p">.</span><span class="nf">tokenValueAllowed</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="o">&amp;</span><span class="nx">SyntaxError</span><span class="p">{</span><span class="nx">msg</span><span class="p">:</span> <span class="s">&#34;not at beginning of value&#34;</span><span class="p">,</span> <span class="nx">Offset</span><span class="p">:</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">InputOffset</span><span class="p">()}</span>
+	<span class="p">}</span>
+
+	<span class="c1">// Read whole value into buffer.
+</span><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">readValue</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">d</span><span class="p">.</span><span class="nf">init</span><span class="p">(</span><span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">:</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span><span class="o">+</span><span class="nx">n</span><span class="p">])</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="o">+=</span> <span class="nx">n</span>
+
+	<span class="c1">// Don&#39;t save err from unmarshal into dec.err:
+</span><span class="c1"></span>	<span class="c1">// the connection is still usable since we read a complete JSON
+</span><span class="c1"></span>	<span class="c1">// object from it before the error happened.
+</span><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">d</span><span class="p">.</span><span class="nf">unmarshal</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+
+	<span class="c1">// fixup token streaming state
+</span><span class="c1"></span>	<span class="nx">dec</span><span class="p">.</span><span class="nf">tokenValueEnd</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<p>Let&rsquo;s break this up conditional by conditional:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">if</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<p>Of course, when we start, <code>dec.err</code> is <code>nil</code> so nothing to do here.</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">tokenPrepareForDecode</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<p>The purpose of this method is to advance our <code>scanp</code> attribute if we witness a comma <strong>,</strong> or colon <strong>:</strong> before we continue. (See for yourself <a href="https://golang.org/src/encoding/json/stream.go#L306">here</a>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">if</span> <span class="p">!</span><span class="nx">dec</span><span class="p">.</span><span class="nf">tokenValueAllowed</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">SyntaxError</span><span class="p">{</span><span class="nx">msg</span><span class="p">:</span> <span class="s">&#34;not at beginning of value&#34;</span><span class="p">,</span> <span class="nx">Offset</span><span class="p">:</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">InputOffset</span><span class="p">()}</span>
+<span class="p">}</span></code></pre></div>
+<p>This is another helper method that ensures we are not parsing something random, like <code>35&quot;: &quot;abc&quot;</code>. (If you want, feel free to validate these, here&rsquo;s a <a href="https://play.golang.org/p/nasJAYUDsow">playground</a> link &ndash; the output may look weird but the error struct is defined in <a href="https://golang.org/src/encoding/json/decode.go#L124">src/encoding/json/decode.go#L124</a>)</p>
+
+<p>Ok <strong>NOW</strong> here is the fun part:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// Read whole value into buffer.
+</span><span class="c1"></span><span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">readValue</span><span class="p">()</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<p><code>readValue</code> pulls in our JSON string into buffer and presumably parses it as it reads. We <strong>expect</strong>, therefore, that <code>readValue()</code> ought to return an <code>err</code>. However, it does not.</p>
+
+<p>This method is a bit long, so we will only look at a few specific lines. Find the entire source <a href="https://golang.org/src/encoding/json/stream.go#L89">here</a>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="p">(</span><span class="nx">dec</span> <span class="o">*</span><span class="nx">Decoder</span><span class="p">)</span> <span class="nf">readValue</span><span class="p">()</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">reset</span><span class="p">()</span>
+
+	<span class="nx">scanp</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span>
+	<span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+<span class="nx">Input</span><span class="p">:</span>
+	<span class="c1">// help the compiler see that scanp is never negative, so it can remove
+</span><span class="c1"></span>	<span class="c1">// some bounds checks below.
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">scanp</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+
+		<span class="c1">// Look in the buffer for a new value.
+</span><span class="c1"></span>		<span class="k">for</span> <span class="p">;</span> <span class="nx">scanp</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">);</span> <span class="nx">scanp</span><span class="o">++</span> <span class="p">{</span>
+			<span class="nx">c</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="nx">scanp</span><span class="p">]</span>
+			<span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">bytes</span><span class="o">++</span>
+			<span class="k">switch</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">step</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="nx">scanEnd</span><span class="p">:</span>
+				<span class="c1">// scanEnd is delayed one byte so we decrement
+</span><span class="c1"></span>				<span class="c1">// the scanner bytes count by 1 to ensure that
+</span><span class="c1"></span>				<span class="c1">// this value is correct in the next call of Decode.
+</span><span class="c1"></span>				<span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">bytes</span><span class="o">--</span>
+				<span class="k">break</span> <span class="nx">Input</span>
+			<span class="k">case</span> <span class="nx">scanEndObject</span><span class="p">,</span> <span class="nx">scanEndArray</span><span class="p">:</span>
+				<span class="c1">// scanEnd is delayed one byte.
+</span><span class="c1"></span>				<span class="c1">// We might block trying to get that byte from src,
+</span><span class="c1"></span>				<span class="c1">// so instead invent a space byte.
+</span><span class="c1"></span>				<span class="k">if</span> <span class="nf">stateEndValue</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">,</span> <span class="sc">&#39; &#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nx">scanEnd</span> <span class="p">{</span>
+					<span class="nx">scanp</span><span class="o">++</span>
+					<span class="k">break</span> <span class="nx">Input</span>
+				<span class="p">}</span>
+			<span class="k">case</span> <span class="nx">scanError</span><span class="p">:</span>
+				<span class="nx">dec</span><span class="p">.</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">err</span>
+				<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">err</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+
+		<span class="c1">// ... more stuff here ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p>Upon inspecting this bit of code, a few things are clear:</p>
+
+<ul>
+<li><strong>readValue</strong> is where the meat of our functionality lives - <code>scanp</code> advances here as we compare each character in our buffer against the <code>dec.scan.step</code> function.</li>
+<li>The output of <code>dec.scan.step</code> appears to be <code>iota</code>s that we use to check for various states.</li>
+<li>it is clear that <code>scanError</code> is the only time we can expect to get any true error.</li>
+</ul>
+
+<p>However, since we are <em>not</em> seeing our expected error output, it <strong>must</strong> mean the code is getting lost in <code>case scanEnd</code> or <code>case scanEndObject, scanEndArray</code> somewhere.</p>
+
+<p>To proceed further, we will not have to jump one final level into the <strong><a href="https://golang.org/src/encoding/json/scanner.go">src/encoding/json/scanner.go</a></strong> file.</p>
+
+<h2 id="understanding-json-scanner-state-transition-functions">Understanding <strong><code>json.scanner</code></strong> state transition functions</h2>
+
+<p>The first bit of code to consider is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">const</span> <span class="p">(</span>
+	<span class="c1">// Continue.
+</span><span class="c1"></span>	<span class="nx">scanContinue</span>     <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// uninteresting byte
+</span><span class="c1"></span>	<span class="nx">scanBeginLiteral</span>        <span class="c1">// end implied by next result != scanContinue
+</span><span class="c1"></span>	<span class="nx">scanBeginObject</span>         <span class="c1">// begin object
+</span><span class="c1"></span>	<span class="nx">scanObjectKey</span>           <span class="c1">// just finished object key (string)
+</span><span class="c1"></span>	<span class="nx">scanObjectValue</span>         <span class="c1">// just finished non-last object value
+</span><span class="c1"></span>	<span class="nx">scanEndObject</span>           <span class="c1">// end object (implies scanObjectValue if possible)
+</span><span class="c1"></span>	<span class="nx">scanBeginArray</span>          <span class="c1">// begin array
+</span><span class="c1"></span>	<span class="nx">scanArrayValue</span>          <span class="c1">// just finished array value
+</span><span class="c1"></span>	<span class="nx">scanEndArray</span>            <span class="c1">// end array (implies scanArrayValue if possible)
+</span><span class="c1"></span>	<span class="nx">scanSkipSpace</span>           <span class="c1">// space byte; can skip; known to be last &#34;continue&#34; result
+</span><span class="c1"></span>
+	<span class="c1">// Stop.
+</span><span class="c1"></span>	<span class="nx">scanEnd</span>   <span class="c1">// top-level value ended *before* this byte; known to be first &#34;stop&#34; result
+</span><span class="c1"></span>	<span class="nx">scanError</span> <span class="c1">// hit an error, scanner.err.
+</span><span class="c1"></span><span class="p">)</span></code></pre></div>
+<p>(<a href="https://golang.org/src/encoding/json/scanner.go#L114">sauce</a>)</p>
+
+<p>These values are returned by the <code>scanner</code>&rsquo;s state transition functions which help us keep track of <em>where</em> we are as we consume our JSON string char by char.</p>
+
+<p>IN particular, note that <code>scanEnd, scanEndObject, scanEndArray, scanError</code> are all present here. Three of these four vars are used in <code>func stateEndValue</code> (<a href="https://golang.org/src/encoding/json/scanner.go#L277">sauce</a>). As it turns out, understanding how <code>stateEndValue</code> works will actually bring our efforts to fruition and explain why this functionality works in the way that it does.</p>
+
+<p>But first - what the heck are these <code>state*</code> funcs anyways?</p>
+
+<p>Let&rsquo;s start by looking at the <code>scanner</code> type definition, the <code>reset()</code> method and the <code>stateBeginValue</code> function (only relevant parts displayed):</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">type</span> <span class="nx">scanner</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="c1">// The step is a func to be called to execute the next transition.
+</span><span class="c1"></span>	<span class="c1">// Also tried using an integer constant and a single func
+</span><span class="c1"></span>	<span class="c1">// with a switch, but using the func directly was 10% faster
+</span><span class="c1"></span>	<span class="c1">// on a 64-bit Mac Mini, and it&#39;s nicer to read.
+</span><span class="c1"></span>	<span class="nx">step</span> <span class="kd">func</span><span class="p">(</span><span class="o">*</span><span class="nx">scanner</span><span class="p">,</span> <span class="kt">byte</span><span class="p">)</span> <span class="kt">int</span>
+
+	<span class="c1">// ... more attrs here
+</span><span class="c1"></span>
+	<span class="c1">// Stack of what we&#39;re in the middle of - array values, object keys, object values.
+</span><span class="c1"></span>	<span class="nx">parseState</span> <span class="p">[]</span><span class="kt">int</span>
+
+	<span class="c1">// ... more attrs here
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// ... more definitions/methods here
+</span><span class="c1"></span>
+<span class="c1">// reset prepares the scanner for use.
+</span><span class="c1">// It must be called before calling s.step.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">scanner</span><span class="p">)</span> <span class="nf">reset</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateBeginValue</span>
+	<span class="nx">s</span><span class="p">.</span><span class="nx">parseState</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">parseState</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1">// ... more lines of code here
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// stateBeginValue is the state at the beginning of the input.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">stateBeginValue</span><span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">scanner</span><span class="p">,</span> <span class="nx">c</span> <span class="kt">byte</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nf">isSpace</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">scanSkipSpace</span>
+	<span class="p">}</span>
+	<span class="k">switch</span> <span class="nx">c</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="sc">&#39;{&#39;</span><span class="p">:</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateBeginStringOrEmpty</span>
+		<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">pushParseState</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">parseObjectKey</span><span class="p">,</span> <span class="nx">scanBeginObject</span><span class="p">)</span>
+	<span class="k">case</span> <span class="sc">&#39;[&#39;</span><span class="p">:</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateBeginValueOrEmpty</span>
+		<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">pushParseState</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">parseArrayValue</span><span class="p">,</span> <span class="nx">scanBeginArray</span><span class="p">)</span>
+	<span class="k">case</span> <span class="sc">&#39;&#34;&#39;</span><span class="p">:</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateInString</span>
+		<span class="k">return</span> <span class="nx">scanBeginLiteral</span>
+	<span class="c1">// ... more cases here
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="c1">// ... more code here
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p>Sauce(s)</p>
+
+<ul>
+<li><strong><a href="https://golang.org/src/encoding/json/scanner.go#L64">scanner</a></strong></li>
+<li><strong><a href="https://golang.org/src/encoding/json/scanner.go#L148">reset()</a></strong></li>
+<li><strong><a href="https://golang.org/src/encoding/json/scanner.go#L202">stateBeginValue</a></strong></li>
+</ul>
+
+<p>Looking at this code, it starts to become clearer that <code>scanner.state</code> stores a function that stores the logic to perform the next &ldquo;transition&rdquo; (ie: going from &ldquo;{&rdquo; to the &ldquo;\&ldquo;&rdquo; char or from &ldquo;5&rdquo; to &ldquo;]&rdquo; in a list of nums, etc).</p>
+
+<p><code>reset()</code> gets us started with our initial state and each state function uses consts such as <code>scanEndObject</code> or <code>scanEndArray</code> to help represent and facilitate the transition.</p>
+
+<h2 id="understanding-json-decode-behavior-but-really-tho">Understanding <strong><code>json.Decode(...)</code></strong> behavior, but really tho</h2>
+
+<p>Let&rsquo;s now apply our observations to how decoding works (and then we will walk through our malformed JSON example).</p>
+
+<p>Suppose we had the following JSON string:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{}</span></code></pre></div>
+<p>and we wanted to decode this with <code>json.Decoder.Decode(...)</code>. (NOTE: the examples in the subsections below will primarily be pseudocode to make grokking this easier).</p>
+
+<h3 id="1-init-decoder">1. Init Decoder.</h3>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">Decoder</span><span class="p">{</span><span class="nx">r</span><span class="p">:</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="s">`{}`</span><span class="p">)}</span>
+<span class="cm">/*
+</span><span class="cm">dec.scanp == 0
+</span><span class="cm">dec.scan == &amp;scanner{}
+</span><span class="cm">*/</span></code></pre></div>
+<p>This will set our inital <code>scanp</code> int to 0 and initialize a new <code>json.scanner</code> for us</p>
+
+<p>Here are the main variables we will keep track of:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// which character in the JSON string are we currently considering?
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span>
+
+<span class="c1">// what is our transition function?
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">step</span>
+
+<span class="c1">// are we in an open &#34;{&#34;? &#34;[&#34;? are they balanced?
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">parseState</span></code></pre></div>
+<h3 id="2-invoke-json-decoder-decode-calls-readvalue">2. Invoke <strong><code>json.Decoder.Decode(...)</code></strong> (calls <strong><code>readValue()</code></strong>)</h3>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="kd">interface</span><span class="p">{}{})</span></code></pre></div>
+<p>This called <code>dec.readValue()</code> which first resets our scanner:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nf">readValue</span><span class="p">()</span></code></pre></div>
+<p>Our state currently:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">=</span> <span class="mi">0</span>
+
+<span class="c1">// this is our starting transition function
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">step</span> <span class="o">==</span> <span class="nx">stateBeginValue</span> 
+
+<span class="c1">// empty
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">parseState</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span></code></pre></div>
+<h3 id="3-readvalue-begins-advancing-scanp-from-0">3. <strong><code>readValue()</code></strong> begins advancing scanp from 0.</h3>
+
+<p>These lines within <code>readValue</code> are invoked:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// Look in the buffer for a new value.
+</span><span class="c1"></span><span class="k">for</span> <span class="p">;</span> <span class="nx">scanp</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">);</span> <span class="nx">scanp</span><span class="o">++</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="nx">scanp</span><span class="p">]</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">bytes</span><span class="o">++</span>
+	<span class="k">switch</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">step</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+	<span class="o">//</span> <span class="o">...</span> <span class="nx">more</span> <span class="nx">stuff</span></code></pre></div>
+<p>Because <code>dec.scanp</code> is <code>0</code>, we know that <code>c</code> from above is:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">switch</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">step</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">,</span> <span class="s">&#34;{&#34;</span><span class="p">)</span> </code></pre></div>
+<p>And in scanner, <code>stateBeginValue</code> processes this as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// ... c is &#34;{&#34; currently
+</span><span class="c1"></span><span class="k">switch</span> <span class="nx">c</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="sc">&#39;{&#39;</span><span class="p">:</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateBeginStringOrEmpty</span>
+		<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">pushParseState</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">parseObjectKey</span><span class="p">,</span> <span class="nx">scanBeginObject</span><span class="p">)</span>
+<span class="o">//</span> <span class="o">...</span> </code></pre></div>
+<p>Our <code>dec.scan.parseState</code> contains a reference to <code>{</code> indicating we are within brackets.</p>
+
+<p>Because <code>readValue</code> handles custom logic on <code>scanEnd</code>, <code>scanEndObject, scanEndArray</code> or <code>scanError</code> and since our <code>stateBeginValue</code> raised no errors, our step advances to: <code>stateBeginStringOrEmpty</code></p>
+
+<p>Our state currently:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">=</span> <span class="mi">1</span>
+
+<span class="c1">// this is our starting transition function
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">step</span> <span class="o">==</span> <span class="nx">stateBeginStringOrEmpty</span> 
+
+<span class="c1">// empty
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">parseState</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="nx">scanBeginObject</span><span class="p">,}</span></code></pre></div>
+<p>(<code>scanBeginObject</code> is a golang <code>iota</code> (or, enum if you will) representing our opening curly bracket)</p>
+
+<h3 id="4-scanp-advances-us-to-the-next-and-final-char">4. <strong><code>scanp</code></strong> advances us to the next and final char: <code>}</code></h3>
+
+<p>here&rsquo;s what the <code>stateBeingStringOrEmpty</code> func looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// stateBeginStringOrEmpty is the state after reading `{`.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">stateBeginStringOrEmpty</span><span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">scanner</span><span class="p">,</span> <span class="nx">c</span> <span class="kt">byte</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nf">isSpace</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">scanSkipSpace</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">c</span> <span class="o">==</span> <span class="sc">&#39;}&#39;</span> <span class="p">{</span>
+		<span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">parseState</span><span class="p">)</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">parseState</span><span class="p">[</span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">parseObjectValue</span>
+		<span class="k">return</span> <span class="nf">stateEndValue</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nf">stateBeginString</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>In our case, <code>c</code> is <code>}</code> so we will &ldquo;pop&rdquo; our parseState stack and return <code>stateEndValue</code> which will give us one of the <code>scanEnd</code>, <code>scanEndObject, scanEndArray</code> terms we want in <code>readValues</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// stateEndValue is the state after completing a value,
+</span><span class="c1">// such as after reading `{}` or `true` or `[&#34;x&#34;`.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">stateEndValue</span><span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">scanner</span><span class="p">,</span> <span class="nx">c</span> <span class="kt">byte</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">parseState</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="c1">// Completed top-level before the current byte.
+</span><span class="c1"></span>		<span class="nx">s</span><span class="p">.</span><span class="nx">step</span> <span class="p">=</span> <span class="nx">stateEndTop</span>
+		<span class="nx">s</span><span class="p">.</span><span class="nx">endTop</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="k">return</span> <span class="nf">stateEndTop</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="c1">// ... more stuff here ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p><code>stateEndValue</code> then advances us to <code>stateEndTop</code> (since our <code>parseState</code> was just emptied by the previous <code>stateBeginStringOrEmpty</code>). Now this <em>will</em> return - you guessed it - <code>scanEnd</code>!</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// stateEndTop is the state after finishing the top-level value,
+</span><span class="c1">// such as after reading `{}` or `[1,2,3]`.
+</span><span class="c1">// Only space characters should be seen now.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">stateEndTop</span><span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">scanner</span><span class="p">,</span> <span class="nx">c</span> <span class="kt">byte</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nf">isSpace</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">// Complain about non-space byte on next call.
+</span><span class="c1"></span>		<span class="nx">s</span><span class="p">.</span><span class="nb">error</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="s">&#34;after top-level value&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">scanEnd</span>
+<span class="p">}</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">=</span> <span class="mi">1</span>
+
+<span class="c1">// this is our starting transition function
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">step</span> <span class="o">==</span> <span class="nx">stateEndTop</span> 
+
+<span class="c1">// empty
+</span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nx">parseState</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span></code></pre></div>
+<h2 id="cleaning-up">Cleaning up</h2>
+
+<p>At this point, we end up back in <code>readValue</code>, where:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="p">(</span><span class="nx">dec</span> <span class="o">*</span><span class="nx">Decoder</span><span class="p">)</span> <span class="nf">Decode</span><span class="p">(</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="c1">// ... code here, ignoring
+</span><span class="c1"></span>
+	<span class="c1">// Read whole value into buffer.
+</span><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">readValue</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">d</span><span class="p">.</span><span class="nf">init</span><span class="p">(</span><span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">:</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span><span class="o">+</span><span class="nx">n</span><span class="p">])</span>
+	<span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="o">+=</span> <span class="nx">n</span>
+
+	<span class="c1">// Don&#39;t save err from unmarshal into dec.err:
+</span><span class="c1"></span>	<span class="c1">// the connection is still usable since we read a complete JSON
+</span><span class="c1"></span>	<span class="c1">// object from it before the error happened.
+</span><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">d</span><span class="p">.</span><span class="nf">unmarshal</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+
+	<span class="c1">// fixup token streaming state
+</span><span class="c1"></span>	<span class="nx">dec</span><span class="p">.</span><span class="nf">tokenValueEnd</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<p>As we can see here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nx">d</span><span class="p">.</span><span class="nf">init</span><span class="p">(</span><span class="nx">dec</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span> <span class="p">:</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scanp</span><span class="o">+</span><span class="nx">n</span><span class="p">])</span></code></pre></div>
+<p>we initialize <code>dec.d</code> with all the characters we read in <code>readValue</code> which is then used to unmarshal our data. (<code>readValue</code> returns the number of bytes we read till <code>scanEnd</code>, we never actually update the <code>scanp</code> attribute on the struct so we use those two ints to figure out how many characters to initialize with. Then we update the stuct &lsquo;scanp&rsquo; with the number of chars we read so that we don&rsquo;t reread the same data twice)</p>
+
+<h2 id="explaining-our-intial-observation">Explaining our intial observation</h2>
+
+<p>So - having gone through that exercise, let&rsquo;s now finally go back and explain our initial issue:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">	<span class="nx">bad_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}&#34;, &#34;foobaz&#34;],
+</span><span class="s">  &#34;world&#34;: [&#34;some other str&#34;],
+</span><span class="s">}`</span></code></pre></div>
+<p>What&rsquo;s happening here is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="p">}</span><span class="s">&#34;, &#34;</span><span class="nx">foobaz</span><span class="err">&#34;</span><span class="p">],</span></code></pre></div>
+<p>When that final <code>}</code> is read, <code>Decoder</code> says: &ldquo;ok! I&rsquo;m done. I have a completed scan.&rdquo; For this reason, it <strong>never actually even tries to read the <em>rest</em> of the line</strong>.</p>
+
+<p>We <em>could</em> get it to return an error btw, if we call <code>Decode</code> again - since now it will start at <code>&quot;</code> (the first char after <code>}</code>) and it will definitely see and raise an error then.</p>
+
+<p>Furthermore, if we neglected to have the closing <code>}</code> as our first character, <code>Decoder.Decode</code> would catch the problem earlier.</p>
+
+<p>Basically, <code>Decode</code> will always respect the closing <code>}</code> because it is reading a <em>stream</em> of data - meaning it <strong>expects</strong> JSON of the form:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="cm">/*
+</span><span class="cm">{...}
+</span><span class="cm">{...}
+</span><span class="cm">{...}
+</span><span class="cm">*/</span></code></pre></div>
+<p>or even:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="cm">/*
+</span><span class="cm">{...}{...}{...}
+</span><span class="cm">*/</span></code></pre></div>
+<p>And for what it&rsquo;s worth, the <em>proper</em> way to use <code>json.Decode</code> really ought to be used like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+	<span class="s">&#34;io&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">readJsonStream</span><span class="p">(</span><span class="nx">jsonStr</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">fields</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">reader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonStr</span><span class="p">)</span>
+	<span class="nx">dec</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">reader</span><span class="p">)</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">fields</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span>
+			<span class="k">return</span> <span class="nx">err</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ok_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}{&#34;world&#34;: [&#34;some other str&#34;]}`</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;++++++++++++++++++ ok json +++++++++++++++++++&#34;</span><span class="p">)</span>
+	<span class="nx">_</span> <span class="p">=</span> <span class="nf">readJsonStream</span><span class="p">(</span><span class="nx">ok_json</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">{})</span>
+	
+	<span class="nx">bad_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{
+</span><span class="s">  &#34;hello&#34;: [&#34;foobar&#34;]
+</span><span class="s">}&#34;, &#34;foobaz&#34;],
+</span><span class="s">  &#34;world&#34;: [&#34;some other str&#34;],
+</span><span class="s">}`</span>	
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;++++++++++++++++++ bad json +++++++++++++++++++&#34;</span><span class="p">)</span>
+	<span class="nx">_</span> <span class="p">=</span> <span class="nf">readJsonStream</span><span class="p">(</span><span class="nx">bad_json</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">{})</span>
+
+	<span class="nx">seemingly_bad_but_not_json</span> <span class="o">:=</span> <span class="s">`
+</span><span class="s">{}{&#34;world&#34;: [&#34;some other str&#34;]}{}{}{}{&#34;hello&#34;: [&#34;foobar&#34;]}`</span>	
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;++++++++++++++++++ not actually bad json +++++++++++++++++++&#34;</span><span class="p">)</span>
+	<span class="nx">_</span> <span class="p">=</span> <span class="nf">readJsonStream</span><span class="p">(</span><span class="nx">seemingly_bad_but_not_json</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">{})</span>
+<span class="p">}</span></code></pre></div>
+<p>(<a href="https://play.golang.org/p/onYb03udRjk">playground</a>)</p>
+
+<p>output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="cm">/*
+</span><span class="cm">++++++++++++++++++ ok json +++++++++++++++++++
+</span><span class="cm">map[hello:[foobar] world:[some other str]]
+</span><span class="cm">++++++++++++++++++ bad json +++++++++++++++++++
+</span><span class="cm">json: cannot unmarshal string into Go value of type map[string][]string
+</span><span class="cm">map[hello:[foobar]]
+</span><span class="cm">++++++++++++++++++ not actually bad json +++++++++++++++++++
+</span><span class="cm">map[hello:[foobar] world:[some other str]]
+</span><span class="cm">*/</span></code></pre></div>
+<h2 id="final-remarks">Final Remarks</h2>
+
+<p>In short - <code>json.Decoder</code> is <em>not</em> meant to be a standalone JSON unmarshal-er. Use <code>json.Unmarshal</code> for that. However, for streming JSON tasks it has a few nice features that are quite useful and assuming your input is indeed streaming json it does not <em>actually</em> silently ignore invalid syntax.</p>
+
+<p>In other words - <code>json.Decoder</code>&rsquo;s behavior is not a bug, it&rsquo;s a feature!</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fis-json.decoder-broken-in-golang%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fis-json.decoder-broken-in-golang%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fis-json.decoder-broken-in-golang%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2020 Taq Karim
+</footer>
+</body>
+</html>
