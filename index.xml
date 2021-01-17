@@ -19,11 +19,10 @@
       
       <guid>https://mottaquikarim.github.io/dev/posts/is-json.decoder-broken-in-golang/</guid>
       <description>Table of Contents  TL;DR: No.
-Although unintuitive, json.Decoder isn&amp;rsquo;t actually (that) evil! However, it can be unintuitive and seemingly wrong if used incorrectly. So - tread carefully.
-In this post, I will dive into how json.Decoder seems to work and try and make sense of some observed behaviors.
+Although unintuitive, json.Decoder isn&amp;rsquo;t actually broken! However, some of its behavior can appear seemingly wrong when used incorrectly. (Tread carefully.)
+In this post, I will dive into the src code of json.Decoder and explore how it works; then I will make sense of these observed &amp;ldquo;incorrect&amp;rdquo; behaviors.
 &amp;ndash;
-The &amp;ldquo;Issue&amp;rdquo; Consider the following:
-package main import ( &amp;#34;encoding/json&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;strings&amp;#34; &amp;#34;github.com/alecthomas/repr&amp;#34; ) func main() { bad_json := ` { &amp;#34;hello&amp;#34;: [&amp;#34;foobar&amp;#34;] }&amp;#34;, &amp;#34;foobaz&amp;#34;], &amp;#34;world&amp;#34;: [&amp;#34;some other str&amp;#34;], }` var fields map[string][]string reader := strings.</description>
+The &amp;ldquo;Issue&amp;rdquo; Let us start with a simple demonstration of the problem. Consider the following:</description>
     </item>
     
     
