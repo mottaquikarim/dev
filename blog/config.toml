@@ -8,7 +8,7 @@ pygmentsUseClasses = true
 
 [params]
   description = "Thoughts on code and building things."
-  copyright = "Copyright © 2020 Taq Karim"
+  copyright = "Copyright © 2021 Taq Karim"
   dark = "pff"
   highlight = true
 
