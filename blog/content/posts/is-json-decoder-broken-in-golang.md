@@ -162,7 +162,7 @@ This is an example of a "state transition function". It marks the beginning of p
 
 Notice here if our input char (`c byte`) is `"`, we update our `step` attribute to the _next_ state transition function, in this case `stateInString`. Furthermore, we return a new transition value: `scanBeginLiteral` (indicating that our scanner is currently in the process of interpreting a token literal such as a number or a string in our JSON string).
 
-The transition values are primarily used by code that actually calls the `scanner.step` transition functions, such as `Decoder` or `decodeState`, to understand the current state of parsin by the scanner.
+The transition values are primarily used by code that actually calls the `scanner.step` transition functions, such as `Decoder` or `decodeState`, to understand the current state of parsing by the scanner.
 
 
 Here's the [full list](https://golang.org/src/encoding/json/scanner.go#L114) of transitions values defined and returned by `scanner` state transition functions:
@@ -264,7 +264,7 @@ type Decoder struct {
 
 **scanp**
 
-This is an index that we advance from position 0 to the len of our buffer. As we advance this index, we read a single character from the buffer and analyze it via the `scanner` state machine.
+This is an index that we advance from position 0 to the length of our buffer. As we advance this index, we read a single character from the buffer and analyze it via the `scanner` state machine.
 
 **scan**
 
@@ -273,7 +273,7 @@ An instance of the internal `json.scanner` struct. At each value of `scanp`, we 
 
 **err**
 
-We expect `err` to be NOT `nil` when we run into malformed JSON, clearly as it stands from our observations, `err` **IS** `nil` which is the problem.
+We expect `err` to be NOT `nil` when we run into malformed JSON. Clearly as it stands from our observations, `err` **IS** `nil` which is the problem.
 
 Ok so - now we have an instance of `Decoder` available to us that knows to read data from our `bad_json` into an internal buffer. Now, let's look at how the `Decoder.Decode(...)` method of our `Decoder` struct commences parsing our JSON data.
 
@@ -298,7 +298,7 @@ func (dec *Decoder) Decode(v interface{}) error {
 
 ([sauce](https://golang.org/src/encoding/json/stream.go#L49))
 
-We are only focusing on the method call relevant to our current analysis - there are conditionals checked _before_ `readValue` is executed which simply sanity checks for various poorly formatted string states. These conditional checks work as expected so for the purposes of this analysis they are "uninteresting".
+We are only focusing on the method call relevant to our current analysis - there are conditionals checked _before_ `readValue` is executed, which are simply sanity checks for various poorly formatted string states. These conditional checks work as expected so for the purposes of this analysis they are "uninteresting".
 
 In short, `dec.readValue()` uses the `dec.scan` (which, recall, is an instance of the `json.scanner` struct) attribute to process chars in the buffer one by one until an error or a `scanEnd` transition value state is reached. (This is the focus of the next section)
 
@@ -382,7 +382,7 @@ dec.scanp => 0
 // initial scanner
 dec.scan => scanner{}
 ```
-(There are others, but these the two we care about for now).
+(There are others, but these are the two we care about for now).
 
 We then call `Decode` to start processing our `bad_json` string. The first line in `readValue` is:
 
@@ -423,7 +423,7 @@ for ; scanp < len(dec.buf); scanp++ {
 
 `scanp` here pertains to our `dec.scanp` attribute which is initially set to `0` a few lines above. So, our first char is `{` from `bad_json`.
 
-We call `dec.scan.step` and pass in a reference to `scanner` and `c = "{"` as args. If the three expected transition states are _not_ returned (`scanEnd`, `scanEndObject`, `scanEndArray`) the loop continues and we advance to the next character (in this `\n`).
+We call `dec.scan.step` and pass in a reference to `scanner` and `c = "{"` as args. If the three expected transition states are _not_ returned (`scanEnd`, `scanEndObject`, `scanEndArray`) the loop continues and we advance to the next character (in this case `\n`).
 
 
 ### 5. `bad_json` iteration table
@@ -461,7 +461,7 @@ The `scanner` also initializes a stack to keep track of opening and closing brac
 
 ---
 
-To interpre the table below, consider the follow approach:
+To interpret the table below, consider the follow approach:
 
 **1**: from [**stream.go#L103**](https://golang.org/src/encoding/json/stream.go#L103), determine the state transition function (the transition function corresponds to **now** under the **step** col).
 
@@ -497,11 +497,11 @@ func stateBeginValue(s *scanner, c byte) int {
 
 ([sauce](https://golang.org/src/encoding/json/scanner.go#L213))
 
-**3**: If, in `scanner` src, `pushParseState` or `popParseState` is called within the transition func, expect col **step.parseState** to reflect the value added or removed
+**3**: If, in `scanner` src, `pushParseState` or `popParseState` is called within the transition func, expect col **step.parseState** to reflect the value added or removed.
 
 In the case of **Row 1**, `pushParseState` is called with `parseObjectKey` so we end up with one item in that array.
 
-**4**: Once the **step** function has completed, it should have a return value (the transition value) and a new **step** function (could be same as **now**). Except col **step**'s **ret** to correspond with the returned transition value and **next** to correspond to the _new_ value of `scanner.step`
+**4**: Once the **step** function has completed, it should have a return value (the transition value) and a new **step** function (could be same as **now**). Expect col **step**'s **ret** to correspond with the returned transition value and **next** to correspond to the _new_ value of `scanner.step`
 
 In the case of **Row 1**, our returned transition value is `scanBeginObject` and our new step function is `stateBeginStringOrEmpty`.
 
@@ -571,7 +571,7 @@ Here's the row:
 
 
 
-Becuase `c = "["`, we can see that `s.popParseState()` is called (which removes `parseArrayValue` from our `parseState` stack)
+Because `c = "["`, we can see that `s.popParseState()` is called (which removes `parseArrayValue` from our `parseState` stack)
 
 Importantly, we are returned `scanEndArray`, which - from `readValue()` - we see requires special handling:
 
@@ -625,7 +625,7 @@ If our `parseState` stack were empty, it _would_ return `scanEnd` which could co
 
 **Row 14 + 15**
 
-Thee final two iterations are very similar to the previous two iterations. The key difference is for the _last_ iteration (row 15), our `parseState` stack ends up being empty. As such, we actually enter into the `n == 0` condition:
+The final two iterations are very similar to the previous two iterations. The key difference is for the _last_ iteration (row 15), our `parseState` stack ends up being empty. As such, we actually enter into the `n == 0` condition:
 
 ```golang
 // excerpt from stateEndValue
@@ -658,7 +658,7 @@ the `stateEndValue(&dec.scan, ' ') == scanEnd` condition is satisfied and we **b
 
 > In other words, the `Decode()` method does NOT error because we stop processing our JSON string before the scanner has a change to encounter the malformed portion of our `bad_json` string!
 
-Expounding on this a bit: when that final `}` is read, `Decoder` says: "ok! I'm done. I have a completed scan." For this reason, it **never actually even tries to read the _rest_ of the line** even though there is plenty more characters left to read.
+Expounding on this a bit: when that final `}` is read, `Decoder` says: "ok! I'm done. I have a completed scan." For this reason, it **never actually even tries to read the _rest_ of the line** even though there are plenty more characters left to read.
 
 
 Additionally, note that we _could_ get it to return an error btw, if we call `Decode` again - since now it will start at `"` (the first char after `}`) and it will definitely see and raise an error then.
@@ -681,7 +681,7 @@ or even:
 
 Therefore, using `Decode` to read a single JSON document is not ideal. However it is worth noting that if we really wanted to, we still could use `Decode` to parse a single doc - we simply must alter how we leverage `Decode` to fully read out document body. 
 
-IMO, the _proper_ way to use `Decode` really ought to be used like so:
+Personally, the _proper_ way to use `Decode` really ought to be like so:
 
 ```golang
 package main
@@ -752,7 +752,7 @@ Here, we continously decode in a loop, breaking only when `io.EOF` is reached or
 
 ## Final Remarks
 
-In short - `json.Decoder` is _not_ meant to be a standalone JSON unmarshal-er. Use `json.Unmarshal` for that. However, for streming JSON tasks it has a few nice features that are quite useful and assuming your input is indeed streaming json it does not _actually_ silently ignore invalid syntax.
+In short - `json.Decoder` is _not_ meant to be a standalone JSON unmarshal-er. Use `json.Unmarshal` for that. However, for streaming JSON tasks it has a few nice features that are quite useful and assuming your input is indeed streaming json it does not _actually_ silently ignore invalid syntax.
 
 Personally, I would update this [comment](https://golang.org/src/encoding/json/stream.go#L13) in the docs:
 
@@ -760,4 +760,4 @@ Personally, I would update this [comment](https://golang.org/src/encoding/json/s
 
 to include some more context and background about expected usage of `Decode`. Based on current documentation, it is not unreasonable to assume `Decoder` might be used interchangeably with `Unmarshal` and then become surprised with the unexpected behavior.
 
-But, after all is said and done: `json.Decoder`'s behavior is not actualy bug, if anything it's a feature!
+But, after all is said and done: `json.Decoder`'s behavior is not actually a bug, if anything it's a feature!
