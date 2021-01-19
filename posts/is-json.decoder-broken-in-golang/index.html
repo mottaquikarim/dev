@@ -271,7 +271,7 @@ table td {
 
 <p>Notice here if our input char (<code>c byte</code>) is <code>&quot;</code>, we update our <code>step</code> attribute to the <em>next</em> state transition function, in this case <code>stateInString</code>. Furthermore, we return a new transition value: <code>scanBeginLiteral</code> (indicating that our scanner is currently in the process of interpreting a token literal such as a number or a string in our JSON string).</p>
 
-<p>The transition values are primarily used by code that actually calls the <code>scanner.step</code> transition functions, such as <code>Decoder</code> or <code>decodeState</code>, to understand the current state of parsin by the scanner.</p>
+<p>The transition values are primarily used by code that actually calls the <code>scanner.step</code> transition functions, such as <code>Decoder</code> or <code>decodeState</code>, to understand the current state of parsing by the scanner.</p>
 
 <p>Here&rsquo;s the <a href="https://golang.org/src/encoding/json/scanner.go#L114">full list</a> of transitions values defined and returned by <code>scanner</code> state transition functions:</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">const</span> <span class="p">(</span>
@@ -346,7 +346,7 @@ table td {
 <span class="p">}</span></code></pre></div>
 <p><strong>scanp</strong></p>
 
-<p>This is an index that we advance from position 0 to the len of our buffer. As we advance this index, we read a single character from the buffer and analyze it via the <code>scanner</code> state machine.</p>
+<p>This is an index that we advance from position 0 to the length of our buffer. As we advance this index, we read a single character from the buffer and analyze it via the <code>scanner</code> state machine.</p>
 
 <p><strong>scan</strong></p>
 
@@ -354,7 +354,7 @@ table td {
 
 <p><strong>err</strong></p>
 
-<p>We expect <code>err</code> to be NOT <code>nil</code> when we run into malformed JSON, clearly as it stands from our observations, <code>err</code> <strong>IS</strong> <code>nil</code> which is the problem.</p>
+<p>We expect <code>err</code> to be NOT <code>nil</code> when we run into malformed JSON. Clearly as it stands from our observations, <code>err</code> <strong>IS</strong> <code>nil</code> which is the problem.</p>
 
 <p>Ok so - now we have an instance of <code>Decoder</code> available to us that knows to read data from our <code>bad_json</code> into an internal buffer. Now, let&rsquo;s look at how the <code>Decoder.Decode(...)</code> method of our <code>Decoder</code> struct commences parsing our JSON data.</p>
 
@@ -375,7 +375,7 @@ table td {
 <span class="p">}</span></code></pre></div>
 <p>(<a href="https://golang.org/src/encoding/json/stream.go#L49">sauce</a>)</p>
 
-<p>We are only focusing on the method call relevant to our current analysis - there are conditionals checked <em>before</em> <code>readValue</code> is executed which simply sanity checks for various poorly formatted string states. These conditional checks work as expected so for the purposes of this analysis they are &ldquo;uninteresting&rdquo;.</p>
+<p>We are only focusing on the method call relevant to our current analysis - there are conditionals checked <em>before</em> <code>readValue</code> is executed, which are simply sanity checks for various poorly formatted string states. These conditional checks work as expected so for the purposes of this analysis they are &ldquo;uninteresting&rdquo;.</p>
 
 <p>In short, <code>dec.readValue()</code> uses the <code>dec.scan</code> (which, recall, is an instance of the <code>json.scanner</code> struct) attribute to process chars in the buffer one by one until an error or a <code>scanEnd</code> transition value state is reached. (This is the focus of the next section)</p>
 
@@ -448,7 +448,7 @@ table td {
 
 <span class="c1">// initial scanner
 </span><span class="c1"></span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span> <span class="p">=&gt;</span> <span class="nx">scanner</span><span class="p">{}</span></code></pre></div>
-<p>(There are others, but these the two we care about for now).</p>
+<p>(There are others, but these are the two we care about for now).</p>
 
 <p>We then call <code>Decode</code> to start processing our <code>bad_json</code> string. The first line in <code>readValue</code> is:</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">reset</span><span class="p">()</span></code></pre></div>
@@ -481,7 +481,7 @@ table td {
 <span class="p">}</span></code></pre></div>
 <p><code>scanp</code> here pertains to our <code>dec.scanp</code> attribute which is initially set to <code>0</code> a few lines above. So, our first char is <code>{</code> from <code>bad_json</code>.</p>
 
-<p>We call <code>dec.scan.step</code> and pass in a reference to <code>scanner</code> and <code>c = &quot;{&quot;</code> as args. If the three expected transition states are <em>not</em> returned (<code>scanEnd</code>, <code>scanEndObject</code>, <code>scanEndArray</code>) the loop continues and we advance to the next character (in this <code>\n</code>).</p>
+<p>We call <code>dec.scan.step</code> and pass in a reference to <code>scanner</code> and <code>c = &quot;{&quot;</code> as args. If the three expected transition states are <em>not</em> returned (<code>scanEnd</code>, <code>scanEndObject</code>, <code>scanEndArray</code>) the loop continues and we advance to the next character (in this case <code>\n</code>).</p>
 
 <h3 id="5-bad-json-iteration-table">5. <code>bad_json</code> iteration table</h3>
 
@@ -519,7 +519,7 @@ table td {
 
 <hr />
 
-<p>To interpre the table below, consider the follow approach:</p>
+<p>To interpret the table below, consider the follow approach:</p>
 
 <p><strong>1</strong>: from <a href="https://golang.org/src/encoding/json/stream.go#L103"><strong>stream.go#L103</strong></a>, determine the state transition function (the transition function corresponds to <strong>now</strong> under the <strong>step</strong> col).</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">switch</span> <span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">.</span><span class="nf">step</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dec</span><span class="p">.</span><span class="nx">scan</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span></code></pre></div>
@@ -543,11 +543,11 @@ table td {
 </span><span class="c1"></span><span class="p">}</span></code></pre></div>
 <p>(<a href="https://golang.org/src/encoding/json/scanner.go#L213">sauce</a>)</p>
 
-<p><strong>3</strong>: If, in <code>scanner</code> src, <code>pushParseState</code> or <code>popParseState</code> is called within the transition func, expect col <strong>step.parseState</strong> to reflect the value added or removed</p>
+<p><strong>3</strong>: If, in <code>scanner</code> src, <code>pushParseState</code> or <code>popParseState</code> is called within the transition func, expect col <strong>step.parseState</strong> to reflect the value added or removed.</p>
 
 <p>In the case of <strong>Row 1</strong>, <code>pushParseState</code> is called with <code>parseObjectKey</code> so we end up with one item in that array.</p>
 
-<p><strong>4</strong>: Once the <strong>step</strong> function has completed, it should have a return value (the transition value) and a new <strong>step</strong> function (could be same as <strong>now</strong>). Except col <strong>step</strong>&rsquo;s <strong>ret</strong> to correspond with the returned transition value and <strong>next</strong> to correspond to the <em>new</em> value of <code>scanner.step</code></p>
+<p><strong>4</strong>: Once the <strong>step</strong> function has completed, it should have a return value (the transition value) and a new <strong>step</strong> function (could be same as <strong>now</strong>). Expect col <strong>step</strong>&rsquo;s <strong>ret</strong> to correspond with the returned transition value and <strong>next</strong> to correspond to the <em>new</em> value of <code>scanner.step</code></p>
 
 <p>In the case of <strong>Row 1</strong>, our returned transition value is <code>scanBeginObject</code> and our new step function is <code>stateBeginStringOrEmpty</code>.</p>
 
@@ -742,7 +742,7 @@ table td {
 </tbody>
 </table>
 
-<p>Becuase <code>c = &quot;[&quot;</code>, we can see that <code>s.popParseState()</code> is called (which removes <code>parseArrayValue</code> from our <code>parseState</code> stack)</p>
+<p>Because <code>c = &quot;[&quot;</code>, we can see that <code>s.popParseState()</code> is called (which removes <code>parseArrayValue</code> from our <code>parseState</code> stack)</p>
 
 <p>Importantly, we are returned <code>scanEndArray</code>, which - from <code>readValue()</code> - we see requires special handling:</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// Look in the buffer for a new value.
@@ -788,7 +788,7 @@ table td {
 
 <p><strong>Row 14 + 15</strong></p>
 
-<p>Thee final two iterations are very similar to the previous two iterations. The key difference is for the <em>last</em> iteration (row 15), our <code>parseState</code> stack ends up being empty. As such, we actually enter into the <code>n == 0</code> condition:</p>
+<p>The final two iterations are very similar to the previous two iterations. The key difference is for the <em>last</em> iteration (row 15), our <code>parseState</code> stack ends up being empty. As such, we actually enter into the <code>n == 0</code> condition:</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// excerpt from stateEndValue
 </span><span class="c1"></span><span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
 	<span class="c1">// Completed top-level before the current byte.
@@ -815,7 +815,7 @@ table td {
 <p>In other words, the <code>Decode()</code> method does NOT error because we stop processing our JSON string before the scanner has a change to encounter the malformed portion of our <code>bad_json</code> string!</p>
 </blockquote>
 
-<p>Expounding on this a bit: when that final <code>}</code> is read, <code>Decoder</code> says: &ldquo;ok! I&rsquo;m done. I have a completed scan.&rdquo; For this reason, it <strong>never actually even tries to read the <em>rest</em> of the line</strong> even though there is plenty more characters left to read.</p>
+<p>Expounding on this a bit: when that final <code>}</code> is read, <code>Decoder</code> says: &ldquo;ok! I&rsquo;m done. I have a completed scan.&rdquo; For this reason, it <strong>never actually even tries to read the <em>rest</em> of the line</strong> even though there are plenty more characters left to read.</p>
 
 <p>Additionally, note that we <em>could</em> get it to return an error btw, if we call <code>Decode</code> again - since now it will start at <code>&quot;</code> (the first char after <code>}</code>) and it will definitely see and raise an error then.</p>
 
@@ -829,7 +829,7 @@ table td {
 <div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">{...}{...}{...}</code></pre></div>
 <p>Therefore, using <code>Decode</code> to read a single JSON document is not ideal. However it is worth noting that if we really wanted to, we still could use <code>Decode</code> to parse a single doc - we simply must alter how we leverage <code>Decode</code> to fully read out document body.</p>
 
-<p>IMO, the <em>proper</em> way to use <code>Decode</code> really ought to be used like so:</p>
+<p>Personally, the <em>proper</em> way to use <code>Decode</code> really ought to be like so:</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
 <span class="kn">import</span> <span class="p">(</span>
 	<span class="s">&#34;encoding/json&#34;</span>
@@ -892,7 +892,7 @@ map[hello:[foobar] world:[some other str]]</code></pre></div>
 
 <h2 id="final-remarks">Final Remarks</h2>
 
-<p>In short - <code>json.Decoder</code> is <em>not</em> meant to be a standalone JSON unmarshal-er. Use <code>json.Unmarshal</code> for that. However, for streming JSON tasks it has a few nice features that are quite useful and assuming your input is indeed streaming json it does not <em>actually</em> silently ignore invalid syntax.</p>
+<p>In short - <code>json.Decoder</code> is <em>not</em> meant to be a standalone JSON unmarshal-er. Use <code>json.Unmarshal</code> for that. However, for streaming JSON tasks it has a few nice features that are quite useful and assuming your input is indeed streaming json it does not <em>actually</em> silently ignore invalid syntax.</p>
 
 <p>Personally, I would update this <a href="https://golang.org/src/encoding/json/stream.go#L13">comment</a> in the docs:</p>
 
@@ -902,7 +902,7 @@ map[hello:[foobar] world:[some other str]]</code></pre></div>
 
 <p>to include some more context and background about expected usage of <code>Decode</code>. Based on current documentation, it is not unreasonable to assume <code>Decoder</code> might be used interchangeably with <code>Unmarshal</code> and then become surprised with the unexpected behavior.</p>
 
-<p>But, after all is said and done: <code>json.Decoder</code>&rsquo;s behavior is not actualy bug, if anything it&rsquo;s a feature!</p>
+<p>But, after all is said and done: <code>json.Decoder</code>&rsquo;s behavior is not actually a bug, if anything it&rsquo;s a feature!</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fis-json.decoder-broken-in-golang%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fis-json.decoder-broken-in-golang%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
