@@ -12,6 +12,19 @@
     
     
     <item>
+      <title>You might not be using json.Decoder correctly in golang</title>
+      <link>https://mottaquikarim.github.io/dev/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</link>
+      <pubDate>Sun, 24 Jan 2021 04:01:51 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</guid>
+      <description>Table of Contents  TL;DR: prevailing &amp;ldquo;secondary source&amp;rdquo; wisdom (ie: blog posts) about json.Decoder don&amp;rsquo;t demonstrate the proper way to use it.
+This post is a follow up to my (kinda lengthy) deep dive into what I thought was a bug in golang&amp;rsquo;s json.Decoder pkg.
+Instead, I realized that generally speaking, json.Decoder can be misunderstood - which may lead to unintended consequences. In this post, I will demonstrate a safer pattern that ought to be used instead of the prevailing wisdom.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Is json.Decoder broken in golang?!</title>
       <link>https://mottaquikarim.github.io/dev/posts/is-json.decoder-broken-in-golang/</link>
       <pubDate>Thu, 14 Jan 2021 01:26:01 +0000</pubDate>
