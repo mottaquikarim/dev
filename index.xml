@@ -6,9 +6,22 @@
     <description>Recent content on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sun, 24 Jan 2021 04:01:51 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 Jan 2021 05:38:50 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Handling Parquet Schema Mismatch Based on Data</title>
+      <link>https://mottaquikarim.github.io/dev/posts/handling-parquet-schema-mismatch-based-on-data/</link>
+      <pubDate>Sun, 24 Jan 2021 05:38:50 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/handling-parquet-schema-mismatch-based-on-data/</guid>
+      <description>Table of Contents  TL;DR: explicitly define your parquet schema when reading/writing from pq tables if you want to maintain consistent datatypes even when column values are null.
+The Problem Consider the following pandas dataframe, written into parquet format:
+import pandas as pd import pyarrow as pa import pyarrow.parquet as pq df = pd.DataFrame( { &amp;#39;organizationId&amp;#39; : [&amp;#39;org1&amp;#39;, &amp;#39;org2&amp;#39;, &amp;#39;org3&amp;#39;], &amp;#39;customerProducts&amp;#39; : [[&amp;#39;p1&amp;#39;, &amp;#39;p2&amp;#39;], [&amp;#39;p4&amp;#39;, &amp;#39;p5&amp;#39;], [&amp;#39;p1&amp;#39;, &amp;#39;p3&amp;#39;]] } ) table = pa.</description>
+    </item>
     
     
     
