@@ -1,6 +1,7 @@
 ---
 title: "Safely Construct Elasticsearch Queries w/Golang"
 date: 2020-12-16T14:28:28Z
+tags: ['golang', 'featured']
 ---
 
 {{<toc>}}

@@ -1,6 +1,7 @@
 ---
 title: "Is json.Decoder broken in golang?!"
 date: 2021-01-14T01:26:01Z
+tags: ["featured", "golang"]
 ---
 
 {{<toc>}}
