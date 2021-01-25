@@ -1,0 +1,21 @@
+<!-- <h3>Tags</h3>
+<ul>
+  {{ range .Data.Pages }}
+  <li>
+    <a href="{{.RelPermalink}}">{{ .LinkTitle }}</a>
+  </li>
+  {{ end }}
+</ul> -->
+
+<!-- https://gohugo.io/variables/taxonomy/#example-usage-of-sitetaxonomies -->
+
+{{ range $taxonomyname, $taxonomy := .Site.Taxonomies.tags }}
+<h3>{{ $taxonomyname }}</h3>
+<ul>
+	{{ range $key, $value := $taxonomy }}
+	<li>
+		<a href="{{.RelPermalink}}">{{ .LinkTitle }}</a>
+	</li>
+	{{ end }}
+</ul>
+{{ end }}

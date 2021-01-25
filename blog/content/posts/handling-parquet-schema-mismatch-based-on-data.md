@@ -1,6 +1,7 @@
 ---
 title: "Handling Parquet Schema Mismatch Based on Data"
 date: 2021-01-24T05:38:50Z
+tags: ["esoteric bug", "python"]
 ---
 
 {{<toc>}}

@@ -1,0 +1,8 @@
+<h3>{{ .Title }} posts</h3>
+<ul>
+  {{ range .Data.Pages }}
+  <li>
+    <a href="{{.RelPermalink}}">{{ .LinkTitle }}</a>
+  </li>
+  {{ end }}
+</ul>

@@ -1,6 +1,7 @@
 ---
 title: "You might not be using json.Decoder correctly in golang"
 date: 2021-01-24T04:01:51Z
+tags: ["golang"]
 ---
 
 {{<toc>}}

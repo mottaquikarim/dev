@@ -1,6 +1,7 @@
 ---
 title: "Using Makefile + Docker for Golang dev"
 date: 2021-01-08T02:29:26Z
+tags: ["golang", "makefile"]
 ---
 
 {{<toc>}}

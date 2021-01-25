@@ -1,6 +1,7 @@
 ---
 title: "Connecting to Elasticsearch Configured via Docker"
 date: 2020-03-16T06:37:08Z
+tags: ["docker", "elasticsearch"]
 ---
 
 {{<toc>}}

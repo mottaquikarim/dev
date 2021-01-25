@@ -1,6 +1,7 @@
 ---
 title: "Self Grading Quizzes With Airtable"
 date: 2020-03-16T06:31:03Z
+tags: ["teaching"]
 ---
 
 {{<toc>}}

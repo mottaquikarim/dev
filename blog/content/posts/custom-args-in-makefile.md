@@ -1,6 +1,7 @@
 ---
 title: "Custom Args in Makefile"
 date: 2021-01-03T00:59:04Z
+tags: ["makefile"]
 ---
 
 {{<toc>}}

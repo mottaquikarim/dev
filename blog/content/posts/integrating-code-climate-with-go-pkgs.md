@@ -1,6 +1,7 @@
 ---
 title: "Integrating Code Climate w/go pkgs"
 date: 2021-01-01T14:28:32Z
+tags: ["golang"]
 ---
 
 {{<toc>}}

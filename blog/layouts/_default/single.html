@@ -1,5 +1,12 @@
 {{ define "main" }}
 <article>
+    {{ if isset .Params "tags" -}}
+        <small><strong>TAGS: </strong></small>
+        {{ $baseUrl := .Site.BaseURL }}
+        {{ range .Params.tags }}
+            <small><strong><a href="{{ $baseUrl }}tags/{{ . | urlize }}/">{{ . }}</a></strong></small>
+        {{ end }}
+    {{- end -}}
     <header id="post-header">
         <h1>{{ .Title }}</h1>
         {{- if isset .Params "date" -}}

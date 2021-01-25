@@ -1,6 +1,7 @@
 ---
 title: "Generate Lambda Layer Artifacts w/Docker"
 date: 2020-12-22T16:41:25Z
+tags: ["serverless", "docker"]
 ---
 
 {{<toc>}}

@@ -1,6 +1,7 @@
 ---
 title: "Gotcha w/comparing base64 encoded strs"
 date: 2020-12-13T09:29:57Z
+tags: ["esoteric bug"]
 ---
 
 {{<toc>}}
