@@ -113,14 +113,14 @@
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/posts/connecting-to-elasticsearch-configured-via-docker/</loc>
-    <lastmod>2020-03-16T06:37:08+00:00</lastmod>
+    <loc>https://mottaquikarim.github.io/dev/tags/elasticsearch/</loc>
+    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/tags/elasticsearch/</loc>
+    <loc>https://mottaquikarim.github.io/dev/posts/connecting-to-elasticsearch-configured-via-docker/</loc>
     <lastmod>2020-03-16T06:37:08+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
