@@ -14,7 +14,25 @@
   </url>
   
   <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://mottaquikarim.github.io/dev/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/esoteric-bug/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/python/</loc>
     <lastmod>2021-01-24T05:38:50+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -25,24 +43,18 @@
   </url>
   
   <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/golang/</loc>
+    <lastmod>2021-01-24T04:01:51+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/is-json.decoder-broken-in-golang/</loc>
     <lastmod>2021-01-14T01:26:01+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/tags/</loc>
-    <lastmod>2021-01-14T01:26:01+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/tags/featured/</loc>
-    <lastmod>2021-01-14T01:26:01+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://mottaquikarim.github.io/dev/tags/golang/</loc>
     <lastmod>2021-01-14T01:26:01+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -55,6 +67,12 @@
   <url>
     <loc>https://mottaquikarim.github.io/dev/posts/using-makefile-docker-for-golang-dev/</loc>
     <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/makefile/</loc>
+    <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
@@ -73,6 +91,18 @@
   </url>
   
   <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/docker/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/serverless/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
     <lastmod>2020-12-16T14:28:28+00:00</lastmod>
   </url>
@@ -88,8 +118,20 @@
   </url>
   
   <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/elasticsearch/</loc>
+    <lastmod>2020-03-16T06:37:08+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/self-grading-quizzes-with-airtable/</loc>
     <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/teaching/</loc>
+    <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
