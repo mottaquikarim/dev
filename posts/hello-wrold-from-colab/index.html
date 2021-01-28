@@ -139,6 +139,7 @@ table td {
 <li><a href="#what">What?</a></li>
 <li><a href="#why">Why?</a></li>
 <li><a href="#how">How?</a></li>
+<li><a href="#ps-want-to-load-some-py-code-why-not">PS: want to load some py code? Why not!</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -185,6 +186,35 @@ table td {
 
 <p>Stay tuned fam, more details to follow.</p>
 
+<h2 id="ps-want-to-load-some-py-code-why-not">PS: want to load some py code? Why not!</h2>
+
+<p>Cool bit is on colab at least, you can control which cells show output vs not.</p>
+
+<p>Let&rsquo;s start by importing a bunch of stuff.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python id="LbrvGJGrwwlw"" data-lang="python id="LbrvGJGrwwlw"">import pandas as pd
+!pip install yfinance
+import yfinance as yf
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns</code></pre></div>
+<p>Ok, now time to grab a ticker and view it</p>
+<div class="highlight"><pre class="chroma"><code class="language-python id="gCodbM66xNJO"" data-lang="python id="gCodbM66xNJO"">gme = yf.Ticker(&#34;GME&#34;)</code></pre></div>
+<p>Turn it into a df and plot? Sure!</p>
+<div class="highlight"><pre class="chroma"><code class="language-python colab={"base_uri": "https://localhost:8080/", "height": 228} id="hyp-jqjxxQs6" outputId="029b05b3-02ba-41a9-c3bd-4fdd6a1a909b"" data-lang="python colab={"base_uri": "https://localhost:8080/", "height": 228} id="hyp-jqjxxQs6" outputId="029b05b3-02ba-41a9-c3bd-4fdd6a1a909b"">hist = gme.history(period=&#34;5d&#34;).head()
+hist</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python colab={"base_uri": "https://localhost:8080/", "height": 350} id="lgt-hrO7yEIg" outputId="373ce288-cfa2-432d-a642-f587e89e4c44"" data-lang="python colab={"base_uri": "https://localhost:8080/", "height": 350} id="lgt-hrO7yEIg" outputId="373ce288-cfa2-432d-a642-f587e89e4c44""># make pretty
+BrBG = sns.color_palette(&#39;BrBG&#39;) # pre-existing palette
+cpal = [&#39;dodgerblue&#39;, &#39;#2ecc71&#39;, &#39;#bb64ed&#39;, &#39;#ffd13b&#39;, &#39;xkcd:tangerine&#39;, &#39;#fa62b7&#39;]
+sns.set_style(&#39;whitegrid&#39;)
+
+fig, ax = plt.subplots(figsize=(18, 5))
+# Line graph
+sns.lineplot(x=&#39;Date&#39;, y=&#39;High&#39;, data=hist, ci=None, ax=ax)
+# Add a title
+plt.title(&#39;GME stonks&#39;)
+ 
+# Customize y-axis label
+plt.ylabel(&#39;Highs&#39;)
+plt.show()</code></pre></div>
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhello-wrold-from-colab%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhello-wrold-from-colab%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
 	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhello-wrold-from-colab%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
