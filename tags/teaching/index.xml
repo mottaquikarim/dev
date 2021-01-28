@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Hello, Wrold from Colab</title>
+      <link>https://mottaquikarim.github.io/dev/posts/hello-wrold-from-colab/</link>
+      <pubDate>Thu, 28 Jan 2021 04:01:51 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/hello-wrold-from-colab/</guid>
+      <description>Table of Contents  Hello, Wrold!!! This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Handling Parquet Schema Mismatch Based on Data</title>
       <link>https://mottaquikarim.github.io/dev/posts/handling-parquet-schema-mismatch-based-on-data/</link>
       <pubDate>Sun, 24 Jan 2021 05:38:50 +0000</pubDate>
@@ -166,6 +177,17 @@ Gotchas As with all things, there may be some gotchas associated with this setup
       <description>Table of Contents  This semester, I am teaching a course at Baruch University on Big Data Technologies.
 I resolved to administer a small quiz at the start of class to get a feel for how the class is doing overall in terms of comprehension of key materials.
 However, grading quizzes - especially at such a recurring cadence - will definitely be time consuming, even for a small class of say 15 people (my class has 47 students).</description>
+    </item>
+    
+    
+    
+    <item>
+      <title></title>
+      <link>https://mottaquikarim.github.io/dev/posts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/</guid>
+      <description>From Colab This folder contains posts submitted from colab or other external sources</description>
     </item>
     
     
