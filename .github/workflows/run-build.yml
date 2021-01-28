@@ -23,13 +23,13 @@ jobs:
           done;
           mv ${PWD}/../../colab/*.md ${PWD}/../../blog/content/posts/
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Apply automatic changes
-          commit_options: '--no-verify --signoff --quiet'
-          repository: .
-          skip_dirty_check: true
-          skip_fetch: true
+      # - uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: Apply automatic changes
+      #     commit_options: '--no-verify --signoff --quiet'
+      #     repository: .
+      #     skip_dirty_check: true
+      #     skip_fetch: true
 
       - name: Build
         run: make build
