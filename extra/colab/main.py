@@ -22,5 +22,6 @@ if __name__ == '__main__':
     if metadata['jupyter']:
         content = re.sub("(<!--.*?-->)", "", content, flags=re.DOTALL)
         blog_meta, _ = frontmatter.parse(content)
+        print(blog_meta)
         with open(f'{slugify(blog_meta["title"])}.md', 'w') as fw:
             fw.write(content)
