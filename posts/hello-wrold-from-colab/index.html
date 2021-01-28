@@ -136,16 +136,50 @@ table td {
 <ul>
 <li>
 <ul>
-<li><a href="#hello-wrold">Hello, Wrold!!!</a></li>
+<li><a href="#what">What?</a></li>
+<li><a href="#why">Why?</a></li>
+<li><a href="#how">How?</a></li>
 </ul></li>
 </ul>
 </nav>
 </aside>
 
 
-<h2 id="hello-wrold">Hello, Wrold!!!</h2>
+<blockquote>
+<p>Hello, Wrold, from Google Colab!!</p>
+</blockquote>
+
+<h2 id="what">What?</h2>
 
 <p>This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.</p>
+
+<p>In fact, any <code>ipynb</code> file is fair game - just drop it in to a particular folder and on build, it will be converted to a markdown file, &ldquo;sanitized&rdquo; and then available as a normal post on Hugo.</p>
+
+<h2 id="why">Why?</h2>
+
+<p>No reason! &ldquo;Just because&rdquo;.</p>
+
+<p>Admittedly, it probably isn&rsquo;t a great idea to load data from two sources (as raw markdown and also available randomly as python notebooks).</p>
+
+<p>Really, this is mainly a thought experiment. I&rsquo;ve dabbled in static site generation from python notebooks before and will probably do so again.</p>
+
+<p>On the plus side, composing python related posts got a heck of a lot easier since Python Notebooks can/will provide the ability to add code cells and output &ldquo;for free&rdquo;.</p>
+
+<h2 id="how">How?</h2>
+
+<p>A more detailed post to follow shortly but for now:</p>
+
+<ul>
+<li>Write post in colab</li>
+<li>Use colab&rsquo;s &ldquo;save to github&rdquo; feature to push to the correct repo and sub folder</li>
+<li>Set up github workflow to process .ipynb files</li>
+<li>on save to github, workflow triggers script that used <code>jupytext</code> to convert into markdown and moves to huge content folder</li>
+<li>wait for normal deploy process to take effect</li>
+<li>???</li>
+<li>profit.</li>
+</ul>
+
+<p>Stay tuned fam, more details to follow.</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhello-wrold-from-colab%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhello-wrold-from-colab%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
