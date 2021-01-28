@@ -9,6 +9,8 @@ tags: ["meta", "python", "just for fun"]
 
 > Hello, Wrold, from Google Colab!!
 
+_[Here](https://colab.research.google.com/drive/1K3xuq9Ipy_iUIX_NmH5j-CP4foIVklhA?usp=sharing) is the colab doc for those following along at home)_
+
 ## What?
 
 This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.
@@ -25,6 +27,8 @@ Really, this is mainly a thought experiment. I've dabbled in static site generat
 
 On the plus side, composing python related posts got a heck of a lot easier since Python Notebooks can/will provide the ability to add code cells and output "for free".
 
+Also, it _is_ kinda nice to have a web interface for composing stuff without having to go to terminal. Still, this particular approach is certifiably insane and there are definitely...easier options. Still! This is a fun thought experiment/demo! 
+
 ## How?
 
 A more detailed post to follow shortly but for now:
@@ -36,6 +40,8 @@ A more detailed post to follow shortly but for now:
 - wait for normal deploy process to take effect
 - ???
 - profit.
+
+
 
 Stay tuned fam, more details to follow.
 
