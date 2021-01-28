@@ -17,14 +17,11 @@ jobs:
       - name: Perform action when files change.
         run: |
           cd extra/colab
-          pwd
-          ls -ahl
-          echo "HERE"
           for i in $(ls ${PWD}/../../colab/ | grep ipynb); do
             ls ${PWD}/../../colab/ | grep ipynb
-            make run filename="$i" dir=${PWD}/../../colab
-            mv *.md blog/content/posts/; 
+            make run filename="$i" dir=${PWD}/../../colab; 
           done;
+          mv ${PWD}/../../colab/*.md blog/content/posts/
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
