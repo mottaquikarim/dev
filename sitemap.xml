@@ -152,11 +152,6 @@
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/posts/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/categories/</loc>
     <priority>0</priority>
   </url>
