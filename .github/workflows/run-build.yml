@@ -17,6 +17,9 @@ jobs:
       - name: Perform action when files change.
         run: |
           cd extra/colab
+          pwd
+          ls -ahl
+          echo "HERE"
           for i in $(ls ${PWD}/../../colab/*.ipynb); do
             ls -ahl ${PWD}/../../colab/*.ipynb
             make run filename="$i" dir=${PWD}/../../colab
