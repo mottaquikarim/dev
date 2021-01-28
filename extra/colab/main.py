@@ -1,4 +1,5 @@
 import argparse
+import os
 import re
 import sys
 
@@ -23,5 +24,6 @@ if __name__ == '__main__':
         content = re.sub("(<!--.*?-->)", "", content, flags=re.DOTALL)
         blog_meta, _ = frontmatter.parse(content)
         print(blog_meta)
+        print([f for f in os.listdir('.')])
         with open(f'{slugify(blog_meta["title"])}.md', 'w') as fw:
             fw.write(content)
