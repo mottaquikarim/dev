@@ -21,7 +21,7 @@ jobs:
             ls ${PWD}/../../colab/ | grep ipynb
             make run filename="$i" dir=${PWD}/../../colab; 
           done;
-          mv ${PWD}/../../colab/*.md blog/content/posts/
+          mv ${PWD}/../../colab/*.md ${PWD}/../../blog/content/posts/
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
