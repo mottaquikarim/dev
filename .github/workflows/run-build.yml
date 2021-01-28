@@ -14,16 +14,11 @@ jobs:
           submodules: true  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
-      - name: Where are we?
-        run: pwd 
-      - name: Where are we 3?
-        run: ls -ahl
-      - name: where is colab?
-        run: ls -ahl ${PWD}/../../colab/*.ipynb
       - name: Perform action when files change.
         run: |
           cd extra/colab
-          for i in $(ls ${PWD}/../../colab/*.ipynb); do 
+          for i in $(ls ${PWD}/../../colab/*.ipynb); do
+            ls -ahl ${PWD}/../../colab/*.ipynb
             make run filename="$i" dir=${PWD}/../../colab
             mv *.md blog/content/posts/; 
           done;
