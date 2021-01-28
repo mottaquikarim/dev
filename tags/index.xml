@@ -19,7 +19,8 @@
       
       <guid>https://mottaquikarim.github.io/dev/posts/hello-wrold-from-colab/</guid>
       <description>Table of Contents   Hello, Wrold, from Google Colab!!
- What? This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.
+ _Here is the colab doc for those following along at home)_
+What? This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.
 In fact, any ipynb file is fair game - just drop it in to a particular folder and on build, it will be converted to a markdown file, &amp;ldquo;sanitized&amp;rdquo; and then available as a normal post on Hugo.</description>
     </item>
     
