@@ -9,7 +9,7 @@ tags: ["meta", "python", "just for fun"]
 
 > Hello, Wrold, from Google Colab!!
 
-_[Here](https://colab.research.google.com/drive/1K3xuq9Ipy_iUIX_NmH5j-CP4foIVklhA?usp=sharing) is the colab doc for those following along at home)_
+[Here](https://colab.research.google.com/drive/1K3xuq9Ipy_iUIX_NmH5j-CP4foIVklhA?usp=sharing) is the colab doc for those following along at home).
 
 ## What?
 
