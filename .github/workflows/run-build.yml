@@ -17,18 +17,18 @@ jobs:
       - name: Perform action when files change.
         run: |
           cd extra/colab
-          for i in $(ls colab/*.ipynb); do 
+          for i in $(ls ${PWD}/../../colab/*.ipynb); do 
             make run filename="$i" dir=${PWD}/../../colab
             mv *.md blog/content/posts/; 
           done;
 
-  deploy:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          commit_message: Apply automatic changes
+          commit_options: '--no-verify --signoff'
+          repository: .
+          skip_dirty_check: true
+          skip_fetch: true
 
       - name: Build
         run: make build
