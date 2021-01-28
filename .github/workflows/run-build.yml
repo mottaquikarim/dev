@@ -26,7 +26,7 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Apply automatic changes
-          commit_options: '--no-verify --signoff'
+          commit_options: '--no-verify --signoff --quiet'
           repository: .
           skip_dirty_check: true
           skip_fetch: true
