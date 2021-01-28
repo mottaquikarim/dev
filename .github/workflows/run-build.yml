@@ -6,6 +6,25 @@ on:
       - master  # Set a branch name to trigger deployment
 
 jobs:
+  build-from-colab:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v5.4
+        id: changed_files
+        with:
+          files: |
+             colab
+      - name: Perform action when files change.
+        if: steps.changed_files.outputs.files_changed == 'true'
+        run: |
+          cd extra/colab
+          for i in $(ls colab/*.ipynb); do 
+            make run filename="$i" dir=${PWD}/../../colab
+            mv *.md blog/content/posts/; 
+          done;
+
   deploy:
     runs-on: ubuntu-18.04
     steps:
