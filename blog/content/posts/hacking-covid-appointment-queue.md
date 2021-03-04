@@ -1,17 +1,16 @@
 ---
 title: "Hacking the Covid Appointment Queue"
 date: 2021-02-27T19:45:28Z
+draft: true
 ---
 
 {{<toc>}}
-
-> **TL;DR**: Alright ya got me - this story is not about "hacking". Instead, it's really just about some...optimizations I made to the [Rite Aid vaccinate appointment signup](https://www.riteaid.com/pharmacy/apt-scheduler) UX flow using javascript, Chrome devtools and approximately one sleepless night.
 
 Buckle up fam, this will be a deep dive.
 
 ## The Problem
 
-A few dear family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine. I'm obviously concerned about their well being and have sought ways to snag them an appointment.
+A few close family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine. I'm obviously concerned about their well being and have sought ways to snag them an appointment.
 
 Enter [**Vaccine Finder**](https://vaccinefinder.org/search), a nifty site that aggregates locations near you that are administering vaccines _and_ happen to have vaccines in stock.
 
@@ -39,23 +38,23 @@ Ok great - let's pick a store and see where we end up.
 
 ![rite aid screen](/dev/img/riteaidscreen1_err1.png)
 
-Whomp whomp.
+Whomp whomp, again!
 
 A few issues:
 
 * The list of stores generated are not stores with vaccines _available_...they're just stores that exist nearby.
 * You have to **SELECT** each store, then click on **Next** to see if a slot may be available or not. More often than not, availability does not exist. So, as a "normal" user you have no choice but to click over and over again hoping for a hit.
-* The list displaying the store options are in a fixed height window with an overflow. **WTF!** This means as you are picking stores from top to bottom, stressed af, you have now ALSO scroll down as you get further into your list / desperation!
-
-As a fun sidenote (no picture displayed because OMG is it annoying af): even if you make it past this step, the _next_ step displays an arbitrary/borderline unusable calendar view and the ability to "choose" slots that come back with a "Sorry, someone just reserved this slot" so often I legitimately thought there was a system error on their end for a good while.
+* Now, assuming you've cleared this step and picked a store quickly enough, you get sent to the next "level" where you must choose from a dropdown _super quick_ for available time slots in the Morning, Afternoon or Evening. But! If someone else is on the same exact view and happens to pick the slot before you, you lose! There's no indication of this until _after_ you pick and then back you go to step 1. Do no pass Go. Do not collect $200.
 
 Ok so anyways - at this point, this is the issue:
 
-> The Rite Aid Immunization Scheduler is Good and Cool in that it exists but basically is unusable given that demand for the appointment slots are very, very high. 
+> The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable (TM) given that demand for the appointment slots are very, very high and the flow does not really account for this usecase.
+
+So this begs the question: how do we fix this until a better experience is rolled out?
 
 ## Attempt 1: Find stores with Availability
 
-My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn button.
+My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.
 
 I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome's Dev tools and found calls similar to this
 
@@ -82,7 +81,7 @@ which seemed to return:
 
 I assumed (correctly, as it turned out) that if `.Data.slots["1"]` or `.Data.slots["2"]` were `true`, then I'd be in business. So, all I had to do was put together a script that would hit the URL above with the store ID in question (there actually is an API call made to perform the geoquery search -- I include it in the script below).
 
-I ended up writing a quick py script:
+I ended up writing a quick py script and running it in a [REPL](https://repl.it):
 
 ```python
 import requests
@@ -125,25 +124,110 @@ If all works well, the output looks something like:
 
 where the first number is the store id and the second number is the zipcode. 
 
-Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did seem to reliably point me to stores that availability slots show up!
+Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did seem to reliably point me to stores where availability slots show up!
 
-But, the problem way, by the time I typed in the zip code in the search back, scrolled down to the store number, "selected" the store and then clicked "next" (this figure is from above, reproduced to make my point):
+But the problem was by the time I typed in the zip code in the search back, scrolled down to the store number, "selected" the store and then clicked "next" (this figure is from above, reproduced to make my point):
 
 ![rite aid screen](/dev/img/riteaidscreen1_err1.png)
 
-...either the slot would be gone **OR** I'd advance to the next screen where I'd have to play the game of clicking UI buttons some more and lose out on the appointment slot anyways.
+...either the slot would be gone **OR** I'd advance to the next screen where I'd have to play the game of clicking UI buttons some more and lose out on the appointment slot anyways. 🤦🤦🤦
 
 Bummer. 
 
-## Attempt 2: Running code in the browser
+## Attempt 2: Running the API calls from within the browser.
 
-At this point, I realized that my best bet was to write logic - in js - that I could run in the webpage itself through the Console in Chrome's Dev tools.
+Given this setback, my next thought was to try and run the API calls as I observed them in the Chrome Dev tools but with plain old javascript.
 
-The initial idea was to simply run the same network commands, but using javascript's `fetch` API to push an appointment all the way through.
+I wrote a quick POST request wrapper using the [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) (GET was easy enough to do without having to write a func for it):
 
-In order figure out what the network commands to call are, I had to look at the js source of the app itself.
+```javascript
+async function postData(url = '', data = {}) {
+    const formBody = [];
+    for (let property in data) {
+        const encodedKey = encodeURIComponent(property);
+        const encodedValue = encodeURIComponent(data[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
 
-This...sucked 
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody
+    });
+    return response.json();
+}
+```
+
+and then started replicating the API calls I was observing in the Network tab. This didn't work very well.
+
+In hindsight, I realized the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST reuqests.
+
+Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the **Sources** tab, prettified the javascript code and started reading.
+
+## Attempt 3: Grokking, then directly calling, the source code
+
+Reading the application's underlying JS code sucked because the source code was obfuscated!
+
+![obfuscated](/dev/img/obfuscated_code.png)
+
+Luckily, uncompressing it is easy (Chrome dev tools has a handy feature that prettifies the js code). Post prettification, we end up with:
+
+![prettified](/dev/img/prettified.png)
+
+This makes the code easier to read...but not by much,
+
+I started making progress by using the Network tab's stack trace feature (so handy!)
+
+![network](/dev/img/network.png)
+
+Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (in this flow) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
+
+I picked the `fetchSlotDetails` line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:
+
+![source](/dev/img/source.png)
+
+My biggest takeaway from this code snippet was on line **45916** (lol) -- **fetchSlotDetails** seemed to be a plain old property of a js object! (Or maybe part of the **prototype** object) Cool. Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this:
+
+![global](/dev/img/global.png)
+
+The key takeway (for me at least) was this:
+
+```javascript
+// ...
+)(window, window.jQuery);
+(function(c, a) {
+// ...
+    c.AddComponent("covidScheduler", {
+        init: function(d) {
+```
+
+Based on the first two lines, it seemed strongly likely to me that `c` was actually just the **global** window object! If true, then `c.AddComponent` was simply the same as:
+
+```javascript
+window.AddComponent
+```
+
+meaning **AddComponent** (and as I later validated), **GetComponent** were **PART OF THE GLOBAL SCOPE**.
+
+This was great news for me because **fetchSlotDetails** and in fact all the network call wrappers and DOM wrappers of this entire application were directly accesible via the Dev Tools console! Check it:
+
+![console](/dev/img/console.png)
+
+This was probably unintended by the original developers but it sure did make my life a hell of a lot easier. Because _most_ of the methods were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars bound to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting **sessionStorage** tokens (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables were global but in the scope of the closure (these were pretty annoying but admittedly interesting problems to solve)
+
+
+By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members with pre-existing conditions. 
+
+## Closing Thoughts
+
+Some things never change.
+
+Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent functionality like I discovered on this rite-aid site. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.
+
+I'm trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality. 
 
 ## CVS Sidebar
 
@@ -196,4 +280,4 @@ The results are in pretty JSON format at least:
 }
 ```
 
-At any rate - useful for potentially _finding_ a store with availability (and maybe an alerting service?) but not uch else. Bummer.
+At any rate - useful for potentially _finding_ a store with availability (and maybe an alerting service?).
