@@ -1,7 +1,7 @@
 ---
 title: "Hacking the Covid Appointment Queue"
 date: 2021-02-27T19:45:28Z
-draft: true
+tags: ["just for fun", "chrome dev tools"]
 ---
 
 {{<toc>}}
