@@ -30,7 +30,9 @@ It starts us off with a handy form that checks to see if one qualifies for booki
 
 ![rite aid](/dev/img/riteaid.png)
 
-It's slick and doesn't even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are lead to the next screen / the beginning of your misery:
+(PPS: check out sidebar#2 below for some commentary about the "rules engine" and determining if you qualify).
+
+It's slick and doesn't even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are led to the next screen / the beginning of your misery:
 
 ![rite aid screen](/dev/img/riteaidscreen1.png)
 
@@ -229,7 +231,7 @@ Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invo
 
 I'm trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality. 
 
-## CVS Sidebar
+## Sidebar 1: CVS Feed
 
 Interestingly, the dialog is generated with a single API call that looks like this:
 
@@ -281,3 +283,87 @@ The results are in pretty JSON format at least:
 ```
 
 At any rate - useful for potentially _finding_ a store with availability (and maybe an alerting service?).
+
+## Sidebar 2: Rite Aid Rules Engine
+
+Determining eligibility (via the Rite Aid qualification page) is fascinating. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a "winning combo" is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that _may_ be valid in the future but aren't currently. In short, this is another example of a not-so-fun UX)
+
+One particular family member of mine has a condition that according to a pharmacist we consulted in meatspace (like, IRL) was certainly valid but we were having trouble picking the matching condition from the UI dropdown.
+
+To solve this, I looked under the hood on the [covid qualifier](https://www.riteaid.com/pharmacy/covid-qualifier) page and noted the following API call:
+
+```bash
+GET https://www.riteaid.com/content/dam/riteaid-web/covid-19/rule-engine.json
+```
+
+which returned something like:
+
+```javascript
+{
+  "conditions": {
+    "any": [
+      {
+        "all": [
+          {
+            "fact": "stateCode",
+            "operator": "equal",
+            "value": "NY"
+          },
+          {
+            "fact": "age",
+            "operator": "greaterThanInclusive",
+            "value": "65"
+          }
+        ]
+      },
+      // ...
+  }
+}
+```
+
+Particularly, in NJ:
+
+```javascript
+{
+  // ...
+  {
+    "all": [
+      {
+        "fact": "stateCode",
+        "operator": "equal",
+        "value": "NJ"
+      },
+      {
+        "fact": "age",
+        "operator": "greaterThanInclusive",
+        "value": "18"
+      },
+      {
+        "fact": "medicalConditionCode",
+        "operator": "in",
+        "value": [
+          "Obesity",
+          "Diabetes",
+          "Heart Condition",
+          "Sickle Cell Anemia",
+          "Smoking",
+          "Organ transplant",
+          "Kidney Disease",
+          "COPD",
+          "Cancer",
+          "Down Syndrome",
+          "Pregnancy",
+          "Weakened Immune System"
+        ]
+      }
+    ]
+  }
+  // ...
+}
+```
+
+which answer the question of "which option most accurately describes the condition and is also valid" pretty quickly.
+
+(It also appears that booking appointments through rite aid is only valid in a handful of states and these states have various degrees of rules and regulations governing who can be vaccinated or not). 
+
+The full JSON body for this API call as of 03/08/2021 is available [here](https://pastebin.com/Pq7sLWyN)
