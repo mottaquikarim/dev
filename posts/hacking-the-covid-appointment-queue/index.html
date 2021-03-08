@@ -203,9 +203,9 @@ table td {
 
 <p>My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.</p>
 
-<p>I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome&rsquo;s Dev tools and found calls similar to this</p>
+<p>I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome&rsquo;s Dev tools and found calls similar to this (note the <code>storeNumber</code> at the end of the URL)</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GET https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber<span class="o">=</span><span class="m">3697</span></code></pre></div>
-<p>which seemed to return:</p>
+<p>which returned:</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
   <span class="s2">&#34;Data&#34;</span><span class="o">:</span> <span class="p">{</span>
     <span class="s2">&#34;slots&#34;</span><span class="o">:</span> <span class="p">{</span>
@@ -219,7 +219,7 @@ table td {
   <span class="s2">&#34;ErrMsgDtl&#34;</span><span class="o">:</span> <span class="kc">null</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>I assumed (correctly, as it turned out) that if <code>.Data.slots[&quot;1&quot;]</code> or <code>.Data.slots[&quot;2&quot;]</code> were <code>true</code>, then I&rsquo;d be in business. So, all I had to do was put together a script that would hit the URL above with the store ID in question (there actually is an API call made to perform the geoquery search &ndash; I include it in the script below).</p>
+<p>I assumed (correctly, as it turned out) that if <code>.Data[&quot;slots&quot;][&quot;1&quot;]</code> or <code>.Data[&quot;slots&quot;][&quot;2&quot;]</code> were <code>true</code> then I&rsquo;d be in business. So, all I had to do was put together a script that would hit the URL above with the storeNumber in question (there actually is an API call made to perform the geoquery search &ndash; I include it in the script below).</p>
 
 <p>I ended up writing a quick py script and running it in a <a href="https://repl.it">REPL</a>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">requests</span>
@@ -256,9 +256,9 @@ table td {
 <span class="m">34531</span> YYYYY</code></pre></div>
 <p>where the first number is the store id and the second number is the zipcode.</p>
 
-<p>Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did seem to reliably point me to stores where availability slots show up!</p>
+<p>Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did reliably point me to stores where availability slots showed up!</p>
 
-<p>But the problem was by the time I typed in the zip code in the search back, scrolled down to the store number, &ldquo;selected&rdquo; the store and then clicked &ldquo;next&rdquo; (this figure is from above, reproduced to make my point):</p>
+<p>But the problem was by the time I typed in the zip code in the search field, hit enter, scrolled down to the store number, selected the store and then clicked &ldquo;next&rdquo; (this figure is from above, reproduced to make my point):</p>
 
 <p><img src="/dev/img/riteaidscreen1_err1.png" alt="rite aid screen" /></p>
 
@@ -290,15 +290,15 @@ table td {
     <span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>and then started replicating the API calls I was observing in the Network tab. This didn&rsquo;t work very well.</p>
+<p>and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn&rsquo;t work very well.</p>
 
-<p>In hindsight, I realized the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST reuqests.</p>
+<p>In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST reuqests.</p>
 
-<p>Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the <strong>Sources</strong> tab, prettified the javascript code and started reading.</p>
+<p>Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the <strong>Sources</strong> tab in dev tools, prettified the javascript code and started reading.</p>
 
 <h2 id="attempt-3-grokking-then-directly-calling-the-source-code">Attempt 3: Grokking, then directly calling, the source code</h2>
 
-<p>Reading the application&rsquo;s underlying JS code sucked because the source code was obfuscated!</p>
+<p>Reading the application&rsquo;s underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)</p>
 
 <p><img src="/dev/img/obfuscated_code.png" alt="obfuscated" /></p>
 
@@ -306,19 +306,23 @@ table td {
 
 <p><img src="/dev/img/prettified.png" alt="prettified" /></p>
 
-<p>This makes the code easier to read&hellip;but not by much,</p>
+<p>This makes the code easier to read&hellip;but not by much.</p>
 
-<p>I started making progress by using the Network tab&rsquo;s stack trace feature (so handy!)</p>
+<p>I started making progress though by using the Network tab&rsquo;s stack trace feature (so handy!)</p>
 
 <p><img src="/dev/img/network.png" alt="network" /></p>
 
-<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (in this flow) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
+<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
 
 <p>I picked the <code>fetchSlotDetails</code> line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:</p>
 
 <p><img src="/dev/img/source.png" alt="source" /></p>
 
-<p>My biggest takeaway from this code snippet was on line <strong>45916</strong> (lol) &ndash; <strong>fetchSlotDetails</strong> seemed to be a plain old property of a js object! (Or maybe part of the <strong>prototype</strong> object) Cool. Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this:</p>
+<p>My biggest takeaway from this code snippet was on line <strong>45916</strong> (lol) &ndash; <strong>fetchSlotDetails</strong> seemed to be a plain old property of a js object! (Or maybe part of the <strong>prototype</strong> object).</p>
+
+<p>Cool.</p>
+
+<p>Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this gem:</p>
 
 <p><img src="/dev/img/global.png" alt="global" /></p>
 
@@ -335,13 +339,15 @@ table td {
 </code></pre></div>
 <p>meaning <strong>AddComponent</strong> (and as I later validated), <strong>GetComponent</strong> were <strong>PART OF THE GLOBAL SCOPE</strong>.</p>
 
+<p>OMG!!</p>
+
 <p>This was great news for me because <strong>fetchSlotDetails</strong> and in fact all the network call wrappers and DOM wrappers of this entire application were directly accesible via the Dev Tools console! Check it:</p>
 
 <p><img src="/dev/img/console.png" alt="console" /></p>
 
-<p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier. Because <em>most</em> of the methods were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars bound to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <strong>sessionStorage</strong> tokens (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables were global but in the scope of the closure (these were pretty annoying but admittedly interesting problems to solve)</p>
+<p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because <em>most</em> of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars passed along using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method">bind</a> to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <a href="https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks."><strong>sessionStorage</strong> tokens</a> (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables only accessible in the scope of the closure (but initially loaded from session storage if available)</p>
 
-<p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members with pre-existing conditions.</p>
+<p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions.</p>
 
 <h2 id="closing-thoughts">Closing Thoughts</h2>
 
@@ -399,7 +405,7 @@ table td {
 
 <h2 id="sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</h2>
 
-<p>Determining eligibility (via the Rite Aid qualification page) is fascinating. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a &ldquo;winning combo&rdquo; is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that <em>may</em> be valid in the future but aren&rsquo;t currently. In short, this is another example of a not-so-fun UX)</p>
+<p>Determining eligibility (via the Rite Aid qualification page) was a bit murkey. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a &ldquo;winning combo&rdquo; is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that <em>may</em> be valid in the future but aren&rsquo;t currently. In short, this is another example of a not-so-fun UX)</p>
 
 <p>One particular family member of mine has a condition that according to a pharmacist we consulted in meatspace (like, IRL) was certainly valid but we were having trouble picking the matching condition from the UI dropdown.</p>
 
@@ -465,7 +471,7 @@ table td {
   <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre></div>
-<p>which answer the question of &ldquo;which option most accurately describes the condition and is also valid&rdquo; pretty quickly.</p>
+<p>which answered the question of &ldquo;which option most accurately describes the condition and is also valid&rdquo; pretty quickly.</p>
 
 <p>(It also appears that booking appointments through rite aid is only valid in a handful of states and these states have various degrees of rules and regulations governing who can be vaccinated or not).</p>
 
