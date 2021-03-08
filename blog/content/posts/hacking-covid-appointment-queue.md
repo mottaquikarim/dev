@@ -58,13 +58,13 @@ So this begs the question: how do we fix this until a better experience is rolle
 
 My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.
 
-I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome's Dev tools and found calls similar to this
+I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome's Dev tools and found calls similar to this (note the `storeNumber` at the end of the URL)
 
 ```bash
 GET https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber=3697
 ```
 
-which seemed to return:
+which returned:
 
 ```javascript
 {
@@ -81,7 +81,7 @@ which seemed to return:
 }
 ```
 
-I assumed (correctly, as it turned out) that if `.Data.slots["1"]` or `.Data.slots["2"]` were `true`, then I'd be in business. So, all I had to do was put together a script that would hit the URL above with the store ID in question (there actually is an API call made to perform the geoquery search -- I include it in the script below).
+I assumed (correctly, as it turned out) that if `.Data["slots"]["1"]` or `.Data["slots"]["2"]` were `true` then I'd be in business. So, all I had to do was put together a script that would hit the URL above with the storeNumber in question (there actually is an API call made to perform the geoquery search -- I include it in the script below).
 
 I ended up writing a quick py script and running it in a [REPL](https://repl.it):
 
@@ -126,9 +126,9 @@ If all works well, the output looks something like:
 
 where the first number is the store id and the second number is the zipcode. 
 
-Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did seem to reliably point me to stores where availability slots show up!
+Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did reliably point me to stores where availability slots showed up!
 
-But the problem was by the time I typed in the zip code in the search back, scrolled down to the store number, "selected" the store and then clicked "next" (this figure is from above, reproduced to make my point):
+But the problem was by the time I typed in the zip code in the search field, hit enter, scrolled down to the store number, selected the store and then clicked "next" (this figure is from above, reproduced to make my point):
 
 ![rite aid screen](/dev/img/riteaidscreen1_err1.png)
 
@@ -163,15 +163,15 @@ async function postData(url = '', data = {}) {
 }
 ```
 
-and then started replicating the API calls I was observing in the Network tab. This didn't work very well.
+and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn't work very well.
 
-In hindsight, I realized the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST reuqests.
+In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST reuqests.
 
-Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the **Sources** tab, prettified the javascript code and started reading.
+Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the **Sources** tab in dev tools, prettified the javascript code and started reading.
 
 ## Attempt 3: Grokking, then directly calling, the source code
 
-Reading the application's underlying JS code sucked because the source code was obfuscated!
+Reading the application's underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)
 
 ![obfuscated](/dev/img/obfuscated_code.png)
 
@@ -179,19 +179,23 @@ Luckily, uncompressing it is easy (Chrome dev tools has a handy feature that pre
 
 ![prettified](/dev/img/prettified.png)
 
-This makes the code easier to read...but not by much,
+This makes the code easier to read...but not by much.
 
-I started making progress by using the Network tab's stack trace feature (so handy!)
+I started making progress though by using the Network tab's stack trace feature (so handy!)
 
 ![network](/dev/img/network.png)
 
-Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (in this flow) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
+Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (such as clicking the "next" button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
 
 I picked the `fetchSlotDetails` line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:
 
 ![source](/dev/img/source.png)
 
-My biggest takeaway from this code snippet was on line **45916** (lol) -- **fetchSlotDetails** seemed to be a plain old property of a js object! (Or maybe part of the **prototype** object) Cool. Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this:
+My biggest takeaway from this code snippet was on line **45916** (lol) -- **fetchSlotDetails** seemed to be a plain old property of a js object! (Or maybe part of the **prototype** object).
+
+Cool. 
+
+Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this gem:
 
 ![global](/dev/img/global.png)
 
@@ -214,14 +218,15 @@ window.AddComponent
 
 meaning **AddComponent** (and as I later validated), **GetComponent** were **PART OF THE GLOBAL SCOPE**.
 
+OMG!!
+
 This was great news for me because **fetchSlotDetails** and in fact all the network call wrappers and DOM wrappers of this entire application were directly accesible via the Dev Tools console! Check it:
 
 ![console](/dev/img/console.png)
 
-This was probably unintended by the original developers but it sure did make my life a hell of a lot easier. Because _most_ of the methods were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars bound to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting **sessionStorage** tokens (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables were global but in the scope of the closure (these were pretty annoying but admittedly interesting problems to solve)
+This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because _most_ of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars passed along using [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method) to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting [**sessionStorage** tokens](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks.) (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables only accessible in the scope of the closure (but initially loaded from session storage if available)
 
-
-By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members with pre-existing conditions. 
+By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions. 
 
 ## Closing Thoughts
 
@@ -286,7 +291,7 @@ At any rate - useful for potentially _finding_ a store with availability (and ma
 
 ## Sidebar 2: Rite Aid Rules Engine
 
-Determining eligibility (via the Rite Aid qualification page) is fascinating. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a "winning combo" is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that _may_ be valid in the future but aren't currently. In short, this is another example of a not-so-fun UX)
+Determining eligibility (via the Rite Aid qualification page) was a bit murkey. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a "winning combo" is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that _may_ be valid in the future but aren't currently. In short, this is another example of a not-so-fun UX)
 
 One particular family member of mine has a condition that according to a pharmacist we consulted in meatspace (like, IRL) was certainly valid but we were having trouble picking the matching condition from the UI dropdown.
 
@@ -362,7 +367,7 @@ Particularly, in NJ:
 }
 ```
 
-which answer the question of "which option most accurately describes the condition and is also valid" pretty quickly.
+which answered the question of "which option most accurately describes the condition and is also valid" pretty quickly.
 
 (It also appears that booking appointments through rite aid is only valid in a handful of states and these states have various degrees of rules and regulations governing who can be vaccinated or not). 
 
