@@ -139,7 +139,8 @@ table td {
 <li><a href="#attempt-2-running-the-api-calls-from-within-the-browser">Attempt 2: Running the API calls from within the browser.</a></li>
 <li><a href="#attempt-3-grokking-then-directly-calling-the-source-code">Attempt 3: Grokking, then directly calling, the source code</a></li>
 <li><a href="#closing-thoughts">Closing Thoughts</a></li>
-<li><a href="#cvs-sidebar">CVS Sidebar</a></li>
+<li><a href="#sidebar-1-cvs-feed">Sidebar 1: CVS Feed</a></li>
+<li><a href="#sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -170,7 +171,9 @@ table td {
 
 <p><img src="/dev/img/riteaid.png" alt="rite aid" /></p>
 
-<p>It&rsquo;s slick and doesn&rsquo;t even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are lead to the next screen / the beginning of your misery:</p>
+<p>(PPS: check out sidebar#2 below for some commentary about the &ldquo;rules engine&rdquo; and determining if you qualify).</p>
+
+<p>It&rsquo;s slick and doesn&rsquo;t even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are led to the next screen / the beginning of your misery:</p>
 
 <p><img src="/dev/img/riteaidscreen1.png" alt="rite aid screen" /></p>
 
@@ -348,7 +351,7 @@ table td {
 
 <p>I&rsquo;m trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality.</p>
 
-<h2 id="cvs-sidebar">CVS Sidebar</h2>
+<h2 id="sidebar-1-cvs-feed">Sidebar 1: CVS Feed</h2>
 
 <p>Interestingly, the dialog is generated with a single API call that looks like this:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">requests</span>
@@ -393,6 +396,80 @@ table td {
 <span class="p">}</span>
 </code></pre></div>
 <p>At any rate - useful for potentially <em>finding</em> a store with availability (and maybe an alerting service?).</p>
+
+<h2 id="sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</h2>
+
+<p>Determining eligibility (via the Rite Aid qualification page) is fascinating. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a &ldquo;winning combo&rdquo; is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that <em>may</em> be valid in the future but aren&rsquo;t currently. In short, this is another example of a not-so-fun UX)</p>
+
+<p>One particular family member of mine has a condition that according to a pharmacist we consulted in meatspace (like, IRL) was certainly valid but we were having trouble picking the matching condition from the UI dropdown.</p>
+
+<p>To solve this, I looked under the hood on the <a href="https://www.riteaid.com/pharmacy/covid-qualifier">covid qualifier</a> page and noted the following API call:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GET https://www.riteaid.com/content/dam/riteaid-web/covid-19/rule-engine.json</code></pre></div>
+<p>which returned something like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&#34;conditions&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;any&#34;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;all&#34;</span><span class="o">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;stateCode&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;equal&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;NY&#34;</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;age&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;greaterThanInclusive&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;65&#34;</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="c1">// ...
+</span><span class="c1"></span>  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Particularly, in NJ:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="c1">// ...
+</span><span class="c1"></span>  <span class="p">{</span>
+    <span class="s2">&#34;all&#34;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;stateCode&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;equal&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;NJ&#34;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;age&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;greaterThanInclusive&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;18&#34;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;medicalConditionCode&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;in&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="p">[</span>
+          <span class="s2">&#34;Obesity&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Diabetes&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Heart Condition&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Sickle Cell Anemia&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Smoking&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Organ transplant&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Kidney Disease&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;COPD&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Cancer&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Down Syndrome&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Pregnancy&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Weakened Immune System&#34;</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+  <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>which answer the question of &ldquo;which option most accurately describes the condition and is also valid&rdquo; pretty quickly.</p>
+
+<p>(It also appears that booking appointments through rite aid is only valid in a handful of states and these states have various degrees of rules and regulations governing who can be vaccinated or not).</p>
+
+<p>The full JSON body for this API call as of 03/08/2021 is available <a href="https://pastebin.com/Pq7sLWyN">here</a></p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-the-covid-appointment-queue%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-the-covid-appointment-queue%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
