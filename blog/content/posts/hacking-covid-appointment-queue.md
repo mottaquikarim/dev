@@ -251,7 +251,14 @@ I am however very much down to brainstorm / build something similar in principle
 ### Video Walkthrough
 Please find a video walkthrough of the extension working here:
 
-{{< imgur id="4EOIEmY" >}}
+<video draggable="false" controls="" playsinline="" autoplay="" loop="" class="" style="width: 100%; height: auto; border: 1px solid black;">
+  <source type="video/mp4" src="/dev/img/covid-walkthrough.mp4">
+</video>
+<select onchange="document.querySelector('video').playbackRate = Number(this.value)">
+  <option value="1.0">Default (1.0)</option>
+  <option value="0.50">Slower (0.5)</option>
+  <option value="0.10">Slowest (0.1)</option>
+</select>
 
 _In this particular walkthrough, the script actually does find an appointment slot however due to a small bug in validating phone numbers the actual confirmation fails (thank god! as this was just an example and not meant to be "real")_
 
