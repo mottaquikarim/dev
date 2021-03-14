@@ -151,37 +151,37 @@ table td {
 </aside>
 
 
-<p><strong>TL;DR</strong>: By examining the minified source code of the <a href="https://www.riteaid.com/pharmacy/apt-scheduler">Rite Aid Immunization Scheduler</a> I was able to figure out a way to book vaccine appointments for my (eligible &ndash; obviously) loved ones and family friends. In the end, my method successfully booked appointments for 8 individuals living in various parts of New Jersey.</p>
+<p><strong>TL;DR</strong>: By examining the minified source code of the <a href="https://www.riteaid.com/pharmacy/apt-scheduler">Rite Aid Immunization Scheduler</a> I was able to figure out a way to book vaccine appointments for my (eligible &ndash; obviously) loved ones and family friends. So far my method has successfully booked appointments for 8 individuals w/pre-existing conditions living in various parts of New Jersey.</p>
 
 <h2 id="the-problem">The Problem</h2>
 
-<p>A few close family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine. I&rsquo;m obviously concerned about their well being and have sought ways to snag them an appointment.</p>
+<p>A few close family members of mine have pre-existing conditions making them eligible to get the COVID vaccine. I&rsquo;m obviously concerned about their well being and have sought ways to snag them an appointment.</p>
 
 <p>Enter <a href="https://vaccinefinder.org/search"><strong>Vaccine Finder</strong></a>, a nifty site that aggregates locations near you that are administering vaccines <em>and</em> happen to have vaccines in stock.</p>
 
-<p>Perfect! This seemed to be the ideal solution. Except, whomp whomp, not really. For New Jersey at least, the research results takes the user to the respective landing pages of the vaccine providers - from my experience, these were mainly Rite Aid/CVS pharamacies:</p>
+<p>Perfect! This seemed to be the ideal solution. Except, whomp whomp, not really. For New Jersey at least, the search results take the user to the respective landing pages of the vaccine providers - from my experience, these were mainly Rite Aid/CVS pharamacies:</p>
 
 <p><img src="/dev/img/vaccinefinder.png" alt="vaccine finder results" /></p>
 
-<p>The <a href="https://www.cvs.com/immunizations/covid-19-vaccine">CVS pharmacy vaccination portal</a> was pretty disappointing - everything is always booked and there is much else you can really do beyond that.</p>
+<p>The <a href="https://www.cvs.com/immunizations/covid-19-vaccine">CVS pharmacy vaccination portal</a> was pretty disappointing - everything is always booked and there is not much else you can really do beyond that.</p>
 
 <p><img src="/dev/img/cvs.png" alt="cvs results" /></p>
 
-<p>(PS: check out the CSV sidebar below for some commentary about the &ldquo;feed&rdquo; that is available here).</p>
+<p><em>(PS: check out the CSV sidebar below for some commentary about the &ldquo;feed&rdquo; that is available here).</em></p>
 
 <p>The <a href="https://www.riteaid.com/pharmacy/apt-scheduler">Rite Aid vaccination portal</a> is a lot more interesting.</p>
 
-<p>It starts us off with a handy form that checks to see if one qualifies for booking an appointment.</p>
+<p>It starts the user off with a handy form that checks to see if s/he qualifies for booking an appointment.</p>
 
 <p><img src="/dev/img/riteaid.png" alt="rite aid" /></p>
 
-<p>(PPS: check out sidebar#2 below for some commentary about the &ldquo;rules engine&rdquo; and determining if you qualify).</p>
+<p><em>(PPS: check out sidebar#2 below for some commentary about the &ldquo;rules engine&rdquo; and determining if you qualify).</em></p>
 
-<p>It&rsquo;s slick and doesn&rsquo;t even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are led to the next screen / the beginning of your misery:</p>
+<p>It&rsquo;s slick and doesn&rsquo;t even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment (the UX for this sucks but if you look at the rules engine commentary towards the end of this post, you may end up saving a few minutes), you are led to the next screen / the beginning of your misery:</p>
 
 <p><img src="/dev/img/riteaidscreen1.png" alt="rite aid screen" /></p>
 
-<p>Ok great - let&rsquo;s pick a store and see where we end up.</p>
+<p>So far, this doesn&rsquo;t look so bad - let&rsquo;s pick a store and see where we end up.</p>
 
 <p><img src="/dev/img/riteaidscreen1_err1.png" alt="rite aid screen" /></p>
 
@@ -190,22 +190,22 @@ table td {
 <p>A few issues:</p>
 
 <ul>
-<li>The list of stores generated are not stores with vaccines <em>available</em>&hellip;they&rsquo;re just stores that exist nearby.</li>
-<li>You have to <strong>SELECT</strong> each store, then click on <strong>Next</strong> to see if a slot may be available or not. More often than not, availability does not exist. So, as a &ldquo;normal&rdquo; user you have no choice but to click over and over again hoping for a hit.</li>
-<li>Now, assuming you&rsquo;ve cleared this step and picked a store quickly enough, you get sent to the next &ldquo;level&rdquo; where you must choose from a dropdown <em>super quick</em> for available time slots in the Morning, Afternoon or Evening. But! If someone else is on the same exact view and happens to pick the slot before you, you lose! There&rsquo;s no indication of this until <em>after</em> you pick and then back you go to step 1. Do no pass Go. Do not collect $200.</li>
+<li>The list of stores generated are not actually establishments with vaccines <em>available</em> in stock&hellip;they&rsquo;re just stores that exist nearby.</li>
+<li>You have to <strong>SELECT</strong> each store, then click on <strong>Next</strong> to see if a slot may be available. More often than not, availability does not exist. So, as a &ldquo;normal&rdquo; user you have no choice but to click each store option over and over again hoping for a hit.</li>
+<li>Now, assuming you&rsquo;ve cleared this step and picked a store quickly enough, you get sent to the next &ldquo;level&rdquo; where you must choose from a dropdown <em>super quickly</em> for available time slots at that store, broken into Morning, Afternoon or Evening subcategories. But! If someone else is on the same exact view and happens to pick the available subcategory before you, you lose! There&rsquo;s no indication of this until <em>after</em> you have made your choice and if you were not fast enough, too bad! Back you go to step 1 &ndash; do no pass Go. Do not collect $200.</li>
 </ul>
 
 <p>Ok so anyways - at this point, this is the issue:</p>
 
 <blockquote>
-<p>The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable &trade; given that demand for the appointment slots are very, very high and the flow does not really account for this usecase.</p>
+<p>The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable &trade; given that demand for the appointment slots are very, very high and the UX flow does not really account for this usecase.</p>
 </blockquote>
 
 <p>So this begs the question: how do we fix this until a better experience is rolled out?</p>
 
 <h2 id="attempt-1-find-stores-with-availability">Attempt 1: Find stores with Availability</h2>
 
-<p>My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.</p>
+<p>My first attempt at trying to get around these UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.</p>
 
 <p>I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome&rsquo;s Dev tools and found calls similar to this (note the <code>storeNumber</code> at the end of the URL)</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GET https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber<span class="o">=</span><span class="m">3697</span></code></pre></div>
@@ -262,7 +262,7 @@ table td {
 
 <p>Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did reliably point me to stores where availability slots showed up!</p>
 
-<p>But the problem was by the time I typed in the zip code in the search field, hit enter, scrolled down to the store number, selected the store and then clicked &ldquo;next&rdquo; (this figure is from above, reproduced to make my point):</p>
+<p>But the problem was by the time I typed in the zip code in the search field UI, hit enter, scrolled down to the store number, selected the store and then clicked &ldquo;next&rdquo; (this figure is from above, reproduced to make my point):</p>
 
 <p><img src="/dev/img/riteaidscreen1_err1.png" alt="rite aid screen" /></p>
 
@@ -296,13 +296,13 @@ table td {
 </code></pre></div>
 <p>and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn&rsquo;t work very well.</p>
 
-<p>In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST reuqests.</p>
+<p>In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST requests.</p>
 
 <p>Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the <strong>Sources</strong> tab in dev tools, prettified the javascript code and started reading.</p>
 
 <h2 id="attempt-3-grokking-then-directly-calling-the-source-code">Attempt 3: Grokking, then directly calling, the source code</h2>
 
-<p>Reading the application&rsquo;s underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)</p>
+<p>Inspecting the application&rsquo;s underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)</p>
 
 <p><img src="/dev/img/obfuscated_code.png" alt="obfuscated" /></p>
 
@@ -316,7 +316,7 @@ table td {
 
 <p><img src="/dev/img/network.png" alt="network" /></p>
 
-<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
+<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
 
 <p>I picked the <code>fetchSlotDetails</code> line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:</p>
 
@@ -349,7 +349,7 @@ table td {
 
 <p><img src="/dev/img/console.png" alt="console" /></p>
 
-<p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because <em>most</em> of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars passed along using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method">bind</a> to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <a href="https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks."><strong>sessionStorage</strong> tokens</a> (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables only accessible in the scope of the closure (but initially loaded from session storage if available)</p>
+<p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because <em>most</em> of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars passed along using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method">bind</a> as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <a href="https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks."><strong>sessionStorage</strong> tokens</a> (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables are only accessible in the scope of the closure (but initially loaded from session storage if available)</p>
 
 <p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions.</p>
 

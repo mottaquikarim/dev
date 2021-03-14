@@ -18,8 +18,8 @@
       <pubDate>Sat, 27 Feb 2021 19:45:28 +0000</pubDate>
       
       <guid>https://mottaquikarim.github.io/dev/posts/hacking-the-covid-appointment-queue/</guid>
-      <description>Table of Contents  TL;DR: By examining the minified source code of the Rite Aid Immunization Scheduler I was able to figure out a way to book vaccine appointments for my (eligible &amp;ndash; obviously) loved ones and family friends. In the end, my method successfully booked appointments for 8 individuals living in various parts of New Jersey.
-The Problem A few close family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine.</description>
+      <description>Table of Contents  TL;DR: By examining the minified source code of the Rite Aid Immunization Scheduler I was able to figure out a way to book vaccine appointments for my (eligible &amp;ndash; obviously) loved ones and family friends. So far my method has successfully booked appointments for 8 individuals w/pre-existing conditions living in various parts of New Jersey.
+The Problem A few close family members of mine have pre-existing conditions making them eligible to get the COVID vaccine.</description>
     </item>
     
     
