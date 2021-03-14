@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Hacking the Covid Appointment Queue</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/">chrome dev tools</a></strong></small>
+        <header id="post-header">
+        <h1>Hacking the Covid Appointment Queue</h1><time>February 27, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#the-problem">The Problem</a></li>
+<li><a href="#attempt-1-find-stores-with-availability">Attempt 1: Find stores with Availability</a></li>
+<li><a href="#attempt-2-running-the-api-calls-from-within-the-browser">Attempt 2: Running the API calls from within the browser.</a></li>
+<li><a href="#attempt-3-grokking-then-directly-calling-the-source-code">Attempt 3: Grokking, then directly calling, the source code</a></li>
+<li><a href="#closing-thoughts">Closing Thoughts</a></li>
+<li><a href="#update-03-14-2021">UPDATE 03/14/2021</a>
+<ul>
+<li><a href="#video-walkthrough">Video Walkthrough</a></li>
+</ul></li>
+<li><a href="#sidebar-1-cvs-feed">Sidebar 1: CVS Feed</a></li>
+<li><a href="#sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p><strong>TL;DR</strong>: By examining the minified source code of the <a href="https://www.riteaid.com/pharmacy/apt-scheduler">Rite Aid Immunization Scheduler</a> I was able to figure out a way to book vaccine appointments for my (eligible &ndash; obviously) loved ones and family friends. In the end, my method successfully booked appointments for 8 individuals living in various parts of New Jersey.</p>
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>A few close family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine. I&rsquo;m obviously concerned about their well being and have sought ways to snag them an appointment.</p>
+
+<p>Enter <a href="https://vaccinefinder.org/search"><strong>Vaccine Finder</strong></a>, a nifty site that aggregates locations near you that are administering vaccines <em>and</em> happen to have vaccines in stock.</p>
+
+<p>Perfect! This seemed to be the ideal solution. Except, whomp whomp, not really. For New Jersey at least, the research results takes the user to the respective landing pages of the vaccine providers - from my experience, these were mainly Rite Aid/CVS pharamacies:</p>
+
+<p><img src="/dev/img/vaccinefinder.png" alt="vaccine finder results" /></p>
+
+<p>The <a href="https://www.cvs.com/immunizations/covid-19-vaccine">CVS pharmacy vaccination portal</a> was pretty disappointing - everything is always booked and there is much else you can really do beyond that.</p>
+
+<p><img src="/dev/img/cvs.png" alt="cvs results" /></p>
+
+<p>(PS: check out the CSV sidebar below for some commentary about the &ldquo;feed&rdquo; that is available here).</p>
+
+<p>The <a href="https://www.riteaid.com/pharmacy/apt-scheduler">Rite Aid vaccination portal</a> is a lot more interesting.</p>
+
+<p>It starts us off with a handy form that checks to see if one qualifies for booking an appointment.</p>
+
+<p><img src="/dev/img/riteaid.png" alt="rite aid" /></p>
+
+<p>(PPS: check out sidebar#2 below for some commentary about the &ldquo;rules engine&rdquo; and determining if you qualify).</p>
+
+<p>It&rsquo;s slick and doesn&rsquo;t even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are led to the next screen / the beginning of your misery:</p>
+
+<p><img src="/dev/img/riteaidscreen1.png" alt="rite aid screen" /></p>
+
+<p>Ok great - let&rsquo;s pick a store and see where we end up.</p>
+
+<p><img src="/dev/img/riteaidscreen1_err1.png" alt="rite aid screen" /></p>
+
+<p>Whomp whomp, again!</p>
+
+<p>A few issues:</p>
+
+<ul>
+<li>The list of stores generated are not stores with vaccines <em>available</em>&hellip;they&rsquo;re just stores that exist nearby.</li>
+<li>You have to <strong>SELECT</strong> each store, then click on <strong>Next</strong> to see if a slot may be available or not. More often than not, availability does not exist. So, as a &ldquo;normal&rdquo; user you have no choice but to click over and over again hoping for a hit.</li>
+<li>Now, assuming you&rsquo;ve cleared this step and picked a store quickly enough, you get sent to the next &ldquo;level&rdquo; where you must choose from a dropdown <em>super quick</em> for available time slots in the Morning, Afternoon or Evening. But! If someone else is on the same exact view and happens to pick the slot before you, you lose! There&rsquo;s no indication of this until <em>after</em> you pick and then back you go to step 1. Do no pass Go. Do not collect $200.</li>
+</ul>
+
+<p>Ok so anyways - at this point, this is the issue:</p>
+
+<blockquote>
+<p>The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable &trade; given that demand for the appointment slots are very, very high and the flow does not really account for this usecase.</p>
+</blockquote>
+
+<p>So this begs the question: how do we fix this until a better experience is rolled out?</p>
+
+<h2 id="attempt-1-find-stores-with-availability">Attempt 1: Find stores with Availability</h2>
+
+<p>My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.</p>
+
+<p>I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome&rsquo;s Dev tools and found calls similar to this (note the <code>storeNumber</code> at the end of the URL)</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GET https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber<span class="o">=</span><span class="m">3697</span></code></pre></div>
+<p>which returned:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&#34;Data&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;slots&#34;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&#34;1&#34;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="s2">&#34;2&#34;</span><span class="o">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s2">&#34;Status&#34;</span><span class="o">:</span> <span class="s2">&#34;SUCCESS&#34;</span><span class="p">,</span>
+  <span class="s2">&#34;ErrCde&#34;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="s2">&#34;ErrMsg&#34;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="s2">&#34;ErrMsgDtl&#34;</span><span class="o">:</span> <span class="kc">null</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>I assumed (correctly, as it turned out) that if <code>.Data[&quot;slots&quot;][&quot;1&quot;]</code> or <code>.Data[&quot;slots&quot;][&quot;2&quot;]</code> were <code>true</code> then I&rsquo;d be in business. So, all I had to do was put together a script that would hit the URL above with the storeNumber in question (there actually is an API call made to perform the geoquery search &ndash; I include it in the script below).</p>
+
+<p>I ended up writing a quick py script and running it in a <a href="https://repl.it">REPL</a>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">get_stores</span><span class="p">(</span><span class="n">zipcode</span> <span class="o">=</span> <span class="s2">&#34;XXXXX&#34;</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+  <span class="n">url_base</span> <span class="o">=</span> <span class="s2">&#34;https://www.riteaid.com/services/ext/v2/stores/getStores&#34;</span>
+  <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&#34;address&#34;</span><span class="p">:</span> <span class="n">zipcode</span><span class="p">,</span>
+    <span class="s2">&#34;attrFilter&#34;</span><span class="p">:</span> <span class="s2">&#34;PREF-112&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;fetchMechanismVersion&#34;</span><span class="p">:</span> <span class="s2">&#34;2&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;radius&#34;</span><span class="p">:</span> <span class="n">radius</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_base</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_store</span><span class="p">(</span><span class="n">storenumber</span><span class="p">):</span>
+  <span class="n">url_base</span> <span class="o">=</span> <span class="s2">&#34;https://www.riteaid.com/services/ext/v2/vaccine/checkSlots&#34;</span>
+  <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&#34;storeNumber&#34;</span><span class="p">:</span> <span class="n">storenumber</span><span class="p">,</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_base</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">is_store_eligible</span><span class="p">(</span><span class="n">store</span><span class="p">):</span>
+  <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">store</span><span class="p">[</span><span class="s1">&#39;Data&#39;</span><span class="p">][</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">slot</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;XXXXX&#34;</span><span class="p">,</span> <span class="s2">&#34;YYYYY&#34;</span><span class="p">,</span> <span class="s2">&#34;ZZZZZ&#34;</span><span class="p">]:</span>
+  <span class="n">stores</span> <span class="o">=</span> <span class="n">get_stores</span><span class="p">(</span><span class="n">zipcode</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stores</span><span class="p">[</span><span class="s1">&#39;Data&#39;</span><span class="p">][</span><span class="s1">&#39;stores&#39;</span><span class="p">]:</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">get_store</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;storeNumber&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">is_store_eligible</span><span class="p">(</span><span class="n">store</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;storeNumber&#39;</span><span class="p">],</span> <span class="n">z</span><span class="p">)</span></code></pre></div>
+<p>If all works well, the output looks something like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">12345</span> XXXXX
+<span class="m">34531</span> YYYYY</code></pre></div>
+<p>where the first number is the store id and the second number is the zipcode.</p>
+
+<p>Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did reliably point me to stores where availability slots showed up!</p>
+
+<p>But the problem was by the time I typed in the zip code in the search field, hit enter, scrolled down to the store number, selected the store and then clicked &ldquo;next&rdquo; (this figure is from above, reproduced to make my point):</p>
+
+<p><img src="/dev/img/riteaidscreen1_err1.png" alt="rite aid screen" /></p>
+
+<p>&hellip;either the slot would be gone <strong>OR</strong> I&rsquo;d advance to the next screen where I&rsquo;d have to play the game of clicking UI buttons some more and lose out on the appointment slot anyways. 🤦🤦🤦</p>
+
+<p>Bummer.</p>
+
+<h2 id="attempt-2-running-the-api-calls-from-within-the-browser">Attempt 2: Running the API calls from within the browser.</h2>
+
+<p>Given this setback, my next thought was to try and run the API calls as I observed them in the Chrome Dev tools but with plain old javascript.</p>
+
+<p>I wrote a quick POST request wrapper using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch API</a> (GET was easy enough to do without having to write a func for it):</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">postData</span><span class="p">(</span><span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="nx">formBody</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="nx">encodedKey</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">property</span><span class="p">);</span>
+        <span class="k">const</span> <span class="nx">encodedValue</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">property</span><span class="p">]);</span>
+        <span class="nx">formBody</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">encodedKey</span> <span class="o">+</span> <span class="s2">&#34;=&#34;</span> <span class="o">+</span> <span class="nx">encodedValue</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">formBody</span> <span class="o">=</span> <span class="nx">formBody</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&#34;&amp;&#34;</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+        <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+        <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nx">body</span><span class="o">:</span> <span class="nx">formBody</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn&rsquo;t work very well.</p>
+
+<p>In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST reuqests.</p>
+
+<p>Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the <strong>Sources</strong> tab in dev tools, prettified the javascript code and started reading.</p>
+
+<h2 id="attempt-3-grokking-then-directly-calling-the-source-code">Attempt 3: Grokking, then directly calling, the source code</h2>
+
+<p>Reading the application&rsquo;s underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)</p>
+
+<p><img src="/dev/img/obfuscated_code.png" alt="obfuscated" /></p>
+
+<p>Luckily, uncompressing it is easy (Chrome dev tools has a handy feature that prettifies the js code). Post prettification, we end up with:</p>
+
+<p><img src="/dev/img/prettified.png" alt="prettified" /></p>
+
+<p>This makes the code easier to read&hellip;but not by much.</p>
+
+<p>I started making progress though by using the Network tab&rsquo;s stack trace feature (so handy!)</p>
+
+<p><img src="/dev/img/network.png" alt="network" /></p>
+
+<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
+
+<p>I picked the <code>fetchSlotDetails</code> line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:</p>
+
+<p><img src="/dev/img/source.png" alt="source" /></p>
+
+<p>My biggest takeaway from this code snippet was on line <strong>45916</strong> (lol) &ndash; <strong>fetchSlotDetails</strong> seemed to be a plain old property of a js object! (Or maybe part of the <strong>prototype</strong> object).</p>
+
+<p>Cool.</p>
+
+<p>Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this gem:</p>
+
+<p><img src="/dev/img/global.png" alt="global" /></p>
+
+<p>The key takeway (for me at least) was this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// ...
+</span><span class="c1"></span><span class="p">)(</span><span class="nb">window</span><span class="p">,</span> <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">);</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+<span class="c1">// ...
+</span><span class="c1"></span>    <span class="nx">c</span><span class="p">.</span><span class="nx">AddComponent</span><span class="p">(</span><span class="s2">&#34;covidScheduler&#34;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+</code></pre></div>
+<p>Based on the first two lines, it seemed strongly likely to me that <code>c</code> was actually just the <strong>global</strong> window object! If true, then <code>c.AddComponent</code> was simply the same as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nb">window</span><span class="p">.</span><span class="nx">AddComponent</span>
+</code></pre></div>
+<p>meaning <strong>AddComponent</strong> (and as I later validated), <strong>GetComponent</strong> were <strong>PART OF THE GLOBAL SCOPE</strong>.</p>
+
+<p>OMG!!</p>
+
+<p>This was great news for me because <strong>fetchSlotDetails</strong> and in fact all the network call wrappers and DOM wrappers of this entire application were directly accesible via the Dev Tools console! Check it:</p>
+
+<p><img src="/dev/img/console.png" alt="console" /></p>
+
+<p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because <em>most</em> of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars passed along using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method">bind</a> to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <a href="https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks."><strong>sessionStorage</strong> tokens</a> (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables only accessible in the scope of the closure (but initially loaded from session storage if available)</p>
+
+<p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions.</p>
+
+<h2 id="closing-thoughts">Closing Thoughts</h2>
+
+<p>Some things never change.</p>
+
+<p>Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent functionality like I discovered on this rite-aid site. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.</p>
+
+<p>I&rsquo;m trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality.</p>
+
+<h2 id="update-03-14-2021">UPDATE 03/14/2021</h2>
+
+<p>Some folks have pointed out to me that the actual script/code is not available here.</p>
+
+<p>This is by design!</p>
+
+<p>Having reflected further about the implications of making my implementation public, I&rsquo;ve come to the conclusion that it will perhaps do more harm than good. The major purpose of this write up was really to chronicle my problem solving approach and less significantly, showcase the awesome utility of the Chrome Dev Tools.</p>
+
+<p>I really wish there was a better way to get a hold of appointment slots - but opening up a side channel to circumvent a bad UX flow will only lead to further detrimental effects (greater strain on the Rite Aid Immunization Scheduler&rsquo;s APIs, folks charging to run the tool for the not-so-tech-savvy and/or people who are not eligible signing up just because they can). That&rsquo;s the last thing we need right now.</p>
+
+<p>I am however very much down to brainstorm / build something similar in principle to TurboVax. I highly admire the tool and am glad it exists but it is disappointing that the code is not available for forking / re-using. If anyone is down to collaborate, please get in touch!</p>
+
+<h3 id="video-walkthrough">Video Walkthrough</h3>
+
+<p>Please find a video walkthrough of the extension working here:</p>
+
+<div class="embed imgur-image">
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/4EOIEmY">
+<a href="//imgur.com/4EOIEmY"></a>
+</blockquote>
+<script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+</div>
+
+
+
+<p><em>In this particular walkthrough, the script actually does find an appointment slot however due to a small bug in validating phone numbers the actual confirmation fails (thank god! as this was just an example and not meant to be &ldquo;real&rdquo;)</em></p>
+
+<p>^ For fun, let&rsquo;s expound on what the phone number validation was about.</p>
+
+<p>For whatever reason, the phone number that is input into the system by the user as part of the <strong>contact info</strong> stage is stored as: <strong>(XXX) XXX-XXXX</strong>. However, the appointment confirmation API endpoint raises a validation exception when it sees this, returning:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&#34;Data&#34;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="s2">&#34;Status&#34;</span><span class="o">:</span> <span class="s2">&#34;ERROR&#34;</span><span class="p">,</span>
+  <span class="s2">&#34;ErrCde&#34;</span><span class="o">:</span> <span class="s2">&#34;RA0001&#34;</span><span class="p">,</span>
+  <span class="s2">&#34;ErrMsg&#34;</span><span class="o">:</span> <span class="s2">&#34;There was an error validating your entries. Please check and try again.&#34;</span><span class="p">,</span>
+  <span class="s2">&#34;ErrMsgDtl&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;patientDetails.phone&#34;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="s2">&#34;Please enter a ten digit phone number&#34;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just updated that field and remove <strong>(</strong>, <strong>)</strong>, <strong>-</strong> characters. My initial approach was not very javascript-y (and I will not even share here).</p>
+
+<p>A contact suggested the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">[...</span><span class="nx">phone_str</span><span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nb">Number</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>This is super clever! <code>Number(N)</code> will return <code>NaN</code> if <code>N</code> is not <code>0-9</code>. <code>NaN</code> is falsey af so it gets filtered out of the final return value.</p>
+
+<p>The <em>bug</em> here though is that <code>Number(N)</code> where <code>N === 0</code> is <strong>also</strong> falsey, meaning any numberstrings that contain <code>0</code> <strong>also</strong> will be filtered out.</p>
+
+<p>The workaround - while uglier - is as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">[...</span><span class="nx">phone_str</span><span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nx">n</span> <span class="p">=&gt;</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">Number</span><span class="p">(</span><span class="nx">n</span><span class="p">))).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>This now explicitly filters out a possible char if it is indeed <code>NaN</code> and <code>NaN</code> <strong>only</strong>.</p>
+
+<h2 id="sidebar-1-cvs-feed">Sidebar 1: CVS Feed</h2>
+
+<p>Interestingly, the dialog is generated with a single API call that looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">get_cvs</span><span class="p">():</span>
+  <span class="n">url_base</span> <span class="o">=</span> <span class="s2">&#34;https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.NJ.json?vaccineinfo&#34;</span>
+  <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;https://www.cvs.com/immunizations/covid-19-vaccine&#34;</span><span class="p">,</span>
+    <span class="c1"># without this dude, it fails!</span>
+    <span class="s2">&#34;user-agent&#34;</span><span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36&#34;</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_base</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span></code></pre></div>
+<p>The results are in pretty JSON format at least:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&#34;responsePayloadData&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;currentTime&#34;</span><span class="o">:</span> <span class="s2">&#34;2021-02-27T23:28:06.837&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;data&#34;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&#34;NJ&#34;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s2">&#34;city&#34;</span><span class="o">:</span> <span class="s2">&#34;BRIGANTINE&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;state&#34;</span><span class="o">:</span> <span class="s2">&#34;NJ&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;status&#34;</span><span class="o">:</span> <span class="s2">&#34;Fully Booked&#34;</span>
+        <span class="p">},</span>
+        <span class="c1">// ...
+</span><span class="c1"></span>        <span class="p">{</span>
+          <span class="s2">&#34;city&#34;</span><span class="o">:</span> <span class="s2">&#34;WILLINGBORO&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;state&#34;</span><span class="o">:</span> <span class="s2">&#34;NJ&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;status&#34;</span><span class="o">:</span> <span class="s2">&#34;Fully Booked&#34;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&#34;isBookingCompleted&#34;</span><span class="o">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="s2">&#34;responseMetaData&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;statusDesc&#34;</span><span class="o">:</span> <span class="s2">&#34;Success&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;conversationId&#34;</span><span class="o">:</span> <span class="s2">&#34;Id-4c30be3e0bd44ed5af5505b861381edd&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;refId&#34;</span><span class="o">:</span> <span class="s2">&#34;Id-613a3b6078b5418650d72c1f&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;operation&#34;</span><span class="o">:</span> <span class="s2">&#34;getInventorybyCity&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;version&#34;</span><span class="o">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;statusCode&#34;</span><span class="o">:</span> <span class="s2">&#34;0000&#34;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>At any rate - useful for potentially <em>finding</em> a store with availability (and maybe an alerting service?).</p>
+
+<h2 id="sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</h2>
+
+<p>Determining eligibility (via the Rite Aid qualification page) was a bit murkey. To determine if various family members were eligible, I initially (painstakingly) filled out the form inputs plugging in various ailments to try and find the winning combination. (The reason a &ldquo;winning combo&rdquo; is needed even is that the choices presented do not clearly match the list of criteria presented on government websites. Plus there seems to be conditions presented in the UI that <em>may</em> be valid in the future but aren&rsquo;t currently. In short, this is another example of a not-so-fun UX)</p>
+
+<p>One particular family member of mine has a condition that according to a pharmacist we consulted in meatspace (like, IRL) was certainly valid but we were having trouble picking the matching condition from the UI dropdown.</p>
+
+<p>To solve this, I looked under the hood on the <a href="https://www.riteaid.com/pharmacy/covid-qualifier">covid qualifier</a> page and noted the following API call:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GET https://www.riteaid.com/content/dam/riteaid-web/covid-19/rule-engine.json</code></pre></div>
+<p>which returned something like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&#34;conditions&#34;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&#34;any&#34;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;all&#34;</span><span class="o">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;stateCode&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;equal&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;NY&#34;</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;age&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;greaterThanInclusive&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;65&#34;</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="c1">// ...
+</span><span class="c1"></span>  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Particularly, in NJ:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="c1">// ...
+</span><span class="c1"></span>  <span class="p">{</span>
+    <span class="s2">&#34;all&#34;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;stateCode&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;equal&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;NJ&#34;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;age&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;greaterThanInclusive&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="s2">&#34;18&#34;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s2">&#34;fact&#34;</span><span class="o">:</span> <span class="s2">&#34;medicalConditionCode&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;operator&#34;</span><span class="o">:</span> <span class="s2">&#34;in&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;value&#34;</span><span class="o">:</span> <span class="p">[</span>
+          <span class="s2">&#34;Obesity&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Diabetes&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Heart Condition&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Sickle Cell Anemia&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Smoking&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Organ transplant&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Kidney Disease&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;COPD&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Cancer&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Down Syndrome&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Pregnancy&#34;</span><span class="p">,</span>
+          <span class="s2">&#34;Weakened Immune System&#34;</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+  <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>which answered the question of &ldquo;which option most accurately describes the condition and is also valid&rdquo; pretty quickly.</p>
+
+<p>(It also appears that booking appointments through rite aid is only valid in a handful of states and these states have various degrees of rules and regulations governing who can be vaccinated or not).</p>
+
+<p>The full JSON body for this API call as of 03/08/2021 is available <a href="https://pastebin.com/Pq7sLWyN">here</a></p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-the-covid-appointment-queue%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-the-covid-appointment-queue%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-the-covid-appointment-queue%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>

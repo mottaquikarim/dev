@@ -3,54 +3,167 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://taqkarim.dev/about/</loc>
-    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
+    <loc>https://mottaquikarim.github.io/dev/posts/hacking-the-covid-appointment-queue/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/</loc>
-    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
+    <loc>https://mottaquikarim.github.io/dev/posts/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/posts/custom-args-in-makefile/</loc>
-    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/</loc>
-    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
+    <loc>https://mottaquikarim.github.io/dev/tags/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/posts/integrating-code-climate-w/go-pkgs/</loc>
+    <loc>https://mottaquikarim.github.io/dev/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/just-for-fun/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/hello-wrold-from-colab/</loc>
+    <lastmod>2021-01-28T04:01:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/meta/</loc>
+    <lastmod>2021-01-28T04:01:51+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/python/</loc>
+    <lastmod>2021-01-28T04:01:51+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/handling-parquet-schema-mismatch-based-on-data/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/esoteric-bug/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</loc>
+    <lastmod>2021-01-24T04:01:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/golang/</loc>
+    <lastmod>2021-01-24T04:01:51+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/is-json.decoder-broken-in-golang/</loc>
+    <lastmod>2021-01-14T01:26:01+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/featured/</loc>
+    <lastmod>2021-01-14T01:26:01+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/about/</loc>
+    <lastmod>2021-01-09T06:35:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/using-makefile-docker-for-golang-dev/</loc>
+    <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/makefile/</loc>
+    <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/custom-args-in-makefile/</loc>
+    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/integrating-code-climate-w/go-pkgs/</loc>
     <lastmod>2021-01-01T14:28:32+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/posts/generate-lambda-layer-artifacts-w/docker/</loc>
+    <loc>https://mottaquikarim.github.io/dev/posts/generate-lambda-layer-artifacts-w/docker/</loc>
     <lastmod>2020-12-22T16:41:25+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
-    <lastmod>2020-12-16T14:28:28+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/gotcha-w/comparing-base64-encoded-strs/</loc>
-    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/categories/</loc>
+    <loc>https://mottaquikarim.github.io/dev/tags/docker/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://taqkarim.dev/tags/</loc>
+    <loc>https://mottaquikarim.github.io/dev/tags/serverless/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
+    <lastmod>2020-12-16T14:28:28+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/gotcha-w/comparing-base64-encoded-strs/</loc>
+    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/elasticsearch/</loc>
+    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/connecting-to-elasticsearch-configured-via-docker/</loc>
+    <lastmod>2020-03-16T06:37:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/self-grading-quizzes-with-airtable/</loc>
+    <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/teaching/</loc>
+    <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/categories/</loc>
     <priority>0</priority>
   </url>
   

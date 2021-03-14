@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Handling Parquet Schema Mismatch Based on Data</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/esoteric-bug/">esoteric bug</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/python/">python</a></strong></small>
+        <header id="post-header">
+        <h1>Handling Parquet Schema Mismatch Based on Data</h1><time>January 24, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#the-problem">The Problem</a></li>
+<li><a href="#analysis-and-remarks">Analysis and Remarks</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>TL;DR: explicitly define your parquet schema when reading/writing from pq tables if you want to maintain consistent datatypes even when column values are null.</p>
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>Consider the following pandas dataframe, written into parquet format:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="kn">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="kn">as</span> <span class="nn">pq</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+  <span class="p">{</span>
+    <span class="s1">&#39;organizationId&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;org1&#39;</span><span class="p">,</span> <span class="s1">&#39;org2&#39;</span><span class="p">,</span> <span class="s1">&#39;org3&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;customerProducts&#39;</span> <span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="s1">&#39;p2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;p4&#39;</span><span class="p">,</span> <span class="s1">&#39;p5&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="s1">&#39;p3&#39;</span><span class="p">]]</span>
+  <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;output.parquet&#39;</span><span class="p">)</span></code></pre></div>
+<p>Here, we have a dataframe with two columns - with the <code>customerProducts</code> col storing a list of strings as data.</p>
+
+<p>Let&rsquo;s use pyarrow to read this file and display the schema.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="kn">as</span> <span class="nn">pq</span>
+
+<span class="n">pfile</span> <span class="o">=</span> <span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;output.parquet&#39;</span><span class="p">)</span>
+<span class="n">pfile</span><span class="o">.</span><span class="n">schema</span></code></pre></div>
+<p>The output is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">organizationId: string
+customerProducts: list&lt;item: string&gt;
+  child 0, item: string</code></pre></div>
+<p>So far, so good. Ok, now let&rsquo;s try this again but now, for this particular dataframe, in every row <code>customerProducts</code> will be empty.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="kn">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="kn">as</span> <span class="nn">pq</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+  <span class="p">{</span>
+    <span class="s1">&#39;organizationId&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;org1&#39;</span><span class="p">,</span> <span class="s1">&#39;org2&#39;</span><span class="p">,</span> <span class="s1">&#39;org3&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;customerProducts&#39;</span> <span class="p">:</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+  <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;output_nulls.parquet&#39;</span><span class="p">)</span></code></pre></div>
+<p>What happens though - when we try to read the schema of <em>this</em> pq file?</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="kn">as</span> <span class="nn">pq</span>
+
+<span class="n">pfile</span> <span class="o">=</span> <span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;output_nulls.parquet&#39;</span><span class="p">)</span>
+<span class="n">pfile</span><span class="o">.</span><span class="n">schema</span></code></pre></div>
+<p>The output is this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">organizationId: string
+customerProducts: list&lt;item: null&gt;
+  child 0, item: null</code></pre></div>
+<p><strong>null</strong>!!</p>
+
+<h2 id="analysis-and-remarks">Analysis and Remarks</h2>
+
+<p>So firstly - let&rsquo;s consider the <em>why</em> here: why does this happen? If we look only at <code>output_nulls.parquet</code>, the behavior actually makes a lot of sense. <code>customerProducts</code> has no data - it is a list of empty lists. Parquet has no way to tell that it actually <em>ought</em> to be a list of strings.</p>
+
+<p>Furthermore, if we were to analyze these files using <code>parquet-tools</code>, the results look even more funky:</p>
+
+<p><strong>output.parquet</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ root@5ecebf0a7dc8:/# parquet-tools inspect output.parquet
+<span class="c1"># ... Ignoring non relevant columns</span> 
+<span class="c1">############ Column(item) ############</span>
+name: item
+path: customerProducts.list.item
+max_definition_level: <span class="m">3</span>
+max_repetition_level: <span class="m">1</span>
+physical_type: BYTE_ARRAY
+logical_type: String
+converted_type <span class="o">(</span>legacy<span class="o">)</span>: UTF8
+<span class="c1"># ... Ignoring non relevant columns</span> </code></pre></div>
+<p><strong>output_nulls.parquet</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ root@5ecebf0a7dc8:/# parquet-tools inspect output_nulls.parquet
+<span class="c1"># ... Ignoring non relevant columns</span> 
+<span class="c1">############ Column(item) ############</span>
+name: item
+path: customerProducts.list.item
+max_definition_level: <span class="m">3</span>
+max_repetition_level: <span class="m">1</span>
+physical_type: INT32
+logical_type: Null
+converted_type <span class="o">(</span>legacy<span class="o">)</span>: NONE
+<span class="c1"># ... Ignoring non relevant columns</span> </code></pre></div>
+<p>Nulls are interpreted and stored as <code>INT32</code> in parquet - this is especially problematic if you are using pq files along with Hive and/or Presto, kinda like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="k">EXTERNAL</span> <span class="k">TABLE</span> <span class="k">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="n">my_ext_table</span><span class="p">(</span>
+	<span class="n">organizationId</span> <span class="n">string</span><span class="p">,</span>
+	<span class="n">customerProducts</span> <span class="nb">array</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span>
+<span class="p">)</span> <span class="n">PARTITIONED</span> <span class="k">BY</span><span class="p">(</span>
+    <span class="k">year</span> <span class="n">string</span><span class="p">,</span>
+    <span class="k">month</span> <span class="n">string</span><span class="p">,</span>
+    <span class="k">day</span> <span class="n">string</span><span class="p">)</span>
+<span class="n">STORED</span> <span class="k">AS</span> <span class="n">PARQUET</span>
+<span class="k">LOCATION</span> <span class="s1">&#39;s3://my_s3_bucket/&#39;</span><span class="p">;</span></code></pre></div>
+<p>In these cases, within <code>my_s3_bucket</code>, partitioned by <code>year</code>, <code>month</code> and <code>day</code> there may be 1 or more parquet files. Some of these files <em>may</em> have <strong>no</strong> <code>customerProducts</code> set, meaning that the schema is interpreted as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># ... Ignoring non relevant columns</span> 
+<span class="c1">############ Column(item) ############</span>
+name: item
+path: customerProducts.list.item
+max_definition_level: <span class="m">3</span>
+max_repetition_level: <span class="m">1</span>
+physical_type: INT32
+logical_type: Null
+converted_type <span class="o">(</span>legacy<span class="o">)</span>: NONE
+<span class="c1"># ... Ignoring non relevant columns</span> </code></pre></div>
+<p>which has a <code>physical_type</code> of <code>INT32</code>. Hive/prestodb absolutely does NOT like seeing <code>array&lt;int&gt;</code> when it is expecting corresponding column <code>customerProducts</code> to be of type <code>array&lt;string&gt;</code>. In these cases, your query will fail and everything will suck.</p>
+
+<p>So - this behavior we see when creating parquet files from pandas is odd because while the conversion code (from pd =&gt; pq) is actually fine, we may want to read batches of these files downstream using technologies that require exact datatype definitions declared upfront.</p>
+
+<p>The best way I can think of to solve this problem is to manage and maintain a parquet schema somewhere and when <em>creating</em> these pq files explicitly provide the schema as well.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="kn">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="kn">as</span> <span class="nn">pq</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+  <span class="p">{</span>
+    <span class="s1">&#39;organizationId&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;org1&#39;</span><span class="p">,</span> <span class="s1">&#39;org2&#39;</span><span class="p">,</span> <span class="s1">&#39;org3&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;customerProducts&#39;</span> <span class="p">:</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+  <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;organizationId&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">()),</span>
+    <span class="c1"># explicitly define `customerProducts` as list of strings</span>
+    <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;customerProducts&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">list_</span><span class="p">(</span><span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">())),</span>
+<span class="p">]</span>
+
+<span class="c1"># explicitly define schema before writing table</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+<span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;output_nulls.parquet&#39;</span><span class="p">)</span>
+
+<span class="n">table</span><span class="o">.</span><span class="n">schema</span></code></pre></div>
+<p>Output of schema:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">pyarrow.Table
+organizationId: string
+customerProducts: list&lt;item: string&gt;
+  child 0, item: string</code></pre></div>
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhandling-parquet-schema-mismatch-based-on-data%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhandling-parquet-schema-mismatch-based-on-data%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhandling-parquet-schema-mismatch-based-on-data%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>

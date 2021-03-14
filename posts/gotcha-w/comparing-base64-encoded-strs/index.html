@@ -2,20 +2,95 @@
 <html><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
     
-    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
-    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
 
     <style>
 #post-header {
     text-align: center;
 }
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
     </style>
 
     
-    <link rel="stylesheet" href="/css/style.min.css">
+    <link rel="stylesheet" href="/dev/css/style.min.css">
 
     <title>Gotcha w/comparing base64 encoded strs</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
 </head>
 <body><header id="banner">
     
@@ -33,16 +108,24 @@
     <nav>
         <ul>
             <li>
-                <a href="/" title="home">home</a>
+                <a href="/dev/" title="home">home</a>
             </li><li>
-                <a href="/about/" title="about">about</a>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
             </li>
         </ul>
     </nav>
 </header>
 <main id="content">
 <article>
-    <header id="post-header">
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/esoteric-bug/">esoteric bug</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/elasticsearch/">elasticsearch</a></strong></small>
+        <header id="post-header">
         <h1>Gotcha w/comparing base64 encoded strs</h1><time>December 13, 2020</time></header>
 
 <aside id="toc">
@@ -317,15 +400,15 @@
 
 <p>We convert our new, transformed decimal values according to the base64 characters table - which places numbers such as <code>1-9</code> as <em>higher</em> than characters (in terms of index value).</p>
 
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/w9bi3we0hlb75gbgq3cy.png" alt="Alt Text" /></p>
+<p><img src="/dev/img/b64encoding.png" alt="Alt Text" /></p>
 
 <p>Notice how <code>1</code> has decimal value <code>53</code> and <code>w</code> has decimal value <code>48</code>. Contrast this to the ASCII table:</p>
 
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/zln3xr8oy13i5ysguoqg.png" alt="Alt Text" /></p>
+<p><img src="/dev/img/asciiencoding.png" alt="Alt Text" /></p>
 
 <p>Note that <code>&quot;1&quot;</code> has a decimal value of <strong>49</strong>.</p>
 
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/44cwso2s9neqzvpejp3e.png" alt="Alt Text" /></p>
+<p><img src="/dev/img/asciiencoding_w.png" alt="Alt Text" /></p>
 
 <p>But <code>&quot;w&quot;</code> has a decimal value of <strong>77</strong>!</p>
 
@@ -351,12 +434,17 @@
 
 <hr />
 
-<p><strong>PS</strong>: in py3 we compare unicode values not ascii when performing string comparison ops - but for the purposes of this post the <a href="https://www.ssec.wisc.edu/~tomw/java/unicode.html">decimal values are the same</a> since we are only contending with <code>A-Z, a-z,0-9,+,/</code>
-<strong>PPS</strong>: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I&rsquo;ve yet to explain why (8N mod 6) == 4 does not seem to this problem.</p>
+<p><strong>PS</strong>: in py3 we compare unicode values not ascii when performing string comparison ops - but for the purposes of this post the <a href="https://www.ssec.wisc.edu/~tomw/java/unicode.html">decimal values are the same</a> since we are only contending with <code>A-Z, a-z,0-9,+,/</code></p>
+
+<p><strong>PPS</strong>: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I&rsquo;ve yet to explain why (8N mod 6) == 4 does not seem to this problem.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
 </article>
 
         </main><footer id="footer">
-    Copyright © 2020 Taq Karim
+    Copyright © 2021 Taq Karim
 </footer>
 </body>
 </html>

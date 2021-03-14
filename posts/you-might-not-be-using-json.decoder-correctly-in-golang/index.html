@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>You might not be using json.Decoder correctly in golang</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/golang/">golang</a></strong></small>
+        <header id="post-header">
+        <h1>You might not be using json.Decoder correctly in golang</h1><time>January 24, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#googling-json-decoder-example-golang">Googling: <strong>&ldquo;json.decoder example golang&rdquo;</strong></a></li>
+<li><a href="#the-problem">The Problem</a></li>
+<li><a href="#the-fix">The Fix</a></li>
+<li><a href="#a-few-notes">A few notes</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>TL;DR: prevailing &ldquo;secondary source&rdquo; wisdom (ie: blog posts) about <code>json.Decoder</code> don&rsquo;t demonstrate the proper way to use it.</p>
+
+<hr />
+
+<p>This post is a follow up to my (kinda lengthy) <a href="https://mottaquikarim.github.io/dev/posts/is-json.decoder-broken-in-golang/" title="deep dive">deep dive</a> into what I <em>thought</em> was a bug in golang&rsquo;s <code>json.Decoder</code> pkg.</p>
+
+<p>Instead, I realized that generally speaking, <code>json.Decoder</code> can be misunderstood - which <em>may</em> lead to unintended consequences. In this post, I will demonstrate a safer pattern that ought to be used instead of the prevailing wisdom.</p>
+
+<h2 id="googling-json-decoder-example-golang">Googling: <strong>&ldquo;json.decoder example golang&rdquo;</strong></h2>
+
+<p>I ran a few google searches queries using some permutation of the following:</p>
+
+<blockquote>
+<p>json.decoder example golang</p>
+</blockquote>
+
+<p>The results were your standard mix of documentation from <code>golang.org</code>, blog posts on <code>medium.com</code>/random mom&amp;pop devsites (like this one!), and a few <code>stackoverflow</code> threads.</p>
+
+<p><img src="/dev/img/google-json-decoder.png" alt="Google Search" /></p>
+
+<p>Fortunately, results from <code>golang.org</code> are highly ranked - while it may be a bit harder to parse through golang&rsquo;s src code, the documentation is fairly thorough and more importantly: <strong>correct</strong>. <em>(Personally, I would have preferred some additional context in the docs expounding on some of the gotchas I discuss on my other post but I digress)</em></p>
+
+<p>Some of the threads I observed in Stack Overflow that referenced <code>json.Decoder</code> pulled directly from the docs (and therefore were also correct). Other&rsquo;s (probably) pulled from medium/other blog post sites similar to the ones I found googling around and were inaccurate/advocating incorrect usage.</p>
+
+<p>For example, on Medium, et al - I saw a wide array of posts (such as <a href="https://medium.com/what-i-talk-about-when-i-talk-about-technology/go-code-snippet-json-encoder-and-json-decoder-818f81864614">this</a>, <a href="https://itnext.io/welcome-to-just-enough-go-7dbef7e30188">this</a>, <a href="https://stackoverflow.com/q/28814366">this</a> or <a href="https://medium.com/rungo/working-with-json-in-go-7e3a37c5a07b">this</a>) that suggested using <code>json.Decoder</code> in some way, shape, or form similarly to this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">jsonData</span> <span class="o">:=</span> <span class="s">`{
+</span><span class="s">&#34;email&#34;:&#34;abhirockzz@gmail.com&#34;,
+</span><span class="s">&#34;username&#34;:&#34;abhirockzz&#34;,
+</span><span class="s">&#34;blogs&#34;:[
+</span><span class="s">	{&#34;name&#34;:&#34;devto&#34;,&#34;url&#34;:&#34;https://dev.to/abhirockzz/&#34;},
+</span><span class="s">	{&#34;name&#34;:&#34;medium&#34;,&#34;url&#34;:&#34;https://medium.com/@abhishek1987/&#34;}
+</span><span class="s">]}`</span>
+    
+    <span class="nx">jsonDataReader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">)</span>
+    <span class="nx">decoder</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">jsonDataReader</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">profile</span> <span class="nx">Profile</span>
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">decoder</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">profile</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p><em>(Example pulled from <a href="https://itnext.io/welcome-to-just-enough-go-7dbef7e30188">Tutorial: How to work with JSON data in Go</a>)</em></p>
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>On the surfact, this code looks sound. I forklifted the src into <a href="https://play.golang.org/p/qy-7BIx_FlA">go playground</a> and ran it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">jsonData</span> <span class="o">:=</span> <span class="s">`{
+</span><span class="s">&#34;email&#34;:&#34;abhirockzz@gmail.com&#34;,
+</span><span class="s">&#34;username&#34;:&#34;abhirockzz&#34;,
+</span><span class="s">&#34;blogs&#34;:[
+</span><span class="s">	{&#34;name&#34;:&#34;devto&#34;,&#34;url&#34;:&#34;https://dev.to/abhirockzz/&#34;},
+</span><span class="s">	{&#34;name&#34;:&#34;medium&#34;,&#34;url&#34;:&#34;https://medium.com/@abhishek1987/&#34;}
+</span><span class="s">]}`</span>
+    
+    <span class="nx">jsonDataReader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">)</span>
+    <span class="nx">decoder</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">jsonDataReader</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">profile</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">decoder</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">profile</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p><em>(Note, changed <code>profile</code> to <code>map[string]interface{}</code> to make the code run)</em></p>
+
+<p>&hellip;It works! Great. But, what happens if we fubar the JSON string?</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">jsonData</span> <span class="o">:=</span> <span class="s">`{
+</span><span class="s">&#34;email&#34;:&#34;abhirockzz@gmail.com&#34;,
+</span><span class="s">&#34;username&#34;:&#34;abhirockzz&#34;,
+</span><span class="s">&#34;blogs&#34;:[
+</span><span class="s">	{&#34;name&#34;:&#34;devto&#34;,&#34;url&#34;:&#34;https://dev.to/abhirockzz/&#34;},
+</span><span class="s">	{&#34;name&#34;:&#34;medium&#34;,&#34;url&#34;:&#34;https://medium.com/@abhishek1987/&#34;}
+</span><span class="s">]}THIS IS INTENTIONALLY MALFORMED NOW`</span>
+    
+    <span class="nx">jsonDataReader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">)</span>
+    <span class="nx">decoder</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">jsonDataReader</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">profile</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">decoder</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">profile</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p><em>(<a href="https://play.golang.org/p/MyM1A8Y51Jc">playground</a>)</em></p>
+
+<p>&hellip;It works!</p>
+
+<p>Wait&hellip;<strong>WTF?!</strong>.</p>
+
+<p>This code should <em>not</em> work at all! Our JSON string is clearly malformed and we expect - based on the logic - the code to panic.</p>
+
+<p>This is the entire issue in a nutshell. I expound in detail in my other post but in one (kinda long) sentence:</p>
+
+<blockquote>
+<p><code>json.Decoder.Decode</code> was implemented for parsing <em>streaming</em> JSON data, meaning it will <strong>always</strong> traverse the JSON string until it finds a satisfactory, closing bracket (I use the term <em>satisfactory</em> here because it does use a stack to keep track of inner brackets).</p>
+</blockquote>
+
+<p>So, in order to detect the malformed json, we must actually run this logic in a loop - like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;io&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">jsonData</span> <span class="o">:=</span> <span class="s">`{
+</span><span class="s">&#34;email&#34;:&#34;abhirockzz@gmail.com&#34;,
+</span><span class="s">&#34;username&#34;:&#34;abhirockzz&#34;,
+</span><span class="s">&#34;blogs&#34;:[
+</span><span class="s">	{&#34;name&#34;:&#34;devto&#34;,&#34;url&#34;:&#34;https://dev.to/abhirockzz/&#34;},
+</span><span class="s">	{&#34;name&#34;:&#34;medium&#34;,&#34;url&#34;:&#34;https://medium.com/@abhishek1987/&#34;}
+</span><span class="s">]}THIS IS INTENTIONALLY MALFORMED NOW`</span>
+
+	<span class="nx">jsonDataReader</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">)</span>
+	<span class="nx">decoder</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">jsonDataReader</span><span class="p">)</span>
+	<span class="kd">var</span> <span class="nx">profile</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">err</span> <span class="o">:=</span> <span class="nx">decoder</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">profile</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p><em>(<a href="https://play.golang.org/p/TqIiLzNdtpi">playground</a>)</em></p>
+
+<p>Note the key diff here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">var</span> <span class="nx">profile</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="k">for</span> <span class="p">{</span>
+	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">decoder</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">profile</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+		<span class="k">break</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span></code></pre></div>
+<h2 id="the-fix">The Fix</h2>
+
+<p>From the golang docs, this example says it best:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// This example uses a Decoder to decode a stream of distinct JSON values.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleDecoder</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">const</span> <span class="nx">jsonStream</span> <span class="p">=</span> <span class="s">`
+</span><span class="s">	{&#34;Name&#34;: &#34;Ed&#34;, &#34;Text&#34;: &#34;Knock knock.&#34;}
+</span><span class="s">	{&#34;Name&#34;: &#34;Sam&#34;, &#34;Text&#34;: &#34;Who&#39;s there?&#34;}
+</span><span class="s">	{&#34;Name&#34;: &#34;Ed&#34;, &#34;Text&#34;: &#34;Go fmt.&#34;}
+</span><span class="s">	{&#34;Name&#34;: &#34;Sam&#34;, &#34;Text&#34;: &#34;Go fmt who?&#34;}
+</span><span class="s">	{&#34;Name&#34;: &#34;Ed&#34;, &#34;Text&#34;: &#34;Go fmt yourself!&#34;}
+</span><span class="s">`</span>
+	<span class="kd">type</span> <span class="nx">Message</span> <span class="kd">struct</span> <span class="p">{</span>
+		<span class="nx">Name</span><span class="p">,</span> <span class="nx">Text</span> <span class="kt">string</span>
+	<span class="p">}</span>
+	<span class="nx">dec</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">jsonStream</span><span class="p">))</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">m</span> <span class="nx">Message</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dec</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%s: %s\n&#34;</span><span class="p">,</span> <span class="nx">m</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">m</span><span class="p">.</span><span class="nx">Text</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="c1">// Output:
+</span><span class="c1"></span>	<span class="c1">// Ed: Knock knock.
+</span><span class="c1"></span>	<span class="c1">// Sam: Who&#39;s there?
+</span><span class="c1"></span>	<span class="c1">// Ed: Go fmt.
+</span><span class="c1"></span>	<span class="c1">// Sam: Go fmt who?
+</span><span class="c1"></span>	<span class="c1">// Ed: Go fmt yourself!
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p>_(<a href="https://golang.org/src/encoding/json/example_test.go#L57">sauce</a>)_</p>
+
+<p>In this usage, we create a new <code>json.Decoder</code> instance from the <code>NewDecoder</code> method and then continually loop and try to decode a chunk of our JSON string until we detect the end of the string (sucessfully breaking out of the loop) or an error.</p>
+
+<p>I would take this a step further and only prefer to use <code>json.Decoder</code> when I am specifically working with streaming JSON data.</p>
+
+<p>At any rate, this the The Way. Please keep this in mind going forward should you choose to use <code>json.Decoder</code> for your JSON string parsing needs.</p>
+
+<h2 id="a-few-notes">A few notes</h2>
+
+<ul>
+<li>A big caveat I&rsquo;d like to point out is that I did not perform any rigorous analysis of golang examples in the wild when I was inspired to write this post. My analysis comes largely from anecdotal examples I observed while researching my other deep dive article about the nature of <code>json.scanner</code> and <code>json.Decoder.Decode</code>.</li>
+<li>I certianly am not being critical of the medium/mom&amp;pop blogs I linked to earlier, instead I am merely pointing out that it is <em>very</em> easy to assume that the trivial usage of <code>json.Decoder.Decode</code> presented on those posts is generally correct when in actuality this is not the case.</li>
+<li>I think someone (maybe me? perhaps you?) ought to open a PR against godocs to clarify gotchas/differences between <code>json.Decoder</code> usage vs <code>json.Unmarshal</code></li>
+</ul>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fyou-might-not-be-using-json.decoder-correctly-in-golang%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fyou-might-not-be-using-json.decoder-correctly-in-golang%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fyou-might-not-be-using-json.decoder-correctly-in-golang%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>
