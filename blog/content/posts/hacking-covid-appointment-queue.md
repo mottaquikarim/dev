@@ -6,7 +6,7 @@ tags: ["just for fun", "chrome dev tools"]
 
 {{<toc>}}
 
-Buckle up fam, this will be a deep dive.
+**TL;DR**: By examining the minified source code of the [Rite Aid Immunization Scheduler](https://www.riteaid.com/pharmacy/apt-scheduler) I was able to figure out a way to book vaccine appointments for my (eligible -- obviously) loved ones and family friends. In the end, my method successfully booked appointments for 8 individuals living in various parts of New Jersey.
 
 ## The Problem
 
@@ -235,6 +235,63 @@ Some things never change.
 Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent functionality like I discovered on this rite-aid site. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.
 
 I'm trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality. 
+
+## UPDATE 03/14/2021
+
+Some folks have pointed out to me that the actual script/code is not available here. 
+
+This is by design! 
+
+Having reflected further about the implications of making my implementation public, I've come to the conclusion that it will perhaps do more harm than good. The major purpose of this write up was really to chronicle my problem solving approach and less significantly, showcase the awesome utility of the Chrome Dev Tools. 
+
+I really wish there was a better way to get a hold of appointment slots - but opening up a side channel to circumvent a bad UX flow will only lead to further detrimental effects (greater strain on the Rite Aid Immunization Scheduler's APIs, folks charging to run the tool for the not-so-tech-savvy and/or people who are not eligible signing up just because they can). That's the last thing we need right now. 
+
+I am however very much down to brainstorm / build something similar in principle to TurboVax. I highly admire the tool and am glad it exists but it is disappointing that the code is not available for forking / re-using. If anyone is down to collaborate, please get in touch!
+
+### Video Walkthrough
+Please find a video walkthrough of the extension working here:
+
+{{< imgur id="4EOIEmY" >}}
+
+_In this particular walkthrough, the script actually does find an appointment slot however due to a small bug in validating phone numbers the actual confirmation fails (thank god! as this was just an example and not meant to be "real")_
+
+^ For fun, let's expound on what the phone number validation was about.
+
+For whatever reason, the phone number that is input into the system by the user as part of the **contact info** stage is stored as: **(XXX) XXX-XXXX**. However, the appointment confirmation API endpoint raises a validation exception when it sees this, returning:
+
+```javascript
+{
+  "Data": null,
+  "Status": "ERROR",
+  "ErrCde": "RA0001",
+  "ErrMsg": "There was an error validating your entries. Please check and try again.",
+  "ErrMsgDtl": {
+    "patientDetails.phone": [
+      "Please enter a ten digit phone number"
+    ]
+  }
+}
+```
+
+My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just updated that field and remove **(**, **)**, **-** characters. My initial approach was not very javascript-y (and I will not even share here).
+
+A contact suggested the following:
+
+```javascript
+[...phone_str].filter(Number).join('')
+```
+
+This is super clever! `Number(N)` will return `NaN` if `N` is not `0-9`. `NaN` is falsey af so it gets filtered out of the final return value.
+
+The _bug_ here though is that `Number(N)` where `N === 0` is **also** falsey, meaning any numberstrings that contain `0` **also** will be filtered out.
+
+The workaround - while uglier - is as follows:
+
+```javascript
+[...phone_str].filter(n => !isNaN(Number(n))).join('')
+```
+
+This now explicitly filters out a possible char if it is indeed `NaN` and `NaN` **only**.
 
 ## Sidebar 1: CVS Feed
 
