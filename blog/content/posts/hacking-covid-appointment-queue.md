@@ -6,37 +6,37 @@ tags: ["just for fun", "chrome dev tools"]
 
 {{<toc>}}
 
-**TL;DR**: By examining the minified source code of the [Rite Aid Immunization Scheduler](https://www.riteaid.com/pharmacy/apt-scheduler) I was able to figure out a way to book vaccine appointments for my (eligible -- obviously) loved ones and family friends. In the end, my method successfully booked appointments for 8 individuals living in various parts of New Jersey.
+**TL;DR**: By examining the minified source code of the [Rite Aid Immunization Scheduler](https://www.riteaid.com/pharmacy/apt-scheduler) I was able to figure out a way to book vaccine appointments for my (eligible -- obviously) loved ones and family friends. So far my method has successfully booked appointments for 8 individuals w/pre-existing conditions living in various parts of New Jersey.
 
 ## The Problem
 
-A few close family members of mine have pre-existing conditions which make them eligible to get the COVID vaccine. I'm obviously concerned about their well being and have sought ways to snag them an appointment.
+A few close family members of mine have pre-existing conditions making them eligible to get the COVID vaccine. I'm obviously concerned about their well being and have sought ways to snag them an appointment.
 
 Enter [**Vaccine Finder**](https://vaccinefinder.org/search), a nifty site that aggregates locations near you that are administering vaccines _and_ happen to have vaccines in stock.
 
-Perfect! This seemed to be the ideal solution. Except, whomp whomp, not really. For New Jersey at least, the research results takes the user to the respective landing pages of the vaccine providers - from my experience, these were mainly Rite Aid/CVS pharamacies:
+Perfect! This seemed to be the ideal solution. Except, whomp whomp, not really. For New Jersey at least, the search results take the user to the respective landing pages of the vaccine providers - from my experience, these were mainly Rite Aid/CVS pharamacies:
 
 ![vaccine finder results](/dev/img/vaccinefinder.png)
 
-The [CVS pharmacy vaccination portal](https://www.cvs.com/immunizations/covid-19-vaccine) was pretty disappointing - everything is always booked and there is much else you can really do beyond that.
+The [CVS pharmacy vaccination portal](https://www.cvs.com/immunizations/covid-19-vaccine) was pretty disappointing - everything is always booked and there is not much else you can really do beyond that.
 
 ![cvs results](/dev/img/cvs.png)
 
-(PS: check out the CSV sidebar below for some commentary about the "feed" that is available here).
+_(PS: check out the CSV sidebar below for some commentary about the "feed" that is available here)._
 
 The [Rite Aid vaccination portal](https://www.riteaid.com/pharmacy/apt-scheduler) is a lot more interesting.
 
-It starts us off with a handy form that checks to see if one qualifies for booking an appointment.
+It starts the user off with a handy form that checks to see if s/he qualifies for booking an appointment.
 
 ![rite aid](/dev/img/riteaid.png)
 
-(PPS: check out sidebar#2 below for some commentary about the "rules engine" and determining if you qualify).
+_(PPS: check out sidebar#2 below for some commentary about the "rules engine" and determining if you qualify)._
 
-It's slick and doesn't even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment, you are led to the next screen / the beginning of your misery:
+It's slick and doesn't even require a log in! So far, so good. Assuming you have a condition that qualifies you to book an appointment (the UX for this sucks but if you look at the rules engine commentary towards the end of this post, you may end up saving a few minutes), you are led to the next screen / the beginning of your misery:
 
 ![rite aid screen](/dev/img/riteaidscreen1.png)
 
-Ok great - let's pick a store and see where we end up.
+So far, this doesn't look so bad - let's pick a store and see where we end up.
 
 ![rite aid screen](/dev/img/riteaidscreen1_err1.png)
 
@@ -44,19 +44,19 @@ Whomp whomp, again!
 
 A few issues:
 
-* The list of stores generated are not stores with vaccines _available_...they're just stores that exist nearby.
-* You have to **SELECT** each store, then click on **Next** to see if a slot may be available or not. More often than not, availability does not exist. So, as a "normal" user you have no choice but to click over and over again hoping for a hit.
-* Now, assuming you've cleared this step and picked a store quickly enough, you get sent to the next "level" where you must choose from a dropdown _super quick_ for available time slots in the Morning, Afternoon or Evening. But! If someone else is on the same exact view and happens to pick the slot before you, you lose! There's no indication of this until _after_ you pick and then back you go to step 1. Do no pass Go. Do not collect $200.
+* The list of stores generated are not actually establishments with vaccines _available_ in stock...they're just stores that exist nearby.
+* You have to **SELECT** each store, then click on **Next** to see if a slot may be available. More often than not, availability does not exist. So, as a "normal" user you have no choice but to click each store option over and over again hoping for a hit.
+* Now, assuming you've cleared this step and picked a store quickly enough, you get sent to the next "level" where you must choose from a dropdown _super quickly_ for available time slots at that store, broken into Morning, Afternoon or Evening subcategories. But! If someone else is on the same exact view and happens to pick the available subcategory before you, you lose! There's no indication of this until _after_ you have made your choice and if you were not fast enough, too bad! Back you go to step 1 -- do no pass Go. Do not collect $200.
 
 Ok so anyways - at this point, this is the issue:
 
-> The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable (TM) given that demand for the appointment slots are very, very high and the flow does not really account for this usecase.
+> The Rite Aid Immunization Scheduler is Good and Cool in that it exists (seriously!) but it is also Not Good and Unusable (TM) given that demand for the appointment slots are very, very high and the UX flow does not really account for this usecase.
 
 So this begs the question: how do we fix this until a better experience is rolled out?
 
 ## Attempt 1: Find stores with Availability
 
-My first attempt at trying to get around the UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.
+My first attempt at trying to get around these UX frustrations was to just try and come up with a way to access the store availability data without having to click the damn buttons.
 
 I figured that this data was being fetched on button click, so I peeked into the Network tab in Chrome's Dev tools and found calls similar to this (note the `storeNumber` at the end of the URL)
 
@@ -128,7 +128,7 @@ where the first number is the store id and the second number is the zipcode.
 
 Now, this script worked great - I ran it continuously while sleeping for a few seconds in between invocations and it did reliably point me to stores where availability slots showed up!
 
-But the problem was by the time I typed in the zip code in the search field, hit enter, scrolled down to the store number, selected the store and then clicked "next" (this figure is from above, reproduced to make my point):
+But the problem was by the time I typed in the zip code in the search field UI, hit enter, scrolled down to the store number, selected the store and then clicked "next" (this figure is from above, reproduced to make my point):
 
 ![rite aid screen](/dev/img/riteaidscreen1_err1.png)
 
@@ -165,13 +165,13 @@ async function postData(url = '', data = {}) {
 
 and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn't work very well.
 
-In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST reuqests.
+In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST requests.
 
 Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the **Sources** tab in dev tools, prettified the javascript code and started reading.
 
 ## Attempt 3: Grokking, then directly calling, the source code
 
-Reading the application's underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)
+Inspecting the application's underlying JS code sucked because the source code was minified! (And therefore to some extent obfuscated)
 
 ![obfuscated](/dev/img/obfuscated_code.png)
 
@@ -185,7 +185,7 @@ I started making progress though by using the Network tab's stack trace feature 
 
 ![network](/dev/img/network.png)
 
-Each network call emitted by the browser displays a full trace of the code that was called to invoke the call itself. Given that user actions (such as clicking the "next" button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
+Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the "next" button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
 
 I picked the `fetchSlotDetails` line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:
 
@@ -224,7 +224,7 @@ This was great news for me because **fetchSlotDetails** and in fact all the netw
 
 ![console](/dev/img/console.png)
 
-This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because _most_ of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars passed along using [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method) to them as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting [**sessionStorage** tokens](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks.) (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables only accessible in the scope of the closure (but initially loaded from session storage if available)
+This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because _most_ of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars passed along using [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method) as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting [**sessionStorage** tokens](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks.) (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables are only accessible in the scope of the closure (but initially loaded from session storage if available)
 
 By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions. 
 
