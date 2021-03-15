@@ -165,7 +165,7 @@ async function postData(url = '', data = {}) {
 
 and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn't work very well.
 
-In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same was as the website's POST requests.
+In hindsight, I realize now the issue had to do primarily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because _my_ POST requests were not working in the same way as the website's POST requests.
 
 Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the **Sources** tab in dev tools, prettified the javascript code and started reading.
 
@@ -185,7 +185,7 @@ I started making progress though by using the Network tab's stack trace feature 
 
 ![network](/dev/img/network.png)
 
-Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the "next" button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
+Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the "next" button) led to various network calls (to check for slot availability, for instance), I realized I could use the stack traces to find "interesting" areas of the javascript source pertinent to the UX flow. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.
 
 I picked the `fetchSlotDetails` line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:
 
@@ -193,7 +193,7 @@ I picked the `fetchSlotDetails` line because it was a word that I understood in 
 
 My biggest takeaway from this code snippet was on line **45916** (lol) -- **fetchSlotDetails** seemed to be a plain old property of a js object! (Or maybe part of the **prototype** object).
 
-Cool. 
+_Cool._
 
 Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this gem:
 
@@ -226,15 +226,15 @@ This was great news for me because **fetchSlotDetails** and in fact all the netw
 
 This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because _most_ of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various `this` vars passed along using [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method) as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting [**sessionStorage** tokens](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks.) (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables are only accessible in the scope of the closure (but initially loaded from session storage if available)
 
-By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions. 
+By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment...programmatically! Using my technique, I was able to successfully book appointments for three family members + 5 family friends with pre-existing conditions. 
 
 ## Closing Thoughts
 
 Some things never change.
 
-Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent functionality like I discovered on this rite-aid site. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.
+Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent exactly what I discovered on this app. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.
 
-I'm trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality. 
+I'm trying to not think too hard about the ethics of all this (well, for this post at least) but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality. 
 
 ## UPDATE 03/14/2021
 
@@ -260,9 +260,9 @@ Please find a video walkthrough of the extension working here:
   <option value="0.10">Slowest (0.1)</option>
 </select>
 
-_In this particular walkthrough, the script actually does find an appointment slot however due to a small bug in validating phone numbers the actual confirmation fails (thank god! as this was just an example and not meant to be "real")_
+_In this particular walkthrough, the script actually does find an appointment slot fairly quickly however due to a small bug in validating phone numbers the actual confirmation API call fails (thank god! as this was just an example and not meant to be "real")_
 
-^ For fun, let's expound on what the phone number validation was about.
+^ For fun, let's expound on what the phone number validation bug was about.
 
 For whatever reason, the phone number that is input into the system by the user as part of the **contact info** stage is stored as: **(XXX) XXX-XXXX**. However, the appointment confirmation API endpoint raises a validation exception when it sees this, returning:
 
@@ -280,7 +280,7 @@ For whatever reason, the phone number that is input into the system by the user 
 }
 ```
 
-My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just updated that field and remove **(**, **)**, **-** characters. My initial approach was not very javascript-y (and I will not even share here).
+My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just update that field and remove all **(**, **)**, **-** characters. My initial approach was not very javascript-y (and I will not even share here).
 
 A contact suggested the following:
 
@@ -351,7 +351,7 @@ The results are in pretty JSON format at least:
 }
 ```
 
-At any rate - useful for potentially _finding_ a store with availability (and maybe an alerting service?).
+This is useful for potentially _finding_ a store with availability (and maybe an alerting service?).
 
 ## Sidebar 2: Rite Aid Rules Engine
 
