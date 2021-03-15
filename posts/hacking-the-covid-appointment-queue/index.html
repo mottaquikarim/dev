@@ -296,7 +296,7 @@ table td {
 </code></pre></div>
 <p>and then started replicating the API calls I was observing in the Network tab. Unfortunately, this didn&rsquo;t work very well.</p>
 
-<p>In hindsight, I realize now the issue had to do priamrily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same was as the website&rsquo;s POST requests.</p>
+<p>In hindsight, I realize now the issue had to do primarily with passing along fresh captcha tokens along with each call I was making (something that I missed initially while working on this but actually caught, fixed and implemented into my script later on). But at any rate, in the moment, I got stuck because <em>my</em> POST requests were not working in the same way as the website&rsquo;s POST requests.</p>
 
 <p>Unsure of how to go on, I did what appeared to be my one remaining option: I opened up the <strong>Sources</strong> tab in dev tools, prettified the javascript code and started reading.</p>
 
@@ -316,7 +316,7 @@ table td {
 
 <p><img src="/dev/img/network.png" alt="network" /></p>
 
-<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls, I realized I could use the stack traces to find the areas of the javascript source responsible for emitting the calls. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
+<p>Each network call emitted by the browser displays a full trace of the code that was called to invoke the network call itself. Given that user actions (such as clicking the &ldquo;next&rdquo; button) led to various network calls (to check for slot availability, for instance), I realized I could use the stack traces to find &ldquo;interesting&rdquo; areas of the javascript source pertinent to the UX flow. Then, I hoped, I could find some context as to why my POST requests were 400-ing when made directly from the console.</p>
 
 <p>I picked the <code>fetchSlotDetails</code> line because it was a word that I understood in context of the application flow (ie: the function sounded like it had something to do with finding valid appointment slots). Clicking into it, I ended up here:</p>
 
@@ -324,7 +324,7 @@ table td {
 
 <p>My biggest takeaway from this code snippet was on line <strong>45916</strong> (lol) &ndash; <strong>fetchSlotDetails</strong> seemed to be a plain old property of a js object! (Or maybe part of the <strong>prototype</strong> object).</p>
 
-<p>Cool.</p>
+<p><em>Cool.</em></p>
 
 <p>Maybe this is significant? Honestly, at this point I was mainly just exploring and trying to figure out the flow of the code + entry points to better grok how this thing works. I scrolled all the way up to find the object definition and stubmbled on this gem:</p>
 
@@ -351,15 +351,15 @@ table td {
 
 <p>This was probably unintended by the original developers but it sure did make my life a hell of a lot easier moving forward. Because <em>most</em> of the methods that powered this application were bound directly to the global namespace, it was pretty trivial to call the methods on these components with various <code>this</code> vars passed along using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#the_bind_method">bind</a> as needed for my usecase. I did still have to resort to a few fun hacks/tricks (like monkey patching certain methods in between steps and overwriting <a href="https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage#:~:text=JWT%20sessionStorage%20and%20localStorage%20Security,site%20scripting%20(XSS)%20attacks."><strong>sessionStorage</strong> tokens</a> (fun fact: sessionStorage is always globally accessible!)) to circumvent cases where variables are only accessible in the scope of the closure (but initially loaded from session storage if available)</p>
 
-<p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members + 4 family friends with pre-existing conditions.</p>
+<p>By inspecting these methods and then eventually calling them, I was able to piece together the steps necessary to walk through the 7 (seven!!) step process of securing an appointment&hellip;programmatically! Using my technique, I was able to successfully book appointments for three family members + 5 family friends with pre-existing conditions.</p>
 
 <h2 id="closing-thoughts">Closing Thoughts</h2>
 
 <p>Some things never change.</p>
 
-<p>Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent functionality like I discovered on this rite-aid site. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.</p>
+<p>Back in my javascript-ing days, we obsessed over writing IIFEs (Immediately Invoked Function expressions) precisely to prevent exactly what I discovered on this app. That being said, I am a bit glad that the source code was so tightly bound to the global scope as it made my job of trying to procure appointment slots for my family members in need a hell of a lot easier.</p>
 
-<p>I&rsquo;m trying to not think too hard about the ethics of all this but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality.</p>
+<p>I&rsquo;m trying to not think too hard about the ethics of all this (well, for this post at least) but I do hope that in the near future rite-aid/other vaccine appointment making sites improve their UX and client-side functionality to better reflect our current reality.</p>
 
 <h2 id="update-03-14-2021">UPDATE 03/14/2021</h2>
 
@@ -386,9 +386,9 @@ table td {
   <option value="0.10">Slowest (0.1)</option>
 </select></p>
 
-<p><em>In this particular walkthrough, the script actually does find an appointment slot however due to a small bug in validating phone numbers the actual confirmation fails (thank god! as this was just an example and not meant to be &ldquo;real&rdquo;)</em></p>
+<p><em>In this particular walkthrough, the script actually does find an appointment slot fairly quickly however due to a small bug in validating phone numbers the actual confirmation API call fails (thank god! as this was just an example and not meant to be &ldquo;real&rdquo;)</em></p>
 
-<p>^ For fun, let&rsquo;s expound on what the phone number validation was about.</p>
+<p>^ For fun, let&rsquo;s expound on what the phone number validation bug was about.</p>
 
 <p>For whatever reason, the phone number that is input into the system by the user as part of the <strong>contact info</strong> stage is stored as: <strong>(XXX) XXX-XXXX</strong>. However, the appointment confirmation API endpoint raises a validation exception when it sees this, returning:</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
@@ -403,7 +403,7 @@ table td {
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just updated that field and remove <strong>(</strong>, <strong>)</strong>, <strong>-</strong> characters. My initial approach was not very javascript-y (and I will not even share here).</p>
+<p>My best guess is that the issue is on my end, I am likely failing to call a validation function on the phone number field. At any rate, the fix is easy - just update that field and remove all <strong>(</strong>, <strong>)</strong>, <strong>-</strong> characters. My initial approach was not very javascript-y (and I will not even share here).</p>
 
 <p>A contact suggested the following:</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">[...</span><span class="nx">phone_str</span><span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nb">Number</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -461,7 +461,7 @@ table td {
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>At any rate - useful for potentially <em>finding</em> a store with availability (and maybe an alerting service?).</p>
+<p>This is useful for potentially <em>finding</em> a store with availability (and maybe an alerting service?).</p>
 
 <h2 id="sidebar-2-rite-aid-rules-engine">Sidebar 2: Rite Aid Rules Engine</h2>
 
