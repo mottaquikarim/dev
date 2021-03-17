@@ -6,9 +6,23 @@
     <description>Recent content in python on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Thu, 28 Jan 2021 04:01:51 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Mar 2021 22:26:46 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Grokking Builtin.all in Python</title>
+      <link>https://mottaquikarim.github.io/dev/posts/grokking-builtin.all-in-python/</link>
+      <pubDate>Tue, 16 Mar 2021 22:26:46 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/grokking-builtin.all-in-python/</guid>
+      <description>Table of Contents  A coworker shared this neat code snippet on slack:
+&amp;gt;&amp;gt;&amp;gt; all([0, 0, 0]) False &amp;gt;&amp;gt;&amp;gt; all([1, 1, 1]) True and mused to us all:
+ this is annoying  &amp;ndash; venerated colleague, circa 2021
+ Indeed he&amp;rsquo;s right! It is annoying. His note piqued my curiousity as to why/how this worked under the hood; in this post I take a dive into the guts of cpython searching for answers.</description>
+    </item>
     
     
     

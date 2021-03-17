@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Grokking Builtin.all in Python</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/featured/">featured</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/python/">python</a></strong></small>
+        <header id="post-header">
+        <h1>Grokking Builtin.all in Python</h1><time>March 16, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#first-a-sensible-alternative">First, a sensible alternative</a></li>
+<li><a href="#venturing-into-the-guts-of-cpython">Venturing into the guts of CPython</a></li>
+<li><a href="#tying-it-all-together-finally">Tying it all together, finally!</a></li>
+<li><a href="#final-remarks">Final remarks</a></li>
+<li><a href="#sidebar-wtf-is-tp-bool">Sidebar: WTF is tp_bool???</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>A coworker shared this neat code snippet on slack:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="nb">all</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">all</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="bp">True</span></code></pre></div>
+<p>and mused to us all:</p>
+
+<blockquote>
+<p>this is annoying <br/> <em>&ndash; venerated colleague, circa 2021</em></p>
+</blockquote>
+
+<p>Indeed he&rsquo;s right! It <em>is</em> annoying. His note piqued my curiousity as to why/how this worked under the hood; in this post I take a dive into the guts of <strong><a href="https://github.com/python/cpython">cpython</a></strong> searching for answers.</p>
+
+<p><em>(<strong>EDIT</strong>: heads up, I wrote a lot of words here. If you want the simpler walk through without the fancy code spelunking, click <strong><a href="#tying-it-all-together-finally">here</a></strong> to skip to the final section)</em></p>
+
+<h2 id="first-a-sensible-alternative">First, a sensible alternative</h2>
+
+<p>Let&rsquo;s get a few things out of the way before we go on.</p>
+
+<p>First and foremost - let&rsquo;s explain why, naively, <code>all([0,0,0])</code> returning <code>False</code> is in fact not <em>unexpected</em>.</p>
+
+<p>In python, there is a concept of <strong>truthy</strong> and <strong>falsy</strong>. While there exists explicitly defined <code>True</code> and <code>False</code> values (of type <em>bool</em> as it were), <em>non boolean</em> types are also evaluated by python to <strong>True</strong> or <strong>False</strong> within boolean contexts.</p>
+
+<p>A &ldquo;boolean context&rdquo;, fwiw, looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">some_value</span> <span class="o">=</span> <span class="s2">&#34;not a boolean, lol&#34;</span>
+<span class="k">if</span> <span class="n">some_value</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># or</span>
+<span class="k">while</span> <span class="n">some_value</span><span class="p">:</span>
+    <span class="k">pass</span></code></pre></div>
+<p>In the example above, <code>some_value</code> is clearly a <code>str</code> yet when used in an if (or while!) statement block, it is evaluated as <code>True</code>!</p>
+
+<p>In general, all values in python are &ldquo;truthy&rdquo; unless they aren&rsquo;t, in which case, they are &ldquo;falsy&rdquo;. If you can imagine, there are only a few explicit values that are defined as &ldquo;falsy&rdquo;, find them enumerated here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="p">[]</span> <span class="c1"># empty list</span>
+<span class="p">{}</span> <span class="c1"># empty dict</span>
+<span class="p">()</span> <span class="c1"># empty tuple</span>
+<span class="nb">set</span><span class="p">()</span> <span class="c1"># empty set</span>
+<span class="s2">&#34;&#34;</span> <span class="c1"># empty string</span>
+<span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># empty range</span>
+<span class="mi">0</span> <span class="c1"># int, 0</span>
+<span class="mf">0.0</span> <span class="c1"># float, 0</span>
+<span class="bp">None</span> <span class="c1"># nonetype, obvi</span>
+<span class="bp">False</span> <span class="c1"># boolean false</span></code></pre></div>
+<p><em>(I had the hardest time finding a definitive list of these items on the interwebs. The closest I could find that seemed &ldquo;official&rdquo; was <a href="https://docs.python.org/2.4/lib/truth.html">this</a> py2.4(!!) &ldquo;Python Library Reference&rdquo;. The list above is from <a href="https://www.freecodecamp.org/news/truthy-and-falsy-values-in-python/">this</a> freecodecamp article)</em></p>
+
+<p>Ok cool - so with this clarification, it is obvious why <code>all([0,0,0])</code> evals to <code>False</code>. <code>0</code> is falsy therefore it is at least plausible to surmise that there is a naive <strong>if statement</strong> somewhere that fails to account for this edge case.</p>
+
+<p>Moreover, it stands to reason that all of the following will also probably eval to <code>False</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">all</span><span class="p">([</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">])</span>
+<span class="nb">all</span><span class="p">([{},</span> <span class="p">{},</span> <span class="p">{})</span>
+<span class="c1"># .. etc, you get the idea</span></code></pre></div>
+<p>Ok great - having established this, let&rsquo;s take to the official python3 (at time of this writing) <a href="https://docs.python.org/3/library/functions.html?highlight=any#all">docs</a>:</p>
+
+<blockquote>
+<p><strong>all(iterable)</strong><br/>
+Return True if all elements of the iterable are true (or if the iterable is empty).</p>
+</blockquote>
+
+<p>The docs also present this &ldquo;equivalent&rdquo; implementation:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span></code></pre></div>
+<p>From the documentation, two things are obvious to me:</p>
+
+<p><strong>1</strong>: Using <code>all([0,0,0])</code> to determine if all members of an iterable are equal is kind of a bad usecase. The purpose of the <code>all</code> method is <em>only</em> to determine if all the values in an iterable are truthy. That&rsquo;s it. Full stop.  (But also, like, <strong>TIL</strong>)</p>
+
+<p><strong>2</strong>: If you <em>do</em> want to determine whether all the values in an iterable are indeed the same value, consider:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span></code></pre></div>
+<p><em>(Note: this will <strong>not</strong> work for something like <code>[{}, {}, {}]</code> since dicts are not hashable. However, for basic usecases where we want to (safely!) determine if a list of primitive types are all the same, the approach is IMO &ldquo;good enough&rdquo;)</em></p>
+
+<h2 id="venturing-into-the-guts-of-cpython">Venturing into the guts of CPython</h2>
+
+<p>Ok, now for the meat of this story.</p>
+
+<p>Let me preface this by saying: I really enjoy venturing into source code to validate behavior that I am seeing. More often than not, this is fueled by (perhaps an unreasonable&hellip;) hope that <em>maybe</em> I&rsquo;ll notice something undocumented or interesting that could be helpful immediately or sometime in the future.</p>
+
+<p>For this specific case though, I was wondering how easy/hard it may be to submit a PR to rectify this behavior of <code>all</code> (spoiler: not all that straight forward and more importantly, definitely not <em>appropriate</em> given the officially documented behavior we saw above)</p>
+
+<p>Still, this was an interesting exercise and worth documenting for fun and profit (&hellip;mainly fun, though)</p>
+
+<p>I started by searching for <code>all</code> within the <code>cpython</code> <a href="https://github.com/python/cpython">repo</a>. Generally Github&rsquo;s code searching functionality is pretty great - the main issue here was that <code>all</code> is fairly generic word that is used <em>often</em> both in and outside of the code (like in documentation and such).</p>
+
+<p><a href="https://stackoverflow.com/a/8608609">This</a> stackoverflow suggested that builtin funcs could be found in the <code>Object</code> folder:</p>
+
+<blockquote>
+<p>However, many of the built-in types can be found in the Objects <a href="https://github.com/python/cpython/tree/master/Objects">sub-directory of the Python source trunk</a>. For example, see <a href="https://github.com/python/cpython/blob/master/Objects/enumobject.c">here</a> for the implementation of the enumerate class or <a href="https://github.com/python/cpython/blob/master/Objects/listobject.c">here</a> for the implementation of the list type.</p>
+</blockquote>
+
+<p>Once I started digging into the src code, I realized that there is a <em>lot</em> of code (surprise, surprise) in the cpython codebase. So I cloned the entire project to my local machine and started grepping the heck out of&hellip;everything in the project folder.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  cpython git:<span class="o">(</span>master<span class="o">)</span> grep -r <span class="s2">&#34;any(&#34;</span> .</code></pre></div>
+<p>Running the ^ above (I figured <code>any</code>, a similar method to <code>all</code> might be a less frequently used token than <code>all</code>&hellip;) I ended up with a <em>ton</em> of results. I manually scanned through each line item in the output (anyone have a better way to search for things like this? I couldn&rsquo;t think of anything useful but admittedly I didn&rsquo;t try too hard) I ended up here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">./Python/bltinmodule.c:builtin_any<span class="o">(</span>PyObject *module, PyObject *iterable<span class="o">)</span></code></pre></div>
+<p>That looked interesting! Looking at the func definition (ok, one definition above <code>builtin_any</code> - as I mentioned, I looked for <code>any</code> but I wanted the src for <code>all</code>):</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">319</span><span class="cm">/*[clinic input]
+</span><span class="ln">320</span><span class="cm">all as builtin_all
+</span><span class="ln">321</span><span class="cm">    iterable: object
+</span><span class="ln">322</span><span class="cm">    /
+</span><span class="ln">323</span><span class="cm">Return True if bool(x) is True for all values x in the iterable.
+</span><span class="ln">324</span><span class="cm">If the iterable is empty, return True.
+</span><span class="ln">325</span><span class="cm">[clinic start generated code]*/</span>
+<span class="ln">326</span>
+<span class="ln">327</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln">328</span><span class="nf">builtin_all</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln">329</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln">330</span><span class="p">{</span>
+<span class="ln">331</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">;</span>
+<span class="ln">332</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln">333</span>    <span class="kt">int</span> <span class="n">cmp</span><span class="p">;</span>
+<span class="ln">334</span>
+<span class="ln">335</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln">336</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">337</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">338</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">339</span>
+<span class="ln">340</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>        <span class="p">}</span>
+<span class="ln">350</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">353</span>        <span class="p">}</span>
+<span class="ln">354</span>    <span class="p">}</span>
+<span class="ln">355</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">356</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">357</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">358</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">359</span>        <span class="k">else</span>
+<span class="ln">360</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">361</span>    <span class="p">}</span>
+<span class="ln">362</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">363</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L319">Sauce</a>)</em></p>
+
+<p>We found it! This is the actual implementation of the builtin <code>all</code> method!!</p>
+
+<p>Ok cool, so let&rsquo;s examine it. The most interesting to us are the lines from 340 onwards:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">340</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>        <span class="p">}</span>
+<span class="ln">350</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">353</span>        <span class="p">}</span>
+<span class="ln">354</span>    <span class="p">}</span>
+<span class="ln">355</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">356</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">357</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">358</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">359</span>        <span class="k">else</span>
+<span class="ln">360</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">361</span>    <span class="p">}</span>
+<span class="ln">362</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span></code></pre></div>
+
+<p>This is the main loop that walks through each item in the iterable and applies a bunch of logic to validate if it is <code>true</code> or not. To understand what <code>true</code> means, we consider line <strong>344</strong>, which invokes the <code>PyObject_IsTrue</code> method. Using a similar approach to what I described earlier, I was able to track down the definition of the <code>PyObject_IsTrue</code> method, reproduced below:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1379</span><span class="cm">/* Test a value used as condition, e.g., in a while or if statement.
+</span><span class="ln">1380</span><span class="cm">   Return -1 if an error occurred */</span>
+<span class="ln">1381</span>
+<span class="ln">1382</span><span class="kt">int</span>
+<span class="ln">1383</span><span class="nf">PyObject_IsTrue</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+<span class="ln">1384</span><span class="p">{</span>
+<span class="ln">1385</span>    <span class="n">Py_ssize_t</span> <span class="n">res</span><span class="p">;</span>
+<span class="ln">1386</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_True</span><span class="p">)</span>
+<span class="ln">1387</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1388</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_False</span><span class="p">)</span>
+<span class="ln">1389</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1390</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_None</span><span class="p">)</span>
+<span class="ln">1391</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1392</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1393</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1394</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1395</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1396</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1397</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1398</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1399</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1400</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1401</span>    <span class="k">else</span>
+<span class="ln">1402</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1403</span>    <span class="cm">/* if it is negative, it should be either -1 or -2 */</span>
+<span class="ln">1404</span>    <span class="k">return</span> <span class="p">(</span><span class="n">res</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">Py_SAFE_DOWNCAST</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Py_ssize_t</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="ln">1405</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Objects/object.c#L1379">Sauce</a>)</em></p>
+
+<p>So this method, as it turns out, isn&rsquo;t all that complex. It does a bunch of checks against <code>v</code> a generic type called <code>PyObject</code> that, recall from the previous <code>builtin_all</code> method, is <code>item</code> &ndash; a member of our iterable passed in to <code>all</code>.</p>
+
+<p>Let&rsquo;s examine this <code>PyObject_IsTrue</code> method line by line:</p>
+
+<p>First, we inspect this (<strong>line 1386</strong>):</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span></code></pre></div>
+<p>Recall that <code>v</code> for us is just <code>0</code>. So this condition does not match; <code>0</code> is not <code>True</code>. Onwards!</p>
+
+<p>The next two conditions (<strong>lines 1388-1391</strong>):</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span></code></pre></div>
+<p>also do not match. <code>v</code> is <code>0</code> not <code>False</code> nor <code>None</code>.</p>
+
+<p>The next check is key (<strong>lines 1392-1394</strong>, for this exercise, at least).</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+            <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span></code></pre></div>
+<p>Woof. I&rsquo;m not super familiar with C so this code block looks especially foreign to me.</p>
+
+<p>I tried figuring out what the definition of <code>Py_TYPE</code> might be &ndash; but unfortunately didn&rsquo;t get too far in my grepping adventures. So, I turned again to the python docs (&hellip;by googling, of course).</p>
+
+<p>The <strong><a href="https://docs.python.org/3/c-api/typeobj.html">Type Objects</a></strong> documentation had a lot of good info that helped clear up exactly what this particular line means:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span></code></pre></div>
+<p>Based on my interpretation of the documentation + the preamble from <a href="https://tenthousandmeters.com/blog/python-behind-the-scenes-7-how-python-attributes-work/">this helpful blog post</a>, all types in python are instances of the C struct <code>_typeobject</code> which determines how a type behaves. <code>tp_as_number</code> is a <strong>member</strong> (bascially an element in the struct) of the <code>_typeobject</code> struct. Only types that are <em>numerical</em> or support numerical usage (ie: floats or bools since they can be used as 0/1, etc) have this member defined and <strong>NOT</strong> set to <strong>NULL</strong>.</p>
+
+<p>To further clarify this, let&rsquo;s take another dive into the code. We begin by hunting down the definition of the <code>_typeobject</code>, which is graciously reproduced for our benefit in the <strong><a href="https://docs.python.org/3/c-api/typeobj.html#pytypeobject-definition">Type Objects</a></strong> docs I mentioned above. I am re-producting it here for convenience but abridging all but the relevant members:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_typeobject</span> <span class="p">{</span>
+<span class="ln"> 2</span>    <span class="c1">// ... !!! removing since not needed for our analysis
+</span><span class="ln"> 3</span><span class="c1"></span>
+<span class="ln"> 4</span>    <span class="cm">/* Method suites for standard classes */</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>    <span class="n">PyNumberMethods</span> <span class="o">*</span><span class="n">tp_as_number</span><span class="p">;</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="c1">// ... !!! removing since not needed for our analysis
+</span><span class="ln"> 9</span><span class="c1"></span>
+<span class="ln">10</span><span class="p">}</span> <span class="n">PyTypeObject</span><span class="p">;</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/63298930fb531ba2bb4f23bc3b915dbf1e17e9e1/Doc/includes/typestruct.h">Sauce</a>)</em></p>
+
+<p>The main hint here for me was <code>PyTypeObject</code>; by grepping the codebase for this token, I was able to locate the following <code>PyTypeObject</code>:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2778</span><span class="n">PyTypeObject</span> <span class="n">PyZip_Type</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ln">2779</span>    <span class="n">PyVarObject_HEAD_INIT</span><span class="p">(</span><span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="ln">2780</span>    <span class="s">&#34;zip&#34;</span><span class="p">,</span>                              <span class="cm">/* tp_name */</span>
+<span class="ln">2781</span>    <span class="k">sizeof</span><span class="p">(</span><span class="n">zipobject</span><span class="p">),</span>                  <span class="cm">/* tp_basicsize */</span>
+<span class="ln">2782</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_itemsize */</span>
+<span class="ln">2783</span>    <span class="cm">/* methods */</span>
+<span class="ln">2784</span>    <span class="p">(</span><span class="n">destructor</span><span class="p">)</span><span class="n">zip_dealloc</span><span class="p">,</span>            <span class="cm">/* tp_dealloc */</span>
+<span class="ln">2785</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_vectorcall_offset */</span>
+<span class="ln">2786</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_getattr */</span>
+<span class="ln">2787</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_setattr */</span>
+<span class="ln">2788</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_as_async */</span>
+<span class="ln">2789</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_repr */</span>
+<span class="ln">2790</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_as_number */</span>
+<span class="ln">2791</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_as_sequence */</span>
+<span class="ln">2792</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_as_mapping */</span>
+<span class="ln">2793</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_hash */</span>
+<span class="ln">2794</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_call */</span>
+<span class="ln">2795</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_str */</span>
+<span class="ln">2796</span>    <span class="n">PyObject_GenericGetAttr</span><span class="p">,</span>            <span class="cm">/* tp_getattro */</span>
+<span class="ln">2797</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_setattro */</span>
+<span class="ln">2798</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_as_buffer */</span>
+<span class="ln">2799</span>    <span class="n">Py_TPFLAGS_DEFAULT</span> <span class="o">|</span> <span class="n">Py_TPFLAGS_HAVE_GC</span> <span class="o">|</span>
+<span class="ln">2800</span>        <span class="n">Py_TPFLAGS_BASETYPE</span><span class="p">,</span>            <span class="cm">/* tp_flags */</span>
+<span class="ln">2801</span>    <span class="n">zip_doc</span><span class="p">,</span>                            <span class="cm">/* tp_doc */</span>
+<span class="ln">2802</span>    <span class="p">(</span><span class="n">traverseproc</span><span class="p">)</span><span class="n">zip_traverse</span><span class="p">,</span>    <span class="cm">/* tp_traverse */</span>
+<span class="ln">2803</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_clear */</span>
+<span class="ln">2804</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_richcompare */</span>
+<span class="ln">2805</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_weaklistoffset */</span>
+<span class="ln">2806</span>    <span class="n">PyObject_SelfIter</span><span class="p">,</span>                  <span class="cm">/* tp_iter */</span>
+<span class="ln">2807</span>    <span class="p">(</span><span class="n">iternextfunc</span><span class="p">)</span><span class="n">zip_next</span><span class="p">,</span>     <span class="cm">/* tp_iternext */</span>
+<span class="ln">2808</span>    <span class="n">zip_methods</span><span class="p">,</span>                        <span class="cm">/* tp_methods */</span>
+<span class="ln">2809</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_members */</span>
+<span class="ln">2810</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_getset */</span>
+<span class="ln">2811</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_base */</span>
+<span class="ln">2812</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_dict */</span>
+<span class="ln">2813</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_descr_get */</span>
+<span class="ln">2814</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_descr_set */</span>
+<span class="ln">2815</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_dictoffset */</span>
+<span class="ln">2816</span>    <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/* tp_init */</span>
+<span class="ln">2817</span>    <span class="n">PyType_GenericAlloc</span><span class="p">,</span>                <span class="cm">/* tp_alloc */</span>
+<span class="ln">2818</span>    <span class="n">zip_new</span><span class="p">,</span>                            <span class="cm">/* tp_new */</span>
+<span class="ln">2819</span>    <span class="n">PyObject_GC_Del</span><span class="p">,</span>                    <span class="cm">/* tp_free */</span>
+<span class="ln">2820</span><span class="p">};</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L2778">Sauce</a>)</em></p>
+
+<p><strong>Line 2790</strong> is the line we care about: note how the value is set to <code>0</code> here. But what is <code>PyZip_Type</code> anyways? In that same file (but further down), we observe:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2917</span><span class="cp">#define SETBUILTIN(NAME, OBJECT) \
+</span><span class="ln">2918</span><span class="cp"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span><span class="n">OBJECT</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>       \
+<span class="ln">2919</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>                                                    \
+<span class="ln">2920</span>    <span class="n">ADD_TO_ALL</span><span class="p">(</span><span class="n">OBJECT</span><span class="p">)</span>
+<span class="ln">2921</span>
+<span class="ln">2922</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;None&#34;</span><span class="p">,</span>                  <span class="n">Py_None</span><span class="p">);</span>
+<span class="ln">2923</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;Ellipsis&#34;</span><span class="p">,</span>              <span class="n">Py_Ellipsis</span><span class="p">);</span>
+<span class="ln">2924</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;NotImplemented&#34;</span><span class="p">,</span>        <span class="n">Py_NotImplemented</span><span class="p">);</span>
+<span class="ln">2925</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;False&#34;</span><span class="p">,</span>                 <span class="n">Py_False</span><span class="p">);</span>
+<span class="ln">2926</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;True&#34;</span><span class="p">,</span>                  <span class="n">Py_True</span><span class="p">);</span>
+<span class="ln">2927</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bool&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyBool_Type</span><span class="p">);</span>
+<span class="ln">2928</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;memoryview&#34;</span><span class="p">,</span>        <span class="o">&amp;</span><span class="n">PyMemoryView_Type</span><span class="p">);</span>
+<span class="ln">2929</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bytearray&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyByteArray_Type</span><span class="p">);</span>
+<span class="ln">2930</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bytes&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyBytes_Type</span><span class="p">);</span>
+<span class="ln">2931</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;classmethod&#34;</span><span class="p">,</span>           <span class="o">&amp;</span><span class="n">PyClassMethod_Type</span><span class="p">);</span>
+<span class="ln">2932</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;complex&#34;</span><span class="p">,</span>               <span class="o">&amp;</span><span class="n">PyComplex_Type</span><span class="p">);</span>
+<span class="ln">2933</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;dict&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyDict_Type</span><span class="p">);</span>
+<span class="ln">2934</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;enumerate&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyEnum_Type</span><span class="p">);</span>
+<span class="ln">2935</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;filter&#34;</span><span class="p">,</span>                <span class="o">&amp;</span><span class="n">PyFilter_Type</span><span class="p">);</span>
+<span class="ln">2936</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;float&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyFloat_Type</span><span class="p">);</span>
+<span class="ln">2937</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;frozenset&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyFrozenSet_Type</span><span class="p">);</span>
+<span class="ln">2938</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;property&#34;</span><span class="p">,</span>              <span class="o">&amp;</span><span class="n">PyProperty_Type</span><span class="p">);</span>
+<span class="ln">2939</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;int&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyLong_Type</span><span class="p">);</span>
+<span class="ln">2940</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;list&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyList_Type</span><span class="p">);</span>
+<span class="ln">2941</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;map&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyMap_Type</span><span class="p">);</span>
+<span class="ln">2942</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;object&#34;</span><span class="p">,</span>                <span class="o">&amp;</span><span class="n">PyBaseObject_Type</span><span class="p">);</span>
+<span class="ln">2943</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;range&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyRange_Type</span><span class="p">);</span>
+<span class="ln">2944</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;reversed&#34;</span><span class="p">,</span>              <span class="o">&amp;</span><span class="n">PyReversed_Type</span><span class="p">);</span>
+<span class="ln">2945</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;set&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PySet_Type</span><span class="p">);</span>
+<span class="ln">2946</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;slice&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PySlice_Type</span><span class="p">);</span>
+<span class="ln">2947</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;staticmethod&#34;</span><span class="p">,</span>          <span class="o">&amp;</span><span class="n">PyStaticMethod_Type</span><span class="p">);</span>
+<span class="ln">2948</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;str&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyUnicode_Type</span><span class="p">);</span>
+<span class="ln">2949</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;super&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PySuper_Type</span><span class="p">);</span>
+<span class="ln">2950</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;tuple&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyTuple_Type</span><span class="p">);</span>
+<span class="ln">2951</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;type&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">);</span>
+<span class="ln">2952</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;zip&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyZip_Type</span><span class="p">);</span>
+<span class="ln">2953</span>    <span class="n">debug</span> <span class="o">=</span> <span class="n">PyBool_FromLong</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">optimization_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="ln">2954</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="s">&#34;__debug__&#34;</span><span class="p">,</span> <span class="n">debug</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">2955</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">debug</span><span class="p">);</span>
+<span class="ln">2956</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">2957</span>    <span class="p">}</span>
+<span class="ln">2958</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">debug</span><span class="p">);</span>
+<span class="ln">2959</span>
+<span class="ln">2960</span>    <span class="k">return</span> <span class="n">mod</span><span class="p">;</span>
+<span class="ln">2961</span><span class="cp">#undef ADD_TO_ALL
+</span><span class="ln">2962</span><span class="cp">#undef SETBUILTIN</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L2917">Sauce</a>)</em></p>
+
+<p>This provides strong evidence that the python builtin definition for <code>zip()</code> (<strong>line 2952</strong>, above) is actually specified by <code>PyZip_Type</code>. As we know, we cannot use <code>zip()</code> in any numerical contexts which explains why <code>tp_as_number</code> is set to <code>0</code> (in C, <code>null</code> is a constant with value of <strong>0</strong> (<a href="https://www.thoughtco.com/definition-of-null-958118#:~:text=Null%20is%20a%20built%2Din,pattern%20for%20a%20null%20pointer.">sauce</a>)).</p>
+
+<p>But let&rsquo;s be sure&hellip;consider (randomly picked) the <code>float</code> type &ndash; from <strong>line 2936</strong>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;float&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyFloat_Type</span><span class="p">);</span></code></pre></div>
+<p>If we were to peer into <code>PyFloat_Type</code>, we would expect to see <code>tp_as_number</code> defined - not as <code>0</code> - but as a <a href="https://github.com/python/cpython/blob/63298930fb531ba2bb4f23bc3b915dbf1e17e9e1/Doc/includes/typestruct.h#L18"><code>PyNumberMethods</code> struct</a>.</p>
+
+<p>We locate <code>PyFloat_Type</code> and upon inspection:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1919</span><span class="n">PyTypeObject</span> <span class="n">PyFloat_Type</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ln">1920</span>    <span class="n">PyVarObject_HEAD_INIT</span><span class="p">(</span><span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="ln">1921</span>    <span class="s">&#34;float&#34;</span><span class="p">,</span>
+<span class="ln">1922</span>    <span class="k">sizeof</span><span class="p">(</span><span class="n">PyFloatObject</span><span class="p">),</span>
+<span class="ln">1923</span>    <span class="mi">0</span><span class="p">,</span>
+<span class="ln">1924</span>    <span class="p">(</span><span class="n">destructor</span><span class="p">)</span><span class="n">float_dealloc</span><span class="p">,</span>                  <span class="cm">/* tp_dealloc */</span>
+<span class="ln">1925</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_vectorcall_offset */</span>
+<span class="ln">1926</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_getattr */</span>
+<span class="ln">1927</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_setattr */</span>
+<span class="ln">1928</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_as_async */</span>
+<span class="ln">1929</span>    <span class="p">(</span><span class="n">reprfunc</span><span class="p">)</span><span class="n">float_repr</span><span class="p">,</span>                       <span class="cm">/* tp_repr */</span>
+<span class="ln">1930</span>    <span class="o">&amp;</span><span class="n">float_as_number</span><span class="p">,</span>                           <span class="cm">/* tp_as_number */</span>
+<span class="ln">1931</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_as_sequence */</span>
+<span class="ln">1932</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_as_mapping */</span>
+<span class="ln">1933</span>    <span class="p">(</span><span class="n">hashfunc</span><span class="p">)</span><span class="n">float_hash</span><span class="p">,</span>                       <span class="cm">/* tp_hash */</span>
+<span class="ln">1934</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_call */</span>
+<span class="ln">1935</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_str */</span>
+<span class="ln">1936</span>    <span class="n">PyObject_GenericGetAttr</span><span class="p">,</span>                    <span class="cm">/* tp_getattro */</span>
+<span class="ln">1937</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_setattro */</span>
+<span class="ln">1938</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_as_buffer */</span>
+<span class="ln">1939</span>    <span class="n">Py_TPFLAGS_DEFAULT</span> <span class="o">|</span> <span class="n">Py_TPFLAGS_BASETYPE</span><span class="p">,</span>   <span class="cm">/* tp_flags */</span>
+<span class="ln">1940</span>    <span class="n">float_new__doc__</span><span class="p">,</span>                           <span class="cm">/* tp_doc */</span>
+<span class="ln">1941</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_traverse */</span>
+<span class="ln">1942</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_clear */</span>
+<span class="ln">1943</span>    <span class="n">float_richcompare</span><span class="p">,</span>                          <span class="cm">/* tp_richcompare */</span>
+<span class="ln">1944</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_weaklistoffset */</span>
+<span class="ln">1945</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_iter */</span>
+<span class="ln">1946</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_iternext */</span>
+<span class="ln">1947</span>    <span class="n">float_methods</span><span class="p">,</span>                              <span class="cm">/* tp_methods */</span>
+<span class="ln">1948</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_members */</span>
+<span class="ln">1949</span>    <span class="n">float_getset</span><span class="p">,</span>                               <span class="cm">/* tp_getset */</span>
+<span class="ln">1950</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_base */</span>
+<span class="ln">1951</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_dict */</span>
+<span class="ln">1952</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_descr_get */</span>
+<span class="ln">1953</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_descr_set */</span>
+<span class="ln">1954</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_dictoffset */</span>
+<span class="ln">1955</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_init */</span>
+<span class="ln">1956</span>    <span class="mi">0</span><span class="p">,</span>                                          <span class="cm">/* tp_alloc */</span>
+<span class="ln">1957</span>    <span class="n">float_new</span><span class="p">,</span>                                  <span class="cm">/* tp_new */</span>
+<span class="ln">1958</span>    <span class="p">.</span><span class="n">tp_vectorcall</span> <span class="o">=</span> <span class="p">(</span><span class="n">vectorcallfunc</span><span class="p">)</span><span class="n">float_vectorcall</span><span class="p">,</span>
+<span class="ln">1959</span><span class="p">};</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/fa7ce080175f65d678a7d5756c94f82887fc9803/Objects/floatobject.c#L1919">Sauce</a>)</em></p>
+
+<p><strong>Line number 1930</strong>, happily, proves us right! <code>tp_as_number</code> is a pointer to <code>float_as_number</code>, which is defined right above:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1883</span><span class="k">static</span> <span class="n">PyNumberMethods</span> <span class="n">float_as_number</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ln">1884</span>    <span class="n">float_add</span><span class="p">,</span>          <span class="cm">/* nb_add */</span>
+<span class="ln">1885</span>    <span class="n">float_sub</span><span class="p">,</span>          <span class="cm">/* nb_subtract */</span>
+<span class="ln">1886</span>    <span class="n">float_mul</span><span class="p">,</span>          <span class="cm">/* nb_multiply */</span>
+<span class="ln">1887</span>    <span class="n">float_rem</span><span class="p">,</span>          <span class="cm">/* nb_remainder */</span>
+<span class="ln">1888</span>    <span class="n">float_divmod</span><span class="p">,</span>       <span class="cm">/* nb_divmod */</span>
+<span class="ln">1889</span>    <span class="n">float_pow</span><span class="p">,</span>          <span class="cm">/* nb_power */</span>
+<span class="ln">1890</span>    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">float_neg</span><span class="p">,</span> <span class="cm">/* nb_negative */</span>
+<span class="ln">1891</span>    <span class="n">float_float</span><span class="p">,</span>        <span class="cm">/* nb_positive */</span>
+<span class="ln">1892</span>    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">float_abs</span><span class="p">,</span> <span class="cm">/* nb_absolute */</span>
+<span class="ln">1893</span>    <span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">float_bool</span><span class="p">,</span> <span class="cm">/* nb_bool */</span>
+<span class="ln">1894</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_invert */</span>
+<span class="ln">1895</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_lshift */</span>
+<span class="ln">1896</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_rshift */</span>
+<span class="ln">1897</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_and */</span>
+<span class="ln">1898</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_xor */</span>
+<span class="ln">1899</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_or */</span>
+<span class="ln">1900</span>    <span class="n">float___trunc___impl</span><span class="p">,</span> <span class="cm">/* nb_int */</span>
+<span class="ln">1901</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_reserved */</span>
+<span class="ln">1902</span>    <span class="n">float_float</span><span class="p">,</span>        <span class="cm">/* nb_float */</span>
+<span class="ln">1903</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_add */</span>
+<span class="ln">1904</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_subtract */</span>
+<span class="ln">1905</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_multiply */</span>
+<span class="ln">1906</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_remainder */</span>
+<span class="ln">1907</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_power */</span>
+<span class="ln">1908</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_lshift */</span>
+<span class="ln">1909</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_rshift */</span>
+<span class="ln">1910</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_and */</span>
+<span class="ln">1911</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_xor */</span>
+<span class="ln">1912</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_or */</span>
+<span class="ln">1913</span>    <span class="n">float_floor_div</span><span class="p">,</span>    <span class="cm">/* nb_floor_divide */</span>
+<span class="ln">1914</span>    <span class="n">float_div</span><span class="p">,</span>          <span class="cm">/* nb_true_divide */</span>
+<span class="ln">1915</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_floor_divide */</span>
+<span class="ln">1916</span>    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_true_divide */</span>
+<span class="ln">1917</span><span class="p">};</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/fa7ce080175f65d678a7d5756c94f82887fc9803/Objects/floatobject.c#L1883">Sauce</a>)</em></p>
+
+<p>Tada! Our assumptions are correct and indeed the check:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="o">//</span> <span class="p">...</span></code></pre></div>
+<p>is mainly checking to ensure that <code>v</code>, our <code>item</code> in question, has numerical properties as defined by the <code>PyNumberMethods</code> struct. If so, we then go on to check and ensure that:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span></code></pre></div>
+<p>which leads us to our second big question: what the hell is <code>nb_bool</code>??</p>
+
+<p>To answer this question - thankfully - we don&rsquo;t need to look all that far. But before looking into the code, let&rsquo;s revisit out trusty docs one last time. The &ldquo;Quick Reference&rdquo; section (<a href="https://docs.python.org/3/c-api/typeobj.html#quick-reference">here</a>) displays a bunch of &ldquo;slots&rdquo; that are defined in the <code>_typeobject</code> struct:</p>
+
+<p><img src="/dev/img/tp_slots.png" alt="tp slots" /></p>
+
+<p>Clicking on the <a href="https://docs.python.org/3/c-api/typeobj.html#sub-slots"><strong>sub-slots</strong></a> link under the <strong>special methods/attrs</strong> column for <code>tp_as_number</code> leads us to:</p>
+
+<p><img src="/dev/img/sub_slots.png" alt="sub slots" /></p>
+
+<p>Generally, these &ldquo;subslots&rdquo; display a variety of C struct elements and the corresponding python &ldquo;special method&rdquo; that it relates to. In particular and most useful to note is <code>nb_bool</code>, which relates to the python <code>__bool__</code> dunder method! So basically,</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span></code></pre></div>
+<p>is simply checking to ensure that the <code>Py_TYPE</code> has a valid <code>__bool__</code> method defined!</p>
+
+<p>With thiat, let&rsquo;s now look at <strong>line 1893</strong> from our <code>static PyNumberMethods float_as_number</code> definition, which illustrates that for <code>PyFloat_Type</code> at least, the <code>nb_bool</code> slot is defined as <code>float_bool</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">float_bool</span><span class="p">,</span> <span class="cm">/* nb_bool */</span></code></pre></div>
+<p>and the definition of <code>float_bool</code> is available in the same <strong>floatobject.c</strong> file that defines <code>PyFloat_Type</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span>
+<span class="nf">float_bool</span><span class="p">(</span><span class="n">PyFloatObject</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">ob_fval</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p><em>(<a href="https://github.com/python/cpython/blob/145bf269df3530176f6ebeab1324890ef7070bf8/Objects/floatobject.c#L841">Sauce</a>)</em></p>
+
+<p>On initial glance, the utility of this method is obvious - return <code>True</code> if <code>ob_fval</code> is not <code>0.0</code>. Otherwise, return <code>False</code>.</p>
+
+<p>But now on to a new question: what the heck is <code>v-&gt;ob_fval</code>?? If we were to guess, it is probably the actual <em>numerical</em> value of our variable <code>v</code> of type <code>PyFloatObject</code> (like for instance the number <code>3.14159</code> that is stored as type float).</p>
+
+<p>Confirming this is easy - just look at the header file for <strong>floatobject.c</strong>:</p>
+
+<p><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">15</span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+<span class="ln">16</span>    <span class="n">PyObject_HEAD</span>
+<span class="ln">17</span>    <span class="kt">double</span> <span class="n">ob_fval</span><span class="p">;</span>
+<span class="ln">18</span><span class="p">}</span> <span class="n">PyFloatObject</span><span class="p">;</span></code></pre></div>
+<em>(<a href="https://github.com/python/cpython/blob/63298930fb531ba2bb4f23bc3b915dbf1e17e9e1/Include/floatobject.h#L15">Sauce</a>)</em></p>
+
+<p>This clearly demonstrates that <code>PyFloatObject</code> has a property called <code>ob_fval</code> which is of type <code>double</code>. In <code>float_bool(PyFloatObject *v)</code>, we compare this value against <code>0.0</code> to return a boolean that determines the <strong>&ldquo;truthy&rdquo;</strong> or <strong>&ldquo;falsy&rdquo;</strong> &ndash;ness of our value.</p>
+
+<p>Moreover, it is clear that for other <code>Py_TYPE</code><strong>s</strong> out there (like ints or bools for instance), we can repeat this exercise and end up again at <em>some</em> function that represents <code>nb_bool</code> (corresponding to the <code>__bool__</code> dunder method) which defines the logic that determines if the underlying value is <strong>&ldquo;truthy&rdquo;</strong> or <strong>&ldquo;falsy&rdquo;</strong>. For example, for python&rsquo;s <code>range</code> builtin (defined as <code>PyRange_Type</code>), the <code>nb_bool</code> method is defined as:</p>
+
+<p><div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">680</span><span class="k">static</span> <span class="kt">int</span>
+<span class="ln">681</span><span class="nf">range_bool</span><span class="p">(</span><span class="n">rangeobject</span><span class="o">*</span> <span class="n">self</span><span class="p">)</span>
+<span class="ln">682</span><span class="p">{</span>
+<span class="ln">683</span>    <span class="k">return</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">);</span>
+<span class="ln">684</span><span class="p">}</span></code></pre></div>
+<em>(<a href="https://github.com/python/cpython/blob/145bf269df3530176f6ebeab1324890ef7070bf8/Objects/rangeobject.c#L680">Sauce</a>)</em></p>
+
+<p>In other words, it generally works the same way as <code>float_bool</code> does - a static method that returns an <code>int</code> is associated with the <code>nb_bool</code> slot but of course implementation details are determined by and specific to the characteristics of the type in question (<code>PyRange_Type</code>, <code>PyFloat_Type</code>, etc)</p>
+
+<p>And SO, <strong>finally</strong>, we can fully parse our initial code block and explain what it is doing (in the context of <code>all([0,0,0])</code>):</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+            <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span></code></pre></div>
+<p><strong>1</strong>: check to see if <code>v</code> has numerical methods defined</p>
+
+<p><strong>2</strong>: also ensure that a proper <code>__bool__</code> method is available for <code>v</code></p>
+
+<p><strong>FINALLY</strong>: if <strong>(1)</strong> and <strong>(2)</strong> are both NOT <strong>NULL</strong>, then <strong>call</strong> the <code>__bool__</code> method on <code>v</code>, which will set <code>res</code> to be <code>1</code>, <code>0</code> or some numeric representation of error (in other words, <code>True</code> or <code>False</code>).</p>
+
+<p>At this point, it becomes painfully obvious as to why we get the <code>False</code> return value that we have observed for our initial example of <code>all([0,0,0])</code>.</p>
+
+<p><em>(Note: I sneakily did not include the actual <code>nb_bool</code> implementation for the python <code>int</code> type, which is defined in the <code>PyLong_Type</code> struct. This is mainly because for ints at least, the definition/code path is a little less obvious (but works the same way in principle) so for the purposes of clarity I chose to go with <code>PyFloat_Type</code> which IMO is easier to follow)</em></p>
+
+<h2 id="tying-it-all-together-finally">Tying it all together, finally!</h2>
+
+<p>Still, for the sake of completeness, let&rsquo;s see this thought process through to completion. I&rsquo;ll walk through the code path and expound on what (I am fairly sure at this point) is happening at each step.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">all</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># ??? -- we want to replace this &#34;???&#34; with True or False</span></code></pre></div>
+<p>The builtin method <code>all</code> is defined here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define BUILTIN_ALL_METHODDEF    \
+</span><span class="cp"></span>    <span class="p">{</span><span class="s">&#34;all&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">builtin_all</span><span class="p">,</span> <span class="n">METH_O</span><span class="p">,</span> <span class="n">builtin_all__doc__</span><span class="p">},</span></code></pre></div>
+<p><em>(<a href="https://github.com/python/cpython/blob/63298930fb531ba2bb4f23bc3b915dbf1e17e9e1/Python/clinic/bltinmodule.c.h#L22">Sauce</a>)</em></p>
+
+<p>this is how the method <code>builtin_all</code> in associated the the python func <code>all()</code>. Next, we end up in the function definition for <code>builtin_all</code>, reproducing here for convenience:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">319</span><span class="cm">/*[clinic input]
+</span><span class="ln">320</span><span class="cm">all as builtin_all
+</span><span class="ln">321</span><span class="cm">    iterable: object
+</span><span class="ln">322</span><span class="cm">    /
+</span><span class="ln">323</span><span class="cm">Return True if bool(x) is True for all values x in the iterable.
+</span><span class="ln">324</span><span class="cm">If the iterable is empty, return True.
+</span><span class="ln">325</span><span class="cm">[clinic start generated code]*/</span>
+<span class="ln">326</span>
+<span class="ln">327</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln">328</span><span class="nf">builtin_all</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln">329</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln">330</span><span class="p">{</span>
+<span class="ln">331</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">;</span>
+<span class="ln">332</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln">333</span>    <span class="kt">int</span> <span class="n">cmp</span><span class="p">;</span>
+<span class="ln">334</span>
+<span class="ln">335</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln">336</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">337</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">338</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">339</span>
+<span class="ln">340</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>        <span class="p">}</span>
+<span class="ln">350</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">353</span>        <span class="p">}</span>
+<span class="ln">354</span>    <span class="p">}</span>
+<span class="ln">355</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">356</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">357</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">358</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">359</span>        <span class="k">else</span>
+<span class="ln">360</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">361</span>    <span class="p">}</span>
+<span class="ln">362</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">363</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L319">Sauce</a>)</em></p>
+
+<p>On <strong>line 341</strong>, we produce our first <code>item</code> &ndash; <code>0</code> since our input into the original <code>all()</code> function was <code>[0,0,0]</code>.</p>
+
+<p>On <strong>line 344</strong>, we invoke <code>PyObject_IsTrue</code> for <code>0</code>, which is a <code>PyLongObject</code> (int, basically).</p>
+
+<p>Ok, so let&rsquo;s reproduce <code>PyObject_IsTrue</code> below (for convenience) and trace our <code>item</code> as it traverses the control flow structure:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1379</span><span class="cm">/* Test a value used as condition, e.g., in a while or if statement.
+</span><span class="ln">1380</span><span class="cm">   Return -1 if an error occurred */</span>
+<span class="ln">1381</span>
+<span class="ln">1382</span><span class="kt">int</span>
+<span class="ln">1383</span><span class="nf">PyObject_IsTrue</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+<span class="ln">1384</span><span class="p">{</span>
+<span class="ln">1385</span>    <span class="n">Py_ssize_t</span> <span class="n">res</span><span class="p">;</span>
+<span class="ln">1386</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_True</span><span class="p">)</span>
+<span class="ln">1387</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1388</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_False</span><span class="p">)</span>
+<span class="ln">1389</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1390</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_None</span><span class="p">)</span>
+<span class="ln">1391</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1392</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1393</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1394</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1395</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1396</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1397</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1398</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1399</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1400</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1401</span>    <span class="k">else</span>
+<span class="ln">1402</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1403</span>    <span class="cm">/* if it is negative, it should be either -1 or -2 */</span>
+<span class="ln">1404</span>    <span class="k">return</span> <span class="p">(</span><span class="n">res</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">Py_SAFE_DOWNCAST</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Py_ssize_t</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="ln">1405</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Objects/object.c#L1379">Sauce</a>)</em></p>
+
+<p>Again, because <code>v</code> &ndash; which is <code>item</code> &ndash; is <code>0</code> and of type <code>PyLongObject</code>, we know that specifically, <strong>lines 1392-1394</strong> in the logic above apply:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+            <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span></code></pre></div>
+<p>In this case, because our <code>item</code> is indeed <code>0</code>, we know that <code>res</code> is set to <code>0</code> as well. Then, we skip to the bottom of this method, <strong>line 1404</strong>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">return</span> <span class="p">(</span><span class="n">res</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">Py_SAFE_DOWNCAST</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Py_ssize_t</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span></code></pre></div>
+<p><code>res</code> is set to <code>0</code> so the return value of this function is not <code>1</code> but instead the safely downcasted value of <code>0</code>.</p>
+
+<p><em>(If you&rsquo;re interested, you can find the definition of <code>Py_SAFE_DOWNCAST</code> <a href="https://github.com/python/cpython/blob/e43baaba73a8b169b2f910b80560e4492063ae65/Include/pyport.h#L418">here</a>. Super interestingly, it turns out the this downcasting action isn&rsquo;t <strong>actually</strong> safe unless in <strong>debug</strong> mode, this <a href="https://python-bugs-list.python.narkive.com/J38UaM3H/issue19692-rename-py-safe-downcast">issue</a> has proposed renaming the method since py3.4!)</em></p>
+
+<p>Ok! So <code>PyObject_IsTrue</code> as it is invoked in <strong>line 344</strong> in the <code>builtin_all</code> method has returned <code>0</code>. Therefore we now know that <code>cmp</code> in <strong>line 344</strong> is <code>0</code>:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">340</span><span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>    <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>    <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>        <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>    <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>    <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>    <span class="p">}</span>
+<span class="ln">350</span>    <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>        <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">353</span>    <span class="p">}</span>
+<span class="ln">354</span><span class="p">}</span></code></pre></div>
+
+<p>Therefore, the code skips to <strong>line 350</strong>, where we evaluate the condition where <code>cmp == 0</code> and return <code>Py_RETURN_FALSE</code>, a &ldquo;safe&rdquo; false return value.</p>
+
+<p>And so, in conclusion, our intial call to <code>all</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">all</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># False</span></code></pre></div>
+<p>returns <strong>False</strong> as displayed above.</p>
+
+<p>Tada!</p>
+
+<p><em>(PS: wondering what the difference is between <code>Py_RETURN_FALSE</code> and <code>Py_False</code>? I was too! These <a href="https://docs.python.org/3/c-api/bool.html">docs</a> were very helpful in clarifying)</em></p>
+
+<h2 id="final-remarks">Final remarks</h2>
+
+<p>So here&rsquo;s a fun question to ask: <strong>why??</strong></p>
+
+<p>As in - why do this, even? I came for the possibility/thrill of contributing to python (a lang I have used+abused for a very long time to make a living) but I stayed for the learnings and&hellip;possibly new ideas for contribution??</p>
+
+<p>While I have definitely ventured into python source in the past, I usually stayed in python land and rarely looked into the C code. I wasn&rsquo;t planning to look as far/deep as I did tonight but I am glad that I did as I feel like I have a much better understanding of how at least some parts of python now work &ldquo;under the hood&rdquo;.</p>
+
+<p>I wrote this post for my own sake mainly but also in the hopes that perhaps others may find my spelunking useful/interesting and yes, perhaps even fun!</p>
+
+<h2 id="sidebar-wtf-is-tp-bool">Sidebar: WTF is tp_bool???</h2>
+
+<p>Ok this really bugged me for a while. I&rsquo;m pretty sure I know what is going on but I&rsquo;ll start from the top.</p>
+
+<p>As I poured over the python source code, I had built up a mental model of how the sub-slots generally worked. Let&rsquo;s go back to our friend, <code>PyNumberMethods float_as_number</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="n">PyNumberMethods</span> <span class="n">float_as_number</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">float_add</span><span class="p">,</span>          <span class="cm">/* nb_add */</span>
+    <span class="n">float_sub</span><span class="p">,</span>          <span class="cm">/* nb_subtract */</span>
+    <span class="n">float_mul</span><span class="p">,</span>          <span class="cm">/* nb_multiply */</span>
+    <span class="n">float_rem</span><span class="p">,</span>          <span class="cm">/* nb_remainder */</span>
+    <span class="n">float_divmod</span><span class="p">,</span>       <span class="cm">/* nb_divmod */</span>
+    <span class="n">float_pow</span><span class="p">,</span>          <span class="cm">/* nb_power */</span>
+    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">float_neg</span><span class="p">,</span> <span class="cm">/* nb_negative */</span>
+    <span class="n">float_float</span><span class="p">,</span>        <span class="cm">/* nb_positive */</span>
+    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">float_abs</span><span class="p">,</span> <span class="cm">/* nb_absolute */</span>
+    <span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">float_bool</span><span class="p">,</span> <span class="cm">/* nb_bool */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_invert */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_lshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_rshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_and */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_xor */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_or */</span>
+    <span class="n">float___trunc___impl</span><span class="p">,</span> <span class="cm">/* nb_int */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_reserved */</span>
+    <span class="n">float_float</span><span class="p">,</span>        <span class="cm">/* nb_float */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_add */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_subtract */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_multiply */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_remainder */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_power */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_lshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_rshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_and */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_xor */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_or */</span>
+    <span class="n">float_floor_div</span><span class="p">,</span>    <span class="cm">/* nb_floor_divide */</span>
+    <span class="n">float_div</span><span class="p">,</span>          <span class="cm">/* nb_true_divide */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_floor_divide */</span>
+    <span class="mi">0</span><span class="p">,</span>                  <span class="cm">/* nb_inplace_true_divide */</span>
+<span class="p">};</span></code></pre></div>
+<p><em>(<a href="https://github.com/python/cpython/blob/145bf269df3530176f6ebeab1324890ef7070bf8/Objects/floatobject.c#L1892">Sauce</a>)</em></p>
+
+<p>Take note especially of:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">float_bool</span><span class="p">,</span> <span class="cm">/* nb_bool */</span></code></pre></div>
+<p>Now, consider the equivalent but for <code>PyNumberMethods long_as_number</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="n">PyNumberMethods</span> <span class="n">long_as_number</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">binaryfunc</span><span class="p">)</span><span class="n">long_add</span><span class="p">,</span>       <span class="cm">/*nb_add*/</span>
+    <span class="p">(</span><span class="n">binaryfunc</span><span class="p">)</span><span class="n">long_sub</span><span class="p">,</span>       <span class="cm">/*nb_subtract*/</span>
+    <span class="p">(</span><span class="n">binaryfunc</span><span class="p">)</span><span class="n">long_mul</span><span class="p">,</span>       <span class="cm">/*nb_multiply*/</span>
+    <span class="n">long_mod</span><span class="p">,</span>                   <span class="cm">/*nb_remainder*/</span>
+    <span class="n">long_divmod</span><span class="p">,</span>                <span class="cm">/*nb_divmod*/</span>
+    <span class="n">long_pow</span><span class="p">,</span>                   <span class="cm">/*nb_power*/</span>
+    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">long_neg</span><span class="p">,</span>        <span class="cm">/*nb_negative*/</span>
+    <span class="n">long_long</span><span class="p">,</span>                  <span class="cm">/*tp_positive*/</span>
+    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">long_abs</span><span class="p">,</span>        <span class="cm">/*tp_absolute*/</span>
+    <span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">long_bool</span><span class="p">,</span>         <span class="cm">/*tp_bool*/</span>
+    <span class="p">(</span><span class="n">unaryfunc</span><span class="p">)</span><span class="n">long_invert</span><span class="p">,</span>     <span class="cm">/*nb_invert*/</span>
+    <span class="n">long_lshift</span><span class="p">,</span>                <span class="cm">/*nb_lshift*/</span>
+    <span class="n">long_rshift</span><span class="p">,</span>                <span class="cm">/*nb_rshift*/</span>
+    <span class="n">long_and</span><span class="p">,</span>                   <span class="cm">/*nb_and*/</span>
+    <span class="n">long_xor</span><span class="p">,</span>                   <span class="cm">/*nb_xor*/</span>
+    <span class="n">long_or</span><span class="p">,</span>                    <span class="cm">/*nb_or*/</span>
+    <span class="n">long_long</span><span class="p">,</span>                  <span class="cm">/*nb_int*/</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/*nb_reserved*/</span>
+    <span class="n">long_float</span><span class="p">,</span>                 <span class="cm">/*nb_float*/</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_add */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_subtract */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_multiply */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_remainder */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_power */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_lshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_rshift */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_and */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_xor */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_or */</span>
+    <span class="n">long_div</span><span class="p">,</span>                   <span class="cm">/* nb_floor_divide */</span>
+    <span class="n">long_true_divide</span><span class="p">,</span>           <span class="cm">/* nb_true_divide */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_floor_divide */</span>
+    <span class="mi">0</span><span class="p">,</span>                          <span class="cm">/* nb_inplace_true_divide */</span>
+    <span class="n">long_long</span><span class="p">,</span>                  <span class="cm">/* nb_index */</span>
+<span class="p">};</span></code></pre></div>
+<p><em>(<a href="https://github.com/python/cpython/blob/145bf269df3530176f6ebeab1324890ef7070bf8/Objects/longobject.c#L5584">Sauce</a>)</em></p>
+
+<p>But note specifically:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="p">(</span><span class="n">inquiry</span><span class="p">)</span><span class="n">long_bool</span><span class="p">,</span>         <span class="cm">/*tp_bool*/</span></code></pre></div>
+<p>Wtf is <code>tp_bool</code>?!</p>
+
+<p>This is likely due to my own ignorance/tiredness but I searched frantically for some definition, <em>any definition</em>, of <code>tp_bool</code> in the source code. Nothing. Tried the docs. Nada.</p>
+
+<p>Finally, I realized that I could probably just look at the <code>PyNumberMethods</code> definition which led me to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="cm">/* Number implementations must check *both*
+</span><span class="cm">       arguments for proper type and implement the necessary conversions
+</span><span class="cm">       in the slot functions themselves. */</span>
+
+    <span class="c1">// ... SKIPPING non relevant lines
+</span><span class="c1"></span>
+    <span class="n">inquiry</span> <span class="n">nb_bool</span><span class="p">;</span>
+
+    <span class="c1">// ... SKIPPING non relevant lines
+</span><span class="c1"></span>    
+<span class="p">}</span> <span class="n">PyNumberMethods</span><span class="p">;</span></code></pre></div>
+<p><em>(<a href="https://github.com/python/cpython/blob/62078101ea1be5d2fc472a3f0d9d135e0bd5cd38/Include/cpython/object.h#L104">Sauce</a>)</em></p>
+
+<p>From this definition, it became clear that the <code>tp_bool</code> label is just a typo. Whomp, whomp.</p>
+
+<p>Probably not important enough for a PR but man did it confuse me for a while!</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgrokking-builtin.all-in-python%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgrokking-builtin.all-in-python%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fgrokking-builtin.all-in-python%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>
