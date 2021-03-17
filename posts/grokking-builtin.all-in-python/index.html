@@ -218,6 +218,17 @@ Return True if all elements of the iterable are true (or if the iterable is empt
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span></code></pre></div>
 <p><em>(Note: this will <strong>not</strong> work for something like <code>[{}, {}, {}]</code> since dicts are not hashable. However, for basic usecases where we want to (safely!) determine if a list of primitive types are all the same, the approach is IMO &ldquo;good enough&rdquo;)</em></p>
 
+<p><em>(Note 2: if you <strong>really</strong> want to handle all cases, including unhashable types, consider the following:</em></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">inp</span> <span class="o">=</span> <span class="p">[{},{},{}]</span>
+<span class="n">samesame</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">inp</span><span class="p">:</span>
+  <span class="n">samesame</span> <span class="o">=</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">it</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">samesame</span><span class="p">:</span>
+    <span class="k">break</span>
+<span class="c1"># samesame will be False is all items in inp are not the same val</span>
+<span class="k">print</span><span class="p">(</span><span class="n">samesame</span><span class="p">)</span> <span class="c1"># True</span></code></pre></div>
+<p><em>&hellip; certainly not as compact but gets the job done!)</em></p>
+
 <h2 id="venturing-into-the-guts-of-cpython">Venturing into the guts of CPython</h2>
 
 <p>Ok, now for the meat of this story.</p>
