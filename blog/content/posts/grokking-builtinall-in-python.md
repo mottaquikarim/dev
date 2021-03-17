@@ -98,6 +98,21 @@ len(set([0,0,0])) == 1
 
 _(Note: this will **not** work for something like `[{}, {}, {}]` since dicts are not hashable. However, for basic usecases where we want to (safely!) determine if a list of primitive types are all the same, the approach is IMO "good enough")_
 
+_(Note 2: if you **really** want to handle all cases, including unhashable types, consider the following:_
+
+```python
+inp = [{},{},{}]
+samesame = True
+for it in inp:
+  samesame = inp[0] == it
+  if not samesame:
+    break
+# samesame will be False is all items in inp are not the same val
+print(samesame) # True
+```
+
+_... certainly not as compact but gets the job done!)_
+
 ## Venturing into the guts of CPython
 
 Ok, now for the meat of this story.
