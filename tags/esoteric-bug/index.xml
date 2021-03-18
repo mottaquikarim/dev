@@ -13,6 +13,19 @@
     
     
     <item>
+      <title>Extending Pythons Builtin C Modules</title>
+      <link>https://mottaquikarim.github.io/dev/posts/extending-pythons-builtin-c-modules/</link>
+      <pubDate>Wed, 17 Mar 2021 20:58:20 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/extending-pythons-builtin-c-modules/</guid>
+      <description>Table of Contents  This post is intended to be a follow-up/continuation of my discussion around cpython and grokking (generally speaking) how all(...) works.
+For better context, I&amp;rsquo;d recommend first reading the first post in this series, &amp;ldquo;Grokking Builtin.all in Python&amp;rdquo;
+Having understood how the builtin_all method behaves, we now turn our attention to how we might be able to either &amp;ldquo;hack&amp;rdquo; builtin_all to accommodate our intended use case (for no reason except for our own education) or more generally speaking, how we might define a new method that specifically checks to see if all items in the iterable are equivalent.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Grokking Builtin.all in Python</title>
       <link>https://mottaquikarim.github.io/dev/posts/grokking-builtin.all-in-python/</link>
       <pubDate>Tue, 16 Mar 2021 22:26:46 +0000</pubDate>

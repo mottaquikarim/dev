@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Extending Pythons Builtin C Modules</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/featured/">featured</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/python/">python</a></strong></small>
+        <header id="post-header">
+        <h1>Extending Pythons Builtin C Modules</h1><time>March 17, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#step-1-building-cpython">Step 1: Building CPython</a></li>
+<li><a href="#step-2-dockerizing-the-build-process">Step 2: Dockerizing the build process</a></li>
+<li><a href="#step-3-lightly-dipping-our-toes-into-c-land">Step 3: Lightly dipping our toes into C-land</a></li>
+<li><a href="#step-4-implementing-a-custom-builtin-method">Step 4: Implementing a custom builtin method</a></li>
+<li><a href="#final-remarks">Final Remarks</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>This post is intended to be a follow-up/continuation of my discussion around <a href="https://github.com/python/cpython">cpython</a> and grokking (generally speaking) how <code>all(...)</code> works.</p>
+
+<p>For better context, I&rsquo;d recommend first reading the first post in this series, <a href="/dev/posts/grokking-builtin.all-in-python/">&ldquo;Grokking Builtin.all in Python&rdquo;</a></p>
+
+<p>Having understood how the <code>builtin_all</code> method behaves, we now turn our attention to how we might be able to either &ldquo;hack&rdquo; <code>builtin_all</code> to accommodate our intended use case (for no reason except for our own education) or more generally speaking, how we might define a new method that specifically checks to see if <em>all</em> items in the iterable are equivalent.</p>
+
+<p>Effectively, we want to build this (from the previous post):</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">inp</span> <span class="o">=</span> <span class="p">[{},{},{}]</span>
+<span class="n">samesame</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">inp</span><span class="p">:</span>
+  <span class="n">samesame</span> <span class="o">=</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">it</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">samesame</span><span class="p">:</span>
+    <span class="k">break</span>
+<span class="c1"># samesame will be False is all items in inp are not the same val</span>
+<span class="k">print</span><span class="p">(</span><span class="n">samesame</span><span class="p">)</span> <span class="c1"># True</span></code></pre></div>
+<p>but now as a method in python&rsquo;s <code>bltinmodule.c</code> lib instead.</p>
+
+<p>Ok?</p>
+
+<p><strong>Ok.</strong></p>
+
+<p>Let&rsquo;s do this!</p>
+
+<h2 id="step-1-building-cpython">Step 1: Building CPython</h2>
+
+<p>Our first step is to actually build cpython locally so that we can make changes to the C source code and observe it in action.</p>
+
+<p>To begin, I followed the steps provided <a href="https://devguide.python.org/setup/#unix">here</a>, as written in the Python Developer&rsquo;s Guide which defines the steps necessary for building python from the C source code.</p>
+
+<p>While they have exhaustive documentation about how to get the codebase working in various environments and a bunch of caveats for install dependencies, etc - I chose to try to find the simplest way forward I possibly could.</p>
+
+<p>To that end, I only needed to run the following two commands:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">./configure --with-pydebug</code></pre></div>
+<p>and then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">make -s -j2</code></pre></div>
+<p>Initially I ran this directly on my local machine&hellip;which worked! And I saw that a <code>python.exe</code> file (yes, on a mac) was created in my current working directory. Running <code>./python.exe</code> resulted in the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Python <span class="m">3</span>.10.0a6+ <span class="o">(</span>heads/master-dirty:6086ae7, Mar <span class="m">17</span> <span class="m">2021</span>, <span class="m">19</span>:52:03<span class="o">)</span> <span class="o">[</span>GCC <span class="m">4</span>.9.4<span class="o">]</span> on linux
+Type <span class="s2">&#34;help&#34;</span>, <span class="s2">&#34;copyright&#34;</span>, <span class="s2">&#34;credits&#34;</span> or <span class="s2">&#34;license&#34;</span> <span class="k">for</span> more information.
+&gt;&gt;&gt;</code></pre></div>
+<p>Particularly, the <code>Python 3.10.0a6+ (heads/master-dirty:6086ae7</code> label demonstrates that a &ldquo;dev&rdquo; build of python was successfully created and is now runnable via the <code>./python.exe</code> binary!</p>
+
+<h2 id="step-2-dockerizing-the-build-process">Step 2: Dockerizing the build process</h2>
+
+<p>Let&rsquo;s step back for a few moments.</p>
+
+<p>The first thing I <em>actually</em> did before even looking up the dev guide docs was to try and find a docker image that builds cpython&rsquo;s master branch. Disappointingly, I didn&rsquo;t find anything useful. So, I wrote one (see the Dockerfile below) in the hopes that it will make it easier for others (and of course by others I also include future-Taq) in playing around and/or dev-ing from the source.</p>
+<div class="highlight"><pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="k">FROM</span><span class="s"> gcc:latest</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span>COPY . /usr/src/app<span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /usr/src/app</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">RUN</span> ./configure --with-pydebug <span class="o">&amp;&amp;</span> make clean <span class="o">&amp;&amp;</span> make -s -j2</code></pre></div>
+<p>The first few lines are just our plain old docker usuals - build this image from the <code>gcc:latest</code> <a href="https://hub.docker.com/_/gcc">base image</a>, move the cpython source into container, set working dir, etc.</p>
+
+<p>The last line builds python from source <em>initially</em> (when image is created). Subsequent runs (once we&rsquo;ve made changes to the source itself) only need <code>make clean &amp;&amp; make -s -j2</code>. (We only need to re-run <code>./configure</code> if new dependencies must be linked as part of our dev cycle. Also, it is strongly recommended that we always build with <code>--with-pydebug</code> flag enabled).</p>
+
+<p><em>(<strong>TODO</strong>: for a future iteration: it would be great to configure some form of watcher (such as <a href="https://github.com/githubnemo/CompileDaemon">CompileDaemon</a> in golang or <a href="https://github.com/paulmillr/chokidar">chokidar</a> in npm) to rerun make as files are changed during development. At that point, I would be comfortable packaging this up as a cpython dev image on dockerhub)</em></p>
+
+<p>Once the Dockerfile is good and written (I stuck it directly into the top level of the <code>cpython</code> repo), we build the image:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker build -t pydev:1.0 .</code></pre></div>
+<p>which will install dependencies and run <code>./configure</code>, etc etc. Then, we run the container:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -it -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/Python:/usr/src/app/Python pydev:1.0 /bin/bash</code></pre></div>
+<p>In this mode, we launch the container in interactive mode allowing us to &ldquo;manually&rdquo; run the <code>make clean &amp;&amp; make -s -j2</code> commands after changing source code as needed.</p>
+
+<p>By mounting the <code>Python</code> folder from our host machine into the container, we can make code changes in our IDE of choice (<em>outside</em> the container) but still retain the ability to test the effects of our changes <em>inside</em> the docker container. (Win-win!)</p>
+
+<p>Alternatively, we can also run something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run <span class="se">\
+</span><span class="se"></span>    -it <span class="se">\
+</span><span class="se"></span>    -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/Python:/usr/src/app/Python pydev:1.0 <span class="se">\
+</span><span class="se"></span>        bash -c <span class="s2">&#34;make clean &amp;&amp; make -s -j2 &amp;&amp; ./python&#34;</span></code></pre></div>
+<p><em>(indented for readability)</em></p>
+
+<p>In this setup, we make changes to our source (for the purposes of this post, all changes will be made to the <code>./Python</code> folder) then run the make command to rebuild source and then run the generated python binary (which puts us into the py REPL).</p>
+
+<p>Unfortunately, this needs to be run &ldquo;manually&rdquo; everytime we want to debug changes (at least for now, without the file watcher idea in place). There is a lot of opportunities for improvement here but at the very least with the addition of this docker workflow we have a stable way to make changes to the source, mount these changes to our container and run python interactively (in the REPL shell) to test these changes.</p>
+
+<p>Onwards!</p>
+
+<h2 id="step-3-lightly-dipping-our-toes-into-c-land">Step 3: Lightly dipping our toes into C-land</h2>
+
+<p>I&rsquo;m no C aficionado - so, I began by <em>lightly</em> making small incremental changes to the codebase. I made a change, rebuilt the source via the docker run command above, tested and then repeated the whole process all over again.</p>
+
+<p>To start, I wanted to just prove to myself that I <em>could</em> make visible changes and get the output I expected.</p>
+
+<p>I began with the <code>builtin_all</code> method - reproduced below:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">319</span><span class="cm">/*[clinic input]
+</span><span class="ln">320</span><span class="cm">all as builtin_all
+</span><span class="ln">321</span><span class="cm">    iterable: object
+</span><span class="ln">322</span><span class="cm">    /
+</span><span class="ln">323</span><span class="cm">Return True if bool(x) is True for all values x in the iterable.
+</span><span class="ln">324</span><span class="cm">If the iterable is empty, return True.
+</span><span class="ln">325</span><span class="cm">[clinic start generated code]*/</span>
+<span class="ln">326</span>
+<span class="ln">327</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln">328</span><span class="nf">builtin_all</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln">329</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln">330</span><span class="p">{</span>
+<span class="ln">331</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">;</span>
+<span class="ln">332</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln">333</span>    <span class="kt">int</span> <span class="n">cmp</span><span class="p">;</span>
+<span class="ln">334</span>
+<span class="ln">335</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln">336</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">337</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">338</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">339</span>
+<span class="ln">340</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>        <span class="p">}</span>
+<span class="ln">350</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">353</span>        <span class="p">}</span>
+<span class="ln">354</span>    <span class="p">}</span>
+<span class="ln">355</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">356</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">357</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">358</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">359</span>        <span class="k">else</span>
+<span class="ln">360</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">361</span>    <span class="p">}</span>
+<span class="ln">362</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">363</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L319">Sauce</a>)</em></p>
+
+<p>But! I changed <strong>line 352</strong> as follows:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">319</span><span class="cm">/*[clinic input]
+</span><span class="ln">320</span><span class="cm">all as builtin_all
+</span><span class="ln">321</span><span class="cm">    iterable: object
+</span><span class="ln">322</span><span class="cm">    /
+</span><span class="ln">323</span><span class="cm">Return True if bool(x) is True for all values x in the iterable.
+</span><span class="ln">324</span><span class="cm">If the iterable is empty, return True.
+</span><span class="ln">325</span><span class="cm">[clinic start generated code]*/</span>
+<span class="ln">326</span>
+<span class="ln">327</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln">328</span><span class="nf">builtin_all</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln">329</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln">330</span><span class="p">{</span>
+<span class="ln">331</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">;</span>
+<span class="ln">332</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln">333</span>    <span class="kt">int</span> <span class="n">cmp</span><span class="p">;</span>
+<span class="ln">334</span>
+<span class="ln">335</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln">336</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">337</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">338</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">339</span>
+<span class="ln">340</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">341</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">342</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">343</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">344</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">PyObject_IsTrue</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">345</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">346</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">347</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">348</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">349</span>        <span class="p">}</span>
+<span class="ln">350</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">351</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">352</span>            <span class="n">Py_RETURN_TRUE</span><span class="p">;</span> <span class="c1">// Py_RETURN_FALSE;
+</span><span class="ln">353</span><span class="c1"></span>            <span class="c1">// ^ THIS IS DIFFERENT NOW!
+</span><span class="ln">354</span><span class="c1"></span>            <span class="c1">// Expectation: return `True` if 
+</span><span class="ln">355</span><span class="c1"></span>            <span class="c1">// PyObject_IsTrue(item) evaluates to false
+</span><span class="ln">356</span><span class="c1"></span>        <span class="p">}</span>
+<span class="ln">357</span>    <span class="p">}</span>
+<span class="ln">358</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">359</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">360</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">361</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">362</span>        <span class="k">else</span>
+<span class="ln">363</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">364</span>    <span class="p">}</span>
+<span class="ln">365</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">366</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L319">Sauce</a>)</em></p>
+
+<p>With this change, my expectation is that running the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">all</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span></code></pre></div>
+<p>will return <code>True</code> instead of <code>False</code> as expected. And sure enough:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  cpython git:<span class="o">(</span>master<span class="o">)</span> ✗ docker run <span class="se">\
+</span><span class="se"></span>    -it <span class="se">\
+</span><span class="se"></span>    -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/Python:/usr/src/app/Python pydev:1.0 <span class="se">\
+</span><span class="se"></span>        bash -c <span class="s2">&#34;make clean &amp;&amp; make -s -j2 &amp;&amp; ./python&#34;</span>
+<span class="c1"># ... skipping output for the sake of brevity ...</span> 
+
+Python <span class="m">3</span>.10.0a6+ <span class="o">(</span>heads/master-dirty:6086ae7, Mar <span class="m">18</span> <span class="m">2021</span>, <span class="m">04</span>:33:26<span class="o">)</span> <span class="o">[</span>GCC <span class="m">4</span>.9.4<span class="o">]</span> on linux
+Type <span class="s2">&#34;help&#34;</span>, <span class="s2">&#34;copyright&#34;</span>, <span class="s2">&#34;credits&#34;</span> or <span class="s2">&#34;license&#34;</span> <span class="k">for</span> more information.
+&gt;&gt;&gt; all<span class="o">([</span><span class="m">0</span>,0,0<span class="o">])</span>
+True
+&gt;&gt;&gt;</code></pre></div>
+<p>Tada! Progress!</p>
+
+<h2 id="step-4-implementing-a-custom-builtin-method">Step 4: Implementing a custom builtin method</h2>
+
+<p>So finally, having proven to ourselves that we can:</p>
+
+<ul>
+<li>build python from source</li>
+<li>make changes to the source and</li>
+<li>observe the effects of our changes to the binary produced</li>
+</ul>
+
+<p>&ndash; let&rsquo;s make our <em>actual</em> change.</p>
+
+<p>Again, I am no C expert so I chose to make the core implementation of my custom method, which I am calling <code>builtin_samesame</code> (dedicated to my former esteemed colleague and friend <a href="https://www.linkedin.com/in/omid-hosseinmardi-4a9966a7/">Omid</a> who commonly used this refrain during our pair programming sessions at PX), as similar as possible to <code>builtin_all</code>.</p>
+
+<p>Let&rsquo;s start off by viewing the implementation:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln"> 2</span><span class="nf">builtin_samesame</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln"> 3</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln"> 4</span><span class="p">{</span>
+<span class="ln"> 5</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="n">firstitem</span><span class="p">;</span>
+<span class="ln"> 6</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln"> 9</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">10</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">11</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">12</span>
+<span class="ln">13</span>    <span class="n">firstitem</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">14</span>    <span class="k">if</span> <span class="p">(</span><span class="n">firstitem</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">15</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">16</span>        <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">17</span>    <span class="p">}</span>
+<span class="ln">18</span>
+<span class="ln">19</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">20</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">21</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">22</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">23</span>        <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">24</span>            <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="ln">25</span>            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span>
+<span class="ln">26</span>            <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">!=</span> <span class="n">Py_False</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">27</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">28</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">29</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">30</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">31</span>                <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">32</span>            <span class="p">}</span>
+<span class="ln">33</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">34</span>        <span class="p">}</span>
+<span class="ln">35</span>        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">!=</span> <span class="n">firstitem</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">36</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">37</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">38</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">39</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">40</span>        <span class="p">}</span>
+<span class="ln">41</span>    <span class="p">}</span>
+<span class="ln">42</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">43</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">44</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">45</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">46</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">47</span>        <span class="k">else</span>
+<span class="ln">48</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">49</span>    <span class="p">}</span>
+<span class="ln">50</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">51</span><span class="p">}</span></code></pre></div>
+
+<p>This <em>does</em> look pretty hardcore but I swear it isn&rsquo;t! The main differences between <code>builtin_samesame</code> and <code>builtin_all</code> are on <strong>lines 5, 13-17, 23-42</strong>. Let&rsquo;s break each of these three regions down to better grok what is going on.</p>
+
+<p><strong>LINE 5</strong>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">5</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="n">firstitem</span><span class="p">;</span></code></pre></div></p>
+
+<p>This one is simple - we just declare an additional PyObject type, <code>*firstitem</code>. The idea is if any of the remaining items in our list is NOT equal to <code>*firstitem</code>, we can return false immediately as we are done.</p>
+
+<p><strong>LINES 13-17</strong>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">13</span><span class="n">firstitem</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">14</span><span class="k">if</span> <span class="p">(</span><span class="n">firstitem</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">15</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">16</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">17</span><span class="p">}</span></code></pre></div></p>
+
+<p>Here, we grab the first item in our iterable. If it is <strong>NULL</strong>, then there is nothing to do. By definition (of our own choosing, ha) we return <code>True</code>.</p>
+
+<p>The meaning of <code>Py_DECREF</code> is available <a href="https://docs.python.org/3/c-api/refcounting.html#c.Py_DECREF">here</a> in the docs. Basically, we decrement the reference count for a not-NULL object. Once the reference count hits 0, the object is deallocated from memory (if NULL though, we end up seg faulting, ha). Because this check is explicitly for <code>firstitem</code> being NULL, there is no need to decrement the ref count for <code>firstitem</code>.</p>
+
+<p><strong>LINES 23-42</strong></p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">23</span><span class="c1">// ...
+</span><span class="ln">24</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">25</span>        <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="ln">26</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span>
+<span class="ln">27</span>        <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">!=</span> <span class="n">Py_False</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">28</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">29</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">30</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">31</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">32</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">33</span>        <span class="p">}</span>
+<span class="ln">34</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">35</span>    <span class="p">}</span>
+<span class="ln">36</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">!=</span> <span class="n">firstitem</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">37</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">38</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">39</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">40</span>        <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">41</span>    <span class="p">}</span>
+<span class="ln">42</span><span class="p">}</span>
+<span class="ln">43</span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span></code></pre></div>
+
+<p>This logic performs the bulk of the work. (It could also definitely use some TLC but for now, I&rsquo;ll comment specifically on how it works as is).</p>
+
+<p>Let&rsquo;s get that <code>else if</code> out of the way first, as it is simpler:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// ...
+</span><span class="c1"></span><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">!=</span> <span class="n">firstitem</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+    <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>This performs the basic <code>!=</code> check which ought to be well defined for primitive types. With this code block, cases such as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">all</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">all</span><span class="p">([</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span></code></pre></div>
+<p>are all covered.</p>
+
+<p>The first half of that conditional block is more interesting:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">!=</span> <span class="n">Py_False</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+        <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="p">}</span></code></pre></div>
+<p>After looking through the handy <strong><a href="https://docs.python.org/3/c-api/typeobj.html#c.PyTypeObject.tp_richcompare">Type Objects</a></strong> documentation, I was able to pinpoint <code>tp_richcompare</code> as the method that manages dunder methods such as <code>__eq__</code>, <code>__ne__</code>, etc. (This provides support for comparing non primitive types such as <code>{}</code> or <code>set()</code>, etc)</p>
+
+<p>The docs also tells us what the function signature looks like for <code>tp_richcompare</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">PyObject</span> <span class="o">*</span><span class="nf">tp_richcompare</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">other</span><span class="p">,</span> <span class="kt">int</span> <span class="n">op</span><span class="p">);</span></code></pre></div>
+<p>It also provides a handy table describing the constant definitions and their corresponding comparisons:</p>
+
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Comparison</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Py_LT</td>
+<td>&lt;</td>
+</tr>
+
+<tr>
+<td>Py_LE</td>
+<td>&lt;=</td>
+</tr>
+
+<tr>
+<td>Py_EQ</td>
+<td>==</td>
+</tr>
+
+<tr>
+<td>Py_NE</td>
+<td>!=</td>
+</tr>
+
+<tr>
+<td>Py_GT</td>
+<td>&gt;</td>
+</tr>
+
+<tr>
+<td>Py_GE</td>
+<td>&gt;=</td>
+</tr>
+</tbody>
+</table>
+
+<p>Moreover, from looking at the <code>Objects/dictobject.c</code> implentation of <code>tp_richcompare</code>, it was easy to see:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2958</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln">2959</span><span class="nf">dict_richcompare</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">w</span><span class="p">,</span> <span class="kt">int</span> <span class="n">op</span><span class="p">)</span>
+<span class="ln">2960</span><span class="p">{</span>
+<span class="ln">2961</span>    <span class="kt">int</span> <span class="n">cmp</span><span class="p">;</span>
+<span class="ln">2962</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="ln">2963</span>
+<span class="ln">2964</span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">PyDict_Check</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="n">PyDict_Check</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="p">{</span>
+<span class="ln">2965</span>        <span class="n">res</span> <span class="o">=</span> <span class="n">Py_NotImplemented</span><span class="p">;</span>
+<span class="ln">2966</span>    <span class="p">}</span>
+<span class="ln">2967</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="n">Py_EQ</span> <span class="o">||</span> <span class="n">op</span> <span class="o">==</span> <span class="n">Py_NE</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">2968</span>        <span class="n">cmp</span> <span class="o">=</span> <span class="n">dict_equal</span><span class="p">((</span><span class="n">PyDictObject</span> <span class="o">*</span><span class="p">)</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">PyDictObject</span> <span class="o">*</span><span class="p">)</span><span class="n">w</span><span class="p">);</span>
+<span class="ln">2969</span>        <span class="k">if</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="ln">2970</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">2971</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">cmp</span> <span class="o">==</span> <span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="n">Py_EQ</span><span class="p">))</span> <span class="o">?</span> <span class="nl">Py_True</span> <span class="p">:</span> <span class="n">Py_False</span><span class="p">;</span>
+<span class="ln">2972</span>    <span class="p">}</span>
+<span class="ln">2973</span>    <span class="k">else</span>
+<span class="ln">2974</span>        <span class="n">res</span> <span class="o">=</span> <span class="n">Py_NotImplemented</span><span class="p">;</span>
+<span class="ln">2975</span>    <span class="n">Py_INCREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">2976</span>    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="ln">2977</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/226a012d1cd61f42ecd3056c554922f359a1a35d/Objects/dictobject.c#L2958">Sauce</a>)</em></p>
+
+<p>that this method is <strong>static</strong> and essentially the same beast as <code>tp_as_number</code> (a topic of discussion from <strong>Part I</strong> ). As such, I drew on inspiration from the <code>PyObject_IsTrue</code> method we discussed in <strong>Part I</strong>(reproduced below for convenience) to figure out how to call <code>tp_richcompare</code>.</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">1379</span><span class="cm">/* Test a value used as condition, e.g., in a while or if statement.
+</span><span class="ln">1380</span><span class="cm">   Return -1 if an error occurred */</span>
+<span class="ln">1381</span>
+<span class="ln">1382</span><span class="kt">int</span>
+<span class="ln">1383</span><span class="nf">PyObject_IsTrue</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+<span class="ln">1384</span><span class="p">{</span>
+<span class="ln">1385</span>    <span class="n">Py_ssize_t</span> <span class="n">res</span><span class="p">;</span>
+<span class="ln">1386</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_True</span><span class="p">)</span>
+<span class="ln">1387</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1388</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_False</span><span class="p">)</span>
+<span class="ln">1389</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1390</span>    <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">Py_None</span><span class="p">)</span>
+<span class="ln">1391</span>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="ln">1392</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1393</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1394</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_number</span><span class="o">-&gt;</span><span class="n">nb_bool</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1395</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1396</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1397</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_mapping</span><span class="o">-&gt;</span><span class="n">mp_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1398</span>    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span>
+<span class="ln">1399</span>             <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">1400</span>        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_as_sequence</span><span class="o">-&gt;</span><span class="n">sq_length</span><span class="p">)(</span><span class="n">v</span><span class="p">);</span>
+<span class="ln">1401</span>    <span class="k">else</span>
+<span class="ln">1402</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="ln">1403</span>    <span class="cm">/* if it is negative, it should be either -1 or -2 */</span>
+<span class="ln">1404</span>    <span class="k">return</span> <span class="p">(</span><span class="n">res</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">Py_SAFE_DOWNCAST</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Py_ssize_t</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="ln">1405</span><span class="p">}</span></code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Objects/object.c#L1379">Sauce</a>)</em></p>
+
+<p>Basically, just emulate <strong>line 1394</strong> but for <code>tp_richcompare</code> and pass in the required arguments as per the method signature we observed above.</p>
+
+<p>Let&rsquo;s reproduce our conditional block one more time for convenience:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">!=</span> <span class="n">Py_False</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+        <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="p">}</span></code></pre></div>
+<p>All this line is doing:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span></code></pre></div>
+<p>is invoking <code>tp_richcompare</code> on our <code>firstitem</code> (remember this is a static method so we pass in firstitem, item and the <strong>op</strong> constant, in this case <code>Py_NE</code>) and based on the return value we choose to either stop in our tracks or continue on with the loop.</p>
+
+<p>(NOTE: the way I implemented this is confusing af. The reason why we check for <code>res != Py_False</code> is because we are running <code>tp_richcompare</code> with <code>op = Py_NE</code>. So, if <strong>firstitem != item</strong> is <strong>False</strong> that means the two items <em>are</em> equal and we can move on. For all other cases (if they are false OR if there is an error), we want to stop the loop. I know, I know, this is poorly written code - but it works and I&rsquo;m feeling lazy 😎)</p>
+
+<p>There&rsquo;s a ton of <code>Py_DECREF</code>s all over the place mainly because I don&rsquo;t know enough C to come up with a way to make that easier to manage. A problem for next time!</p>
+
+<p>Ok so let&rsquo;s put a bow on this &ndash; in conclusion, our <code>builtin_samesame</code> method (reproduced a final time below):</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln"> 1</span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="ln"> 2</span><span class="nf">builtin_samesame</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">module</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">iterable</span><span class="p">)</span>
+<span class="ln"> 3</span><span class="cm">/*[clinic end generated code: output=ca2a7127276f79b3 input=1a7c5d1bc3438a21]*/</span>
+<span class="ln"> 4</span><span class="p">{</span>
+<span class="ln"> 5</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="n">it</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="n">firstitem</span><span class="p">;</span>
+<span class="ln"> 6</span>    <span class="n">PyObject</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">iternext</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="n">it</span> <span class="o">=</span> <span class="n">PyObject_GetIter</span><span class="p">(</span><span class="n">iterable</span><span class="p">);</span>
+<span class="ln"> 9</span>    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">10</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">11</span>    <span class="n">iternext</span> <span class="o">=</span> <span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_iternext</span><span class="p">;</span>
+<span class="ln">12</span>
+<span class="ln">13</span>    <span class="n">firstitem</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">14</span>    <span class="k">if</span> <span class="p">(</span><span class="n">firstitem</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">15</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">16</span>        <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">17</span>    <span class="p">}</span>
+<span class="ln">18</span>
+<span class="ln">19</span>    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<span class="ln">20</span>        <span class="n">item</span> <span class="o">=</span> <span class="n">iternext</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">21</span>        <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="ln">22</span>            <span class="k">break</span><span class="p">;</span>
+<span class="ln">23</span>        <span class="k">if</span> <span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">24</span>            <span class="n">PyObject</span> <span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="ln">25</span>            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">firstitem</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_richcompare</span><span class="p">)(</span><span class="n">firstitem</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">Py_NE</span><span class="p">);</span>
+<span class="ln">26</span>            <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">!=</span> <span class="n">Py_False</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">27</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">28</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">29</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">30</span>                <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">31</span>                <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">32</span>            <span class="p">}</span>
+<span class="ln">33</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="ln">34</span>        <span class="p">}</span>
+<span class="ln">35</span>        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">!=</span> <span class="n">firstitem</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">36</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">37</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="ln">38</span>            <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">39</span>            <span class="n">Py_RETURN_FALSE</span><span class="p">;</span>
+<span class="ln">40</span>        <span class="p">}</span>
+<span class="ln">41</span>    <span class="p">}</span>
+<span class="ln">42</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">firstitem</span><span class="p">);</span>
+<span class="ln">43</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+<span class="ln">44</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_Occurred</span><span class="p">())</span> <span class="p">{</span>
+<span class="ln">45</span>        <span class="k">if</span> <span class="p">(</span><span class="n">PyErr_ExceptionMatches</span><span class="p">(</span><span class="n">PyExc_StopIteration</span><span class="p">))</span>
+<span class="ln">46</span>            <span class="n">PyErr_Clear</span><span class="p">();</span>
+<span class="ln">47</span>        <span class="k">else</span>
+<span class="ln">48</span>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">49</span>    <span class="p">}</span>
+<span class="ln">50</span>    <span class="n">Py_RETURN_TRUE</span><span class="p">;</span>
+<span class="ln">51</span><span class="p">}</span></code></pre></div>
+
+<p>Ought to provide support for our original impression of what <code>all(..)</code> does - that is, return <code>True</code> if all items in the iterable passed in are the same.</p>
+
+<p>To actually test this guy out though, we have a few more changes left to make.</p>
+
+<p>First, in <code>bltinmodule.c</code>&rsquo;s header file (<code>./Python/clinic/bltinmodule.c.h</code>), we add the following definition:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">PyDoc_STRVAR</span><span class="p">(</span><span class="n">builtin_samesame__doc__</span><span class="p">,</span>
+<span class="s">&#34;samesame($module, iterable, /)</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;--</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;Return True if all values x in the iterable are equal.</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;If the iterable is empty, return True.&#34;</span><span class="p">);</span>
+
+<span class="cp">#define BUILTIN_SAMESAME_METHODDEF    \
+</span><span class="cp"></span>    <span class="p">{</span><span class="s">&#34;samesame&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">builtin_samesame</span><span class="p">,</span> <span class="n">METH_O</span><span class="p">,</span> <span class="n">builtin_samesame__doc__</span><span class="p">},</span></code></pre></div>
+<p>This is crucial as it associates the python method name <strong>&ldquo;samesame&rdquo;</strong> with the <code>builtin_samesame</code> function. Also, we have the ability to provide some documentation as well which is manifested using: <code>help(samesame)</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">help</span><span class="p">(</span><span class="n">samesame</span><span class="p">)</span>
+<span class="n">Help</span> <span class="n">on</span> <span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="n">samesame</span> <span class="ow">in</span> <span class="n">module</span> <span class="n">builtins</span><span class="p">:</span>
+
+<span class="n">samesame</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span>
+    <span class="n">Return</span> <span class="bp">True</span> <span class="k">if</span> <span class="nb">all</span> <span class="n">values</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">iterable</span> <span class="n">are</span> <span class="n">equal</span><span class="o">.</span>
+
+    <span class="n">If</span> <span class="n">the</span> <span class="n">iterable</span> <span class="ow">is</span> <span class="n">empty</span><span class="p">,</span> <span class="k">return</span> <span class="bp">True</span><span class="o">.</span>
+
+<span class="o">&gt;&gt;&gt;</span></code></pre></div>
+<p>Meanwhile, back at the ranch (in the <code>bltinmodule.c</code> file), we add our final change (note <strong>line 2893</strong>):</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2887</span><span class="k">static</span> <span class="n">PyMethodDef</span> <span class="n">builtin_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ln">2888</span>    <span class="p">{</span><span class="s">&#34;__build_class__&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin___build_class__</span><span class="p">,</span>
+<span class="ln">2889</span>     <span class="n">METH_FASTCALL</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">build_class_doc</span><span class="p">},</span>
+<span class="ln">2890</span>    <span class="p">{</span><span class="s">&#34;__import__&#34;</span><span class="p">,</span>      <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin___import__</span><span class="p">,</span> <span class="n">METH_VARARGS</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">import_doc</span><span class="p">},</span>
+<span class="ln">2891</span>    <span class="n">BUILTIN_ABS_METHODDEF</span>
+<span class="ln">2892</span>    <span class="n">BUILTIN_ALL_METHODDEF</span>
+<span class="ln">2893</span>    <span class="n">BUILTIN_SAMESAME_METHODDEF</span>
+<span class="ln">2894</span>    <span class="n">BUILTIN_ANY_METHODDEF</span>
+<span class="ln">2895</span>    <span class="n">BUILTIN_ASCII_METHODDEF</span>
+<span class="ln">2896</span>    <span class="n">BUILTIN_BIN_METHODDEF</span>
+<span class="ln">2897</span>    <span class="p">{</span><span class="s">&#34;breakpoint&#34;</span><span class="p">,</span>      <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_breakpoint</span><span class="p">,</span> <span class="n">METH_FASTCALL</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">breakpoint_doc</span><span class="p">},</span>
+<span class="ln">2898</span>    <span class="n">BUILTIN_CALLABLE_METHODDEF</span>
+<span class="ln">2899</span>    <span class="n">BUILTIN_CHR_METHODDEF</span>
+<span class="ln">2900</span>    <span class="n">BUILTIN_COMPILE_METHODDEF</span>
+<span class="ln">2901</span>    <span class="n">BUILTIN_DELATTR_METHODDEF</span>
+<span class="ln">2902</span>    <span class="p">{</span><span class="s">&#34;dir&#34;</span><span class="p">,</span>             <span class="n">builtin_dir</span><span class="p">,</span>        <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">dir_doc</span><span class="p">},</span>
+<span class="ln">2903</span>    <span class="n">BUILTIN_DIVMOD_METHODDEF</span>
+<span class="ln">2904</span>    <span class="n">BUILTIN_EVAL_METHODDEF</span>
+<span class="ln">2905</span>    <span class="n">BUILTIN_EXEC_METHODDEF</span>
+<span class="ln">2906</span>    <span class="n">BUILTIN_FORMAT_METHODDEF</span>
+<span class="ln">2907</span>    <span class="p">{</span><span class="s">&#34;getattr&#34;</span><span class="p">,</span>         <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_getattr</span><span class="p">,</span> <span class="n">METH_FASTCALL</span><span class="p">,</span> <span class="n">getattr_doc</span><span class="p">},</span>
+<span class="ln">2908</span>    <span class="n">BUILTIN_GLOBALS_METHODDEF</span>
+<span class="ln">2909</span>    <span class="n">BUILTIN_HASATTR_METHODDEF</span>
+<span class="ln">2910</span>    <span class="n">BUILTIN_HASH_METHODDEF</span>
+<span class="ln">2911</span>    <span class="n">BUILTIN_HEX_METHODDEF</span>
+<span class="ln">2912</span>    <span class="n">BUILTIN_ID_METHODDEF</span>
+<span class="ln">2913</span>    <span class="n">BUILTIN_INPUT_METHODDEF</span>
+<span class="ln">2914</span>    <span class="n">BUILTIN_ISINSTANCE_METHODDEF</span>
+<span class="ln">2915</span>    <span class="n">BUILTIN_ISSUBCLASS_METHODDEF</span>
+<span class="ln">2916</span>    <span class="p">{</span><span class="s">&#34;iter&#34;</span><span class="p">,</span>            <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_iter</span><span class="p">,</span>       <span class="n">METH_FASTCALL</span><span class="p">,</span> <span class="n">iter_doc</span><span class="p">},</span>
+<span class="ln">2917</span>    <span class="n">BUILTIN_LEN_METHODDEF</span>
+<span class="ln">2918</span>    <span class="n">BUILTIN_LOCALS_METHODDEF</span>
+<span class="ln">2919</span>    <span class="p">{</span><span class="s">&#34;max&#34;</span><span class="p">,</span>             <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_max</span><span class="p">,</span>        <span class="n">METH_VARARGS</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">max_doc</span><span class="p">},</span>
+<span class="ln">2920</span>    <span class="p">{</span><span class="s">&#34;min&#34;</span><span class="p">,</span>             <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_min</span><span class="p">,</span>        <span class="n">METH_VARARGS</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">min_doc</span><span class="p">},</span>
+<span class="ln">2921</span>    <span class="p">{</span><span class="s">&#34;next&#34;</span><span class="p">,</span>            <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_next</span><span class="p">,</span>       <span class="n">METH_FASTCALL</span><span class="p">,</span> <span class="n">next_doc</span><span class="p">},</span>
+<span class="ln">2922</span>    <span class="n">BUILTIN_OCT_METHODDEF</span>
+<span class="ln">2923</span>    <span class="n">BUILTIN_ORD_METHODDEF</span>
+<span class="ln">2924</span>    <span class="n">BUILTIN_POW_METHODDEF</span>
+<span class="ln">2925</span>    <span class="p">{</span><span class="s">&#34;print&#34;</span><span class="p">,</span>           <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">builtin_print</span><span class="p">,</span>      <span class="n">METH_FASTCALL</span> <span class="o">|</span> <span class="n">METH_KEYWORDS</span><span class="p">,</span> <span class="n">print_doc</span><span class="p">},</span>
+<span class="ln">2926</span>    <span class="n">BUILTIN_REPR_METHODDEF</span>
+<span class="ln">2927</span>    <span class="n">BUILTIN_ROUND_METHODDEF</span>
+<span class="ln">2928</span>    <span class="n">BUILTIN_SETATTR_METHODDEF</span>
+<span class="ln">2929</span>    <span class="n">BUILTIN_SORTED_METHODDEF</span>
+<span class="ln">2930</span>    <span class="n">BUILTIN_SUM_METHODDEF</span>
+<span class="ln">2931</span>    <span class="p">{</span><span class="s">&#34;vars&#34;</span><span class="p">,</span>            <span class="n">builtin_vars</span><span class="p">,</span>       <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">vars_doc</span><span class="p">},</span>
+<span class="ln">2932</span>    <span class="p">{</span><span class="nb">NULL</span><span class="p">,</span>              <span class="nb">NULL</span><span class="p">},</span>
+<span class="ln">2933</span><span class="p">};</span></code></pre></div>
+
+<p>And with this, we are in business! Re-run docker and check it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([])</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([{},{},{}])</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">samesame</span><span class="p">([{},{},</span><span class="nb">set</span><span class="p">()])</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></div>
+<p>Tada!</p>
+
+<h2 id="final-remarks">Final Remarks</h2>
+
+<p>Ok cool - so now, there&rsquo;s a path forward for developing with changes to the Python lang itself and then testing the changes for correctness and viability.</p>
+
+<p>I should mention that I am not suggesting that <code>samesame</code> ought to be added to the Python API. This was more of an exercise of determining <em>how might we do such a thing</em> if we wanted to or needed to.</p>
+
+<p>I&rsquo;m particularly excited about the Dockerfile and would like to follow up&hellip;at some point, with a more mature version of it. While it is super tempting to go further messing around with python internals I&rsquo;ll probably leave things here for now at least. At some point (per suggestion from another esteemed colleague), I&rsquo;d certainly like to take a stab at creating a custom python type (this is more aligned with the content from Part I) just to see what that&rsquo;s like.</p>
+
+<p><strong><a href="https://github.com/mottaquikarim/cpython/pull/1">Please find MR of the changes discussed here</a></strong></p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fextending-pythons-builtin-c-modules%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fextending-pythons-builtin-c-modules%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fextending-pythons-builtin-c-modules%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>
