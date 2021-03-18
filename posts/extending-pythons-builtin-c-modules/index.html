@@ -147,11 +147,11 @@ table td {
 
 <p>This post is intended to be a follow-up/continuation of my discussion around <a href="https://github.com/python/cpython">cpython</a> and grokking (generally speaking) how <code>all(...)</code> works.</p>
 
-<p>For better context, I&rsquo;d recommend first reading the first post in this series, <a href="/dev/posts/grokking-builtin.all-in-python/">&ldquo;Grokking Builtin.all in Python&rdquo;</a></p>
+<p><em>(For better context, I&rsquo;d recommend first reading the previous post in this series, <a href="/dev/posts/grokking-builtin.all-in-python/">&ldquo;Grokking Builtin.all in Python&rdquo;</a>)</em></p>
 
 <p>Having understood how the <code>builtin_all</code> method behaves, we now turn our attention to how we might be able to either &ldquo;hack&rdquo; <code>builtin_all</code> to accommodate our intended use case (for no reason except for our own education) or more generally speaking, how we might define a new method that specifically checks to see if <em>all</em> items in the iterable are equivalent.</p>
 
-<p>Effectively, we want to build this (from the previous post):</p>
+<p>Effectively, we want to implement this logic (from the previous post):</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">inp</span> <span class="o">=</span> <span class="p">[{},{},{}]</span>
 <span class="n">samesame</span> <span class="o">=</span> <span class="bp">True</span>
 <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">inp</span><span class="p">:</span>
@@ -160,8 +160,14 @@ table td {
     <span class="k">break</span>
 <span class="c1"># samesame will be False is all items in inp are not the same val</span>
 <span class="k">print</span><span class="p">(</span><span class="n">samesame</span><span class="p">)</span> <span class="c1"># True</span></code></pre></div>
-<p>but now as a method in python&rsquo;s <code>bltinmodule.c</code> lib instead.</p>
-
+<p>but now formalized as a method in python&rsquo;s <code>bltinmodule.c</code> lib such that calling our method from python itself gives us:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># True</span>
+<span class="n">samesame</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># False</span>
+<span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># False</span>
+<span class="n">samesame</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># False</span>
+<span class="n">samesame</span><span class="p">([])</span> <span class="c1"># True</span>
+<span class="n">samesame</span><span class="p">([{},{},{}])</span> <span class="c1"># True</span>
+<span class="n">samesame</span><span class="p">([{},{},</span><span class="nb">set</span><span class="p">()])</span> <span class="c1"># False</span></code></pre></div>
 <p>Ok?</p>
 
 <p><strong>Ok.</strong></p>
