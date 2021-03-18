@@ -800,6 +800,8 @@ While I have definitely ventured into python source in the past, I usually staye
 
 I wrote this post for my own sake mainly but also in the hopes that perhaps others may find my spelunking useful/interesting and yes, perhaps even fun!
 
+_(PS: I wrote a follow up post to the ideas presented here where I build python from source and implement an addition to the builtin modules (that are written in C). **[Find the post here!](/dev/posts/extending-pythons-builtin-c-modules/)**)
+
 
 ## Sidebar: WTF is tp_bool???
 
