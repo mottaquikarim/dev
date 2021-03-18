@@ -8,11 +8,11 @@ tags: ["featured", "python"]
 
 This post is intended to be a follow-up/continuation of my discussion around [cpython](https://github.com/python/cpython) and grokking (generally speaking) how `all(...)` works.
 
-For better context, I'd recommend first reading the first post in this series, ["Grokking Builtin.all in Python"](/dev/posts/grokking-builtin.all-in-python/)
+_(For better context, I'd recommend first reading the previous post in this series, ["Grokking Builtin.all in Python"](/dev/posts/grokking-builtin.all-in-python/))_
 
 Having understood how the `builtin_all` method behaves, we now turn our attention to how we might be able to either "hack" `builtin_all` to accommodate our intended use case (for no reason except for our own education) or more generally speaking, how we might define a new method that specifically checks to see if _all_ items in the iterable are equivalent.
 
-Effectively, we want to build this (from the previous post):
+Effectively, we want to implement this logic (from the previous post):
 
 ```python
 inp = [{},{},{}]
@@ -25,7 +25,17 @@ for it in inp:
 print(samesame) # True
 ```
 
-but now as a method in python's `bltinmodule.c` lib instead.
+but now formalized as a method in python's `bltinmodule.c` lib such that calling our method from python itself gives us:
+
+```python
+samesame([0,0,0]) # True
+samesame([1,0,0]) # False
+samesame([0,1,0]) # False
+samesame([0,0.0,0]) # False
+samesame([]) # True
+samesame([{},{},{}]) # True
+samesame([{},{},set()]) # False
+```
 
 Ok? 
 

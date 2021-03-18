@@ -27,7 +27,9 @@ _(**EDIT**: heads up, I wrote a lot of words here. If you want the simpler walk 
 
 Let's get a few things out of the way before we go on.
 
-First and foremost - let's explain why, naively, `all([0,0,0])` returning `False` is in fact not _unexpected_.
+(NOTE: Neither my colleague nor I actually _knew_ about the formal definition of `all` - so we expected `all([0,0,0])` to indeed return `True` and particularly, I was under the impression that this might actually be a bug in python's implementation of `all(..)`)
+
+First and foremost - let's explain why, naively, `all([0,0,0])` returning `False` (given our misconception of expected behavior) is in fact not _entirely_ unexpected.
 
 In python, there is a concept of **truthy** and **falsy**. While there exists explicitly defined `True` and `False` values (of type _bool_ as it were), _non boolean_ types are also evaluated by python to **True** or **False** within boolean contexts. 
 
@@ -85,6 +87,7 @@ def all(iterable):
             return False
     return True
 ```
+_(Heads up, in part 2 of this post [here](/dev/posts/extending-pythons-builtin-c-modules/), we actually formalize this logic and tack it on to python's source!)_
 
 From the documentation, two things are obvious to me:
 
