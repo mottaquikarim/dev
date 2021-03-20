@@ -6,9 +6,22 @@
     <description>Recent content in Tags on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 17 Mar 2021 20:58:20 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 20 Mar 2021 18:19:39 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Hacking Python With Spells From Harry Potter</title>
+      <link>https://mottaquikarim.github.io/dev/posts/hacking-python-with-spells-from-harry-potter/</link>
+      <pubDate>Sat, 20 Mar 2021 18:19:39 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/hacking-python-with-spells-from-harry-potter/</guid>
+      <description>Table of Contents  This post is intended to be a follow-up/continuation of my discussion around cpython and grokking (generally speaking) how the language works &amp;ldquo;under the hood&amp;rdquo;.
+(For better context, I&amp;rsquo;d recommend first reading the previous post(s) in this series:
+ &amp;ldquo;Grokking Builtin.all in Python&amp;rdquo; &amp;ldquo;Extending Python&amp;rsquo;s Builtin C Modules&amp;rdquo;  (That being said, this post is relatively stand alone and you can just probably make do ok reading this without looking at the previous parts).</description>
+    </item>
     
     
     

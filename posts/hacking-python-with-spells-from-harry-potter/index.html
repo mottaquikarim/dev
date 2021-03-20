@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Hacking Python With Spells From Harry Potter</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/python/">python</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Hacking Python With Spells From Harry Potter</h1><time>March 20, 2021</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#why-tho">Why tho?</a></li>
+<li><a href="#type-lumos">type -&gt; lumos</a></li>
+<li><a href="#del-avadakedavra">del -&gt; avadakedavra</a></li>
+<li><a href="#import-accio">import -&gt; accio</a></li>
+<li><a href="#final-remarks">Final Remarks</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p><img src="/dev/img/hp_py.png" alt="hp py" /></p>
+
+<p>This post is intended to be a follow-up/continuation of my discussion around <a href="https://github.com/python/cpython">cpython</a> and grokking (generally speaking) how the language works &ldquo;under the hood&rdquo;.</p>
+
+<p><em>(For better context, I&rsquo;d recommend first reading the previous post(s) in this series:</em></p>
+
+<ol>
+<li><a href="/dev/posts/grokking-builtin.all-in-python/">&ldquo;Grokking Builtin.all in Python&rdquo;</a></li>
+<li><a href="/dev/posts/extending-pythons-builtin-c-modules/">&ldquo;Extending Python&rsquo;s Builtin C Modules&rdquo;</a></li>
+</ol>
+
+<p>(That being said, this post is relatively stand alone and you can just probably make do ok reading this without looking at the previous parts).</p>
+
+<h2 id="why-tho">Why tho?</h2>
+
+<p>In this post, I will describe how I extended cpython once again, this time aliasing three python syntax elements to three Harry Potter spells:</p>
+
+<ul>
+<li><strong>lumos</strong> (aliasing <strong>type()</strong>)</li>
+<li><strong>accio</strong> (aliasing <strong>import</strong>)</li>
+<li><strong>avadakedavra</strong> (aliasing <strong>del</strong>)</li>
+</ul>
+
+<p>Years ago - around 2014 probably - my buddy and (current) rustacean <a href="https://github.com/rust-lang/rust/pulls?utf8=%E2%9C%93&amp;q=is%3Apr+author%3Atoidiu+">Apoorv Kothari</a> mentioned a meet up he went to where someone decided to swap out python&rsquo;s <code>import</code> keyword with <code>accio</code>.</p>
+
+<p>There was no real rhyme or reason for doing this - but, it did lead to a deep dive of python internals and made for a fun story to tell.</p>
+
+<p>Given my recent exploration of cpython, I thought it would be fun to see how far I could take this concept myself. My goal was to support <code>accio</code> as an alias for <code>import</code> but along the way (as I learned more about how parsing works in cpython), I thought to also alias <code>lumos(...)</code> for <code>type(...)</code> (a quick win) and <code>avadakedavra</code> for <code>del</code> (pretty easy once I figured out <code>accio</code>).</p>
+
+<p>I hope to follow up with one last post&hellip;at some point where I will also add a custom operator (perhaps <code>!</code> for <code>not</code> or <code>~=</code> for regex (thanks to <a href="https://notes.eatonphil.com/">Phil Eaton</a> for the idea, though he may get to this before me)) and define a custom type (like <code>float</code> or something). In my follow up I hope to dive deeper into the specifics of the <a href="https://www.python.org/dev/peps/pep-0617/">new PEG parser for CPython (PEP617)</a>.</p>
+
+<p>For the purposes of this post however, I&rsquo;d like to primarily share the steps required to achieve the three aliases in question (without going too deeply into <em>how</em> the parser itself works). Let&rsquo;s start with <code>lumos</code>, by far the simplest of the three.</p>
+
+<h2 id="type-lumos">type -&gt; lumos</h2>
+
+<p>To implement <code>lumos</code>, I started at <code>./Python/clinic/bltinmodule.c.h</code> <em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/clinic/bltinmodule.c.h">sauce</a>)</em>. (Recall from the previous post that this is the file where we ultimately defined <code>samesame</code>, a custom function added to python&rsquo;s list of <strong>builtin</strong>s).</p>
+
+<p>I was hoping to find something similar to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">PyDoc_STRVAR</span><span class="p">(</span><span class="n">builtin_any__doc__</span><span class="p">,</span>
+<span class="s">&#34;any($module, iterable, /)</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;--</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;Return True if bool(x) is True for any x in the iterable.</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span>
+<span class="s">&#34;If the iterable is empty, return False.&#34;</span><span class="p">);</span>
+
+<span class="cp">#define BUILTIN_ANY_METHODDEF    \
+</span><span class="cp"></span>    <span class="p">{</span><span class="s">&#34;any&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">builtin_any</span><span class="p">,</span> <span class="n">METH_O</span><span class="p">,</span> <span class="n">builtin_any__doc__</span><span class="p">},</span></code></pre></div>
+<p>Which would help me pinpoint the definition of the <em>actual</em> <code>type(...)</code> implementation. Then, I was going to just add another line similar to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define BUILTIN_ANY_METHODDEF    \
+</span><span class="cp"></span>    <span class="p">{</span><span class="s">&#34;any&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">builtin_any</span><span class="p">,</span> <span class="n">METH_O</span><span class="p">,</span> <span class="n">builtin_any__doc__</span><span class="p">},</span></code></pre></div>
+<p>for my alias.</p>
+
+<p>I couldn&rsquo;t find anything in that header file though, so I fell back to my tried and true <em>grep the entire codebase</em> for <strong>type</strong> approach. This also sucked! (Way too much info). But, I refined my search and grepped for:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">grep -rI <span class="s2">&#34;\&#34;type\&#34;&#34;</span> ./Python</code></pre></div>
+<p>which was super helpful as it pinpointed the line where <strong>&ldquo;type&rdquo;</strong> is associated to the underlying c-method. What I was searching for was infact in <a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Python/bltinmodule.c#L2951"><code>./Python/bltinmodule.c</code></a> (<strong>line 2951</strong>, reproducing entire block below for convenience):</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2917</span><span class="cp">#define SETBUILTIN(NAME, OBJECT) \
+</span><span class="ln">2918</span><span class="cp"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span><span class="n">OBJECT</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>       \
+<span class="ln">2919</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>                                                    \
+<span class="ln">2920</span>    <span class="n">ADD_TO_ALL</span><span class="p">(</span><span class="n">OBJECT</span><span class="p">)</span>
+<span class="ln">2921</span>
+<span class="ln">2922</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;None&#34;</span><span class="p">,</span>                  <span class="n">Py_None</span><span class="p">);</span>
+<span class="ln">2923</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;Ellipsis&#34;</span><span class="p">,</span>              <span class="n">Py_Ellipsis</span><span class="p">);</span>
+<span class="ln">2924</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;NotImplemented&#34;</span><span class="p">,</span>        <span class="n">Py_NotImplemented</span><span class="p">);</span>
+<span class="ln">2925</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;False&#34;</span><span class="p">,</span>                 <span class="n">Py_False</span><span class="p">);</span>
+<span class="ln">2926</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;True&#34;</span><span class="p">,</span>                  <span class="n">Py_True</span><span class="p">);</span>
+<span class="ln">2927</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bool&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyBool_Type</span><span class="p">);</span>
+<span class="ln">2928</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;memoryview&#34;</span><span class="p">,</span>        <span class="o">&amp;</span><span class="n">PyMemoryView_Type</span><span class="p">);</span>
+<span class="ln">2929</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bytearray&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyByteArray_Type</span><span class="p">);</span>
+<span class="ln">2930</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;bytes&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyBytes_Type</span><span class="p">);</span>
+<span class="ln">2931</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;classmethod&#34;</span><span class="p">,</span>           <span class="o">&amp;</span><span class="n">PyClassMethod_Type</span><span class="p">);</span>
+<span class="ln">2932</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;complex&#34;</span><span class="p">,</span>               <span class="o">&amp;</span><span class="n">PyComplex_Type</span><span class="p">);</span>
+<span class="ln">2933</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;dict&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyDict_Type</span><span class="p">);</span>
+<span class="ln">2934</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;enumerate&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyEnum_Type</span><span class="p">);</span>
+<span class="ln">2935</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;filter&#34;</span><span class="p">,</span>                <span class="o">&amp;</span><span class="n">PyFilter_Type</span><span class="p">);</span>
+<span class="ln">2936</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;float&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyFloat_Type</span><span class="p">);</span>
+<span class="ln">2937</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;frozenset&#34;</span><span class="p">,</span>             <span class="o">&amp;</span><span class="n">PyFrozenSet_Type</span><span class="p">);</span>
+<span class="ln">2938</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;property&#34;</span><span class="p">,</span>              <span class="o">&amp;</span><span class="n">PyProperty_Type</span><span class="p">);</span>
+<span class="ln">2939</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;int&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyLong_Type</span><span class="p">);</span>
+<span class="ln">2940</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;list&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyList_Type</span><span class="p">);</span>
+<span class="ln">2941</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;map&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyMap_Type</span><span class="p">);</span>
+<span class="ln">2942</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;object&#34;</span><span class="p">,</span>                <span class="o">&amp;</span><span class="n">PyBaseObject_Type</span><span class="p">);</span>
+<span class="ln">2943</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;range&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyRange_Type</span><span class="p">);</span>
+<span class="ln">2944</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;reversed&#34;</span><span class="p">,</span>              <span class="o">&amp;</span><span class="n">PyReversed_Type</span><span class="p">);</span>
+<span class="ln">2945</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;set&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PySet_Type</span><span class="p">);</span>
+<span class="ln">2946</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;slice&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PySlice_Type</span><span class="p">);</span>
+<span class="ln">2947</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;staticmethod&#34;</span><span class="p">,</span>          <span class="o">&amp;</span><span class="n">PyStaticMethod_Type</span><span class="p">);</span>
+<span class="ln">2948</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;str&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyUnicode_Type</span><span class="p">);</span>
+<span class="ln">2949</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;super&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PySuper_Type</span><span class="p">);</span>
+<span class="ln">2950</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;tuple&#34;</span><span class="p">,</span>                 <span class="o">&amp;</span><span class="n">PyTuple_Type</span><span class="p">);</span>
+<span class="ln">2951</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;type&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">);</span>
+<span class="ln">2952</span>    <span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;zip&#34;</span><span class="p">,</span>                   <span class="o">&amp;</span><span class="n">PyZip_Type</span><span class="p">);</span>
+<span class="ln">2953</span>    <span class="n">debug</span> <span class="o">=</span> <span class="n">PyBool_FromLong</span><span class="p">(</span><span class="n">config</span><span class="o">-&gt;</span><span class="n">optimization_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="ln">2954</span>    <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="s">&#34;__debug__&#34;</span><span class="p">,</span> <span class="n">debug</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="ln">2955</span>        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">debug</span><span class="p">);</span>
+<span class="ln">2956</span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="ln">2957</span>    <span class="p">}</span>
+<span class="ln">2958</span>    <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">debug</span><span class="p">);</span>
+<span class="ln">2959</span>
+<span class="ln">2960</span>    <span class="k">return</span> <span class="n">mod</span><span class="p">;</span>
+<span class="ln">2961</span><span class="cp">#undef ADD_TO_ALL
+</span><span class="ln">2962</span><span class="cp">#undef SETBUILTIN</span></code></pre></div>
+
+<p>Interestingly, <code>type</code> is defined as <code>PyType_Type</code>(a <code>PyObject</code>, similar to floats, etc - <a href="https://github.com/python/cpython/blob/c9bc290dd6e3994a4ead2a224178bcba86f0c0e4/Objects/typeobject.c">sauce</a>) and not as a <code>builtin__type</code> as I would have expected (similar to <code>all(..)</code> for instance).</p>
+
+<p>Regardless - having tracked down the location of this definition, it was very easy to &ldquo;implement&rdquo; support for <code>lumos</code>, just add the following:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="ln">2950</span><span class="c1">// ... 
+</span><span class="ln">2951</span><span class="c1"></span><span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;type&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">);</span>
+<span class="ln">2952</span><span class="n">SETBUILTIN</span><span class="p">(</span><span class="s">&#34;lumos&#34;</span><span class="p">,</span>                  <span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">);</span></code></pre></div>
+
+<p>rebuild + run:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker build -t pydev:1.0 .
+docker run -it pydev:1.0 ./python</code></pre></div>
+<p><em>(Check out <a href="http://localhost:1313/dev/posts/extending-pythons-builtin-c-modules/#step-2-dockerizing-the-build-process">&ldquo;Step 2: Dockerizing the build process&rdquo;</a> from the last post in this series for more info.)</em></p>
+
+<p>and then test:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">&gt;&gt;&gt; lumos<span class="o">(</span><span class="m">15</span><span class="o">)</span>
+&lt;class <span class="s1">&#39;int&#39;</span>&gt;</code></pre></div>
+<p>Tada!</p>
+
+<p><em>(<a href="https://github.com/mottaquikarim/cpython/pull/2">Here&rsquo;s the PR</a> of these changes.)</em></p>
+
+<h2 id="del-avadakedavra">del -&gt; avadakedavra</h2>
+
+<p>Next up we have the gruesome <code>avadakedavra</code> implementation. This one is interesting in that to achieve this change, we must actually modify the <em>grammar</em> that defines python.</p>
+
+<p>I went down the wrong path <em>hard</em> by applying my previous strategy of grepping the entire project. There is actually a <em>LOT</em> of places where the token <strong>del</strong> is used but as it turns out - most of the code is generated!</p>
+
+<p>I eventually ended up stumbling back on to the Python Developer Guide, which has a handy <a href="https://devguide.python.org/grammar/#">Changing Cpython&rsquo;s Grammar</a> post delineating how to <em>properly</em> make changes to the grammar definitions.</p>
+
+<p>THe Changing Cpython&rsquo;s Grammar post suggests starting from the <code>./Grammar/python.gram</code> file; peering into that file we note that <code>del</code> is defined on <strong>line 73</strong>:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"><span class="ln">66</span>simple_stmt[stmt_ty] (memo):
+<span class="ln">67</span>    | assignment
+<span class="ln">68</span>    | e=star_expressions { _Py_Expr(e, EXTRA) }
+<span class="ln">69</span>    | &amp;&#39;return&#39; return_stmt
+<span class="ln">70</span>    | &amp;(&#39;import&#39; | &#39;from&#39;) import_stmt
+<span class="ln">71</span>    | &amp;&#39;raise&#39; raise_stmt
+<span class="ln">72</span>    | &#39;pass&#39; { _Py_Pass(EXTRA) }
+<span class="ln">73</span>    | &amp;&#39;del&#39; del_stmt
+<span class="ln">74</span>    | &amp;&#39;yield&#39; yield_stmt
+<span class="ln">75</span>    | &amp;&#39;assert&#39; assert_stmt
+<span class="ln">76</span>    | &#39;break&#39; { _Py_Break(EXTRA) }
+<span class="ln">77</span>    | &#39;continue&#39; { _Py_Continue(EXTRA) }
+<span class="ln">78</span>    | &amp;&#39;global&#39; global_stmt
+<span class="ln">79</span>    | &amp;&#39;nonlocal&#39; nonlocal_stmt</code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Grammar/python.gram#L66">Sauce</a>)</em></p>
+
+<p>Additionally, the <code>del_stmt</code> is defined further down in the same file:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"><span class="ln">132</span>del_stmt[stmt_ty]:
+<span class="ln">133</span>    | &#39;del&#39; a=del_targets &amp;(&#39;;&#39; | NEWLINE) { _Py_Delete(a, EXTRA) }
+<span class="ln">134</span>    | invalid_del_stmt</code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Grammar/python.gram#L132">Sauce</a>)</em></p>
+
+<p>And finally, <code>invalid_del_stmt</code> is defined again further down in the same file:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"><span class="ln">797</span>invalid_del_stmt:
+<span class="ln">798</span>    | &#39;del&#39; a=star_expressions {
+<span class="ln">799</span>        RAISE_SYNTAX_ERROR_INVALID_TARGET(DEL_TARGETS, a) }</code></pre></div>
+
+<p><em>(<a href="https://github.com/python/cpython/blob/9a9c11ad41d7887f3d6440e0f0e8966156d959b5/Grammar/python.gram#L797">Sauce</a>)</em></p>
+
+<p>Since we only want to <em>alias</em> <code>avadakedavra</code>, we can take a shortcut and <em>only</em> add <code>stmt</code> definitions that actuall refer to the <strong>del</strong> token itself.</p>
+
+<p>As such, we must add an <code>avadakedavra_stmt</code> and <code>invalid_avadakedavra_stmt</code> since both blocks refer directly to the <strong>del</strong> keyword. However, we leave <code>del_targets</code> (<strong>line 133</strong>) alone since we require <code>avadakedavra</code> to work exactly in the same way as <code>del</code> works.</p>
+
+<p>Adding the updates (summarized below), we end up with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">simple_stmt[stmt_ty] (memo):
+    # ... other statements
+    | &amp;&#39;del&#39; del_stmt
+    | &amp;&#39;avadakedavra&#39; avadakedavra_stmt
+    # ... other statements
+
+# ... more definitions
+
+avadakedavra_stmt[stmt_ty]:
+    | &#39;avadakedavra&#39; a=del_targets &amp;(&#39;;&#39; | NEWLINE) { _Py_Delete(a, EXTRA) }
+    | invalid_avadakedavra_stmt
+
+# ... more definitions
+
+invalid_avadakedavra_stmt:
+    | &#39;avadakedavra&#39; a=star_expressions {
+        RAISE_SYNTAX_ERROR_INVALID_TARGET(DEL_TARGETS, a) }</code></pre></div>
+<p><em>(<a href="https://github.com/mottaquikarim/cpython/pull/3/files#diff-2973ca53337859793077e9bdc1a1623063379f0fdfcb788836fd82ebb66b763b">Sauce</a>)</em></p>
+
+<p>According to the docs, we must now run <code>make regen-pegen</code>, which will regenerate <code>./Parser/parser.c</code> and allow our dev-python build to recognize the new token we just defined.</p>
+
+<p>In order to run that make target, we actually need python3.9 installed. The docker image we have defined actually does not have python installed <em>at all</em>. Instead of modifying it, I just ran the make command within the <code>python:3.9</code> base image, as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -it -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app -w /app python:3.9 make regen-pegen</code></pre></div>
+<p>Here, I volume mount the source into the container running our <code>python:3.9</code> image and run the make target. This allows the regenerated <strong>parser.c</strong> file to be available to our host machine - meaning rebuilding our original <code>pydev</code> image will generate the binary with the grammar changes we defined.</p>
+
+<p>So, all together these three lines should do it (note the comments for additional clarification):</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># make regen-pegen to generate parser.c</span>
+docker run -it -v <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/app -w /app python:3.9 make regen-pegen
+<span class="c1"># rebuild image with the new parser.c</span>
+docker build -t pydev:1.0 .
+<span class="c1"># run our dev build with support for avadakedavra!</span>
+docker run -it pydev:1.0 ./python</code></pre></div>
+<p>With all said and done, we now observe that we can use <code>avadakedavra</code> in place of <code>del</code>!!</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">unfortunate_characters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;Hedwig&#34;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&#34;Mad-Eye Moody&#34;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">avadakedavra</span> <span class="n">unfortunate_characters</span><span class="p">[</span><span class="s2">&#34;Hedwig&#34;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">unfortunate_characters</span>
+<span class="p">{</span><span class="s1">&#39;Mad-Eye Moody&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">avadakedavra</span> <span class="n">unfortunate_characters</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">unfortunate_characters</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&#34;&lt;stdin&gt;&#34;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">NameError</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;unfortunate_characters&#39;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">defined</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></div>
+<p>Tada!</p>
+
+<p><em>(<a href="https://github.com/mottaquikarim/cpython/pull/3">Here&rsquo;s the PR</a> of these changes.)</em></p>
+
+<h2 id="import-accio">import -&gt; accio</h2>
+
+<p>Last but not least - let&rsquo;s repeat our process to define <code>accio</code>, which behaves exactly like <code>import</code>. At first glance, this <em>feels</em> more complex since import can be used in a multitude of ways:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span><span class="p">,</span> <span class="n">randrange</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span></code></pre></div>
+<p>Still, I decided to start the simplest way possible: by repeating the steps from the previous section (del -&gt; avadakedavra). I figured if it failed, the error messages might provide meaningful hints as to how to proceed further along.</p>
+
+<p>So, again in <code>./Grammar/python.gram</code>, we make the following changes:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">simple_stmt[stmt_ty] (memo):
+    # ... other statements
+    | &amp;(&#39;import&#39; | &#39;from&#39;) import_stmt
+    | &amp;(&#39;accio&#39; | &#39;from&#39;) accio_stmt
+    # ... other statements
+
+# ... more definitions
+
+accio_stmt[stmt_ty]: accio_name | accio_from
+accio_name[stmt_ty]: &#39;accio&#39; a=dotted_as_names { _Py_Import(a, EXTRA) }
+# note below: the (&#39;.&#39; | &#39;...&#39;) is necessary because &#39;...&#39; is tokenized as ELLIPSIS
+accio_from[stmt_ty]:
+    | &#39;from&#39; a=(&#39;.&#39; | &#39;...&#39;)* b=dotted_name &#39;accio&#39; c=import_from_targets {
+        _Py_ImportFrom(b-&gt;v.Name.id, c, _PyPegen_seq_count_dots(a), EXTRA) }
+    | &#39;from&#39; a=(&#39;.&#39; | &#39;...&#39;)+ &#39;accio&#39; b=import_from_targets {
+        _Py_ImportFrom(NULL, b, _PyPegen_seq_count_dots(a), EXTRA) }
+
+# ... more definitions</code></pre></div>
+<p><em>(<a href="https://github.com/mottaquikarim/cpython/pull/4/files#diff-2973ca53337859793077e9bdc1a1623063379f0fdfcb788836fd82ebb66b763b">Sauce</a>)</em></p>
+
+<p>We only make necessary changes which in this case translates to updating the <code>accio_name</code> and <code>accio_from</code> stmts. Once completed, we re-run the <code>regen-pegen</code> make target and build, resulting in:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">accio</span> <span class="n">random</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">random</span> <span class="nn">accio</span> <span class="nn">randint</span><span class="p">,</span> <span class="n">randrange</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">math</span> <span class="nn">accio</span> <span class="o">*</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ceil</span><span class="p">(</span><span class="mf">4.2</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></div>
+<p>Tada!</p>
+
+<p><em>(<a href="https://github.com/mottaquikarim/cpython/pull/4">Here&rsquo;s the PR</a> of these changes.)</em></p>
+
+<h2 id="final-remarks">Final Remarks</h2>
+
+<p>While this was certainly a <em>magical</em> experience, the truth of the matter is until recently the inner workings of python - to me at least - certainly <em>were</em> magical. I could tell you <em>very accurately</em> what outputs to expect based on inputs provided but could not tell you for the life of me <em>how</em> these outputs were actually computed. (This is essentially the definition of the word magic, right?)</p>
+
+<p>Having gone deeper into the internals of cpython at least, I now feel like I have a better sense of the <em>how</em>, which has been very fascinating to discover. There&rsquo;s definitely still much left to learn / grok and I&rsquo;m unsure just how much deeper I&rsquo;ll take this. But, at the very least I hope my explorations here (especially the docker stuff!) can help make it easier for you, dear reader, to conduct similar exercises of your own for your own understanding and benefit.</p>
+
+<p>Happy hacking, fam.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-python-with-spells-from-harry-potter%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-python-with-spells-from-harry-potter%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fhacking-python-with-spells-from-harry-potter%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>
