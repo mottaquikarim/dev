@@ -334,3 +334,14 @@ While this was certainly a _magical_ experience, the truth of the matter is unti
 Having gone deeper into the internals of cpython at least, I now feel like I have a better sense of the _how_, which has been very fascinating to discover. There's definitely still much left to learn / grok and I'm unsure just how much deeper I'll take this. But, at the very least I hope my explorations here (especially the docker stuff!) can help make it easier for you, dear reader, to conduct similar exercises of your own for your own understanding and benefit. 
 
 Happy hacking, fam.
+
+## Update 03/21/2021
+
+After connecting with my buddy [Steven Li](https://www.linkedin.com/in/steven-li-20b2969/), I have made a few other additions. Generally speaking they have been quite boring - some version of what I have demonstrated above. We are hoping to port over more of the existing grammer and just maintain this as a separate project mainly for fun.
+
+[Here](https://github.com/mottaquikarim/cpython/pulls) are the pull requests so far.
+
+In addition to what we have above, the following alias are now available:
+
+* **raise** -> **wingardium_leviosa** _([sauce](https://github.com/mottaquikarim/cpython/pull/5))_
+* **print** -> **aparecium** _([sauce](https://github.com/mottaquikarim/cpython/pull/6))_
