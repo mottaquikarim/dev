@@ -79,6 +79,20 @@ In fact, any ipynb file is fair game - just drop it in to a particular folder an
     
     
     <item>
+      <title>Immediately Execute Initial Conditions w/SetInterval in Javascipt</title>
+      <link>https://mottaquikarim.github.io/dev/posts/immediately-execute-initial-conditions-w/setinterval-in-javascipt/</link>
+      <pubDate>Thu, 28 Jan 2021 04:01:51 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/immediately-execute-initial-conditions-w/setinterval-in-javascipt/</guid>
+      <description>Table of Contents  I stumbled on David Welsh&amp;rsquo;s &amp;ldquo;Immediately Executing setInterval with JavaScript&amp;rdquo; blog post the other day.
+In particular, this struck me as interesting:
+ If you truly want to isolate the function call to the setInterval, you can use this trick of self-executing function that returns itself:
+ // Use a named function ... setInterval(function myFunction() { // Do some stuff  // ...  // ... then return this function  return myFunction; // () self-executes the function }(), 3000)   The down side to this pattern is that it causes a maintenance issue, where the next developer doesn&amp;rsquo;t understand what is going on.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Handling Parquet Schema Mismatch Based on Data</title>
       <link>https://mottaquikarim.github.io/dev/posts/handling-parquet-schema-mismatch-based-on-data/</link>
       <pubDate>Sun, 24 Jan 2021 05:38:50 +0000</pubDate>
