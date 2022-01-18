@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Immediately Execute Initial Conditions w/SetInterval in Javascipt</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/javascript/">javascript</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Immediately Execute Initial Conditions w/SetInterval in Javascipt</h1><time>January 17, 2022</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#iife-for-setinterval-in-javascript">IIFE for <code>setInterval</code> in javascript</a></li>
+<li><a href="#pushing-the-pattern">Pushing the pattern</a></li>
+<li><a href="#explanation">Explanation</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>I stumbled on David Welsh&rsquo;s <a href="https://davidwalsh.name/immediate-setinterval">&ldquo;Immediately Executing setInterval with JavaScript&rdquo;</a> blog post the other day.</p>
+
+<h2 id="iife-for-setinterval-in-javascript">IIFE for <code>setInterval</code> in javascript</h2>
+
+<p>In particular, this struck me as interesting:</p>
+
+<blockquote>
+<p>If you truly want to isolate the function call to the setInterval, you can use this trick of self-executing function that returns itself:</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="c1">// Use a named function ...
+</span><span class="c1"></span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="nx">myFunction</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Do some stuff
+</span><span class="c1"></span>  <span class="c1">// ...
+</span><span class="c1"></span>
+  <span class="c1">// ... then return this function
+</span><span class="c1"></span>  <span class="k">return</span> <span class="nx">myFunction</span><span class="p">;</span>
+
+<span class="c1">// () self-executes the function
+</span><span class="c1"></span><span class="p">}(),</span> <span class="mi">3000</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p>The down side to this pattern is that it causes a maintenance issue, where the next developer doesn&rsquo;t understand what is going on.
+Maintenance is an important part of being a good engineer, so at the very least, documentation in the form of comments or a helper function should be required. If you really want to have a self-executing setInterval, you&rsquo;ve got it!</p>
+</blockquote>
+
+<p>Great points, David! (His blog - around since ~2007 - at one point was my <em>go to</em> resource for quality js tutorials + content).</p>
+
+<h2 id="pushing-the-pattern">Pushing the pattern</h2>
+
+<p>I did wonder though &ndash; can this pattern be improved (for readability&rsquo;s sake, as per David&rsquo;s note). As it turns out, probably! Check it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="c1">// in js, the last item in a comma separated list is &#34;returned&#34;
+</span><span class="c1"></span><span class="kd">let</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hello!&#39;</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="nx">k</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">((</span>
+    <span class="c1">// these will run immediately!
+</span><span class="c1"></span>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Hello, Wrold!&#34;</span><span class="p">),</span>
+    <span class="c1">// more logic? ok let&#39;s have a func instead
+</span><span class="c1"></span>    <span class="kd">function</span> <span class="nx">callMeNow</span><span class="p">()</span> <span class="p">{</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;I will run immediately!&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">())</span>
+    <span class="p">}(),</span>
+    <span class="c1">// this is the last func, so it will be set as THE callback
+</span><span class="c1"></span>    <span class="c1">// for setInterval
+</span><span class="c1"></span>    <span class="kd">function</span> <span class="nx">onInterval</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hello!&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">())</span>
+    <span class="p">}</span>
+<span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<p>With this approach, we end up with the following output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">&gt; hello!
+&gt; 5
+&gt; Hello, Wrold!
+&gt; I will run immediately! Mon Jan 17 2022 22:21:44 GMT-0500 (Eastern Standard Time)
+&gt; hello! Mon Jan 17 2022 22:21:46 GMT-0500 (Eastern Standard Time)</code></pre></div>
+<h2 id="explanation">Explanation</h2>
+
+<p>The long and short of it is that javascript&rsquo;s <code>,</code> (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator">comma operator</a>) will evaluate each operand and return the final one.</p>
+
+<p>We exploit this property in <code>setInterval</code> which allows us to run and evaluate whatever commands we&rsquo;d like before we &ldquo;return&rdquo; the actual <code>setInterval</code> callback.</p>
+
+<p>The major downside to this approach is that we cannot share a variable within this scope. But, on the upside the readability improves and the option to name functions meaninfully at least improves clarity.</p>
+
+<p>Ta da! (And thank you David for all the awesome content over the years)</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fimmediately-execute-initial-conditions-w%2fsetinterval-in-javascipt%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fimmediately-execute-initial-conditions-w%2fsetinterval-in-javascipt%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fimmediately-execute-initial-conditions-w%2fsetinterval-in-javascipt%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2021 Taq Karim
+</footer>
+</body>
+</html>
