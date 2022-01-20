@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>setInterval that blocks on `await`</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/javascript/">javascript</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>setInterval that blocks on `await`</h1><time>January 17, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    
+</aside>
+
+
+<p>David Walsh asks <a href="https://twitter.com/davidwalshblog/status/1483824251362856967">on twitter</a></p>
+
+<blockquote>
+<p>Does anyone have a good example of chaining promises with setInterval so that multiple promises aren&rsquo;t created concurrently?</p>
+</blockquote>
+
+<p>Example of <a href="https://gist.github.com/darkwing/8471b46ff768d5cec4571ab5b8eeb278">problem</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">setInterval</span><span class="p">(</span><span class="kr">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="k">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">someAsyncFunc</span><span class="p">();</span>
+  
+  <span class="c1">// The problem is that `someAsyncFunc` could hang during one of the loops,
+</span><span class="c1"></span>  <span class="c1">// which would allow multiple active awaits
+</span><span class="c1"></span><span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
+</code></pre></div>
+<p>My solution: take advantage of js&rsquo;s ability to set props on functions to track &ldquo;state&rdquo;</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// this func will wait a random period of time from 1 - 10s
+</span><span class="c1"></span><span class="k">const</span> <span class="nx">someAsyncFunc</span> <span class="o">=</span> <span class="nx">_</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="nx">t</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">10000</span><span class="p">;</span>
+    <span class="k">const</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">_</span> <span class="p">=&gt;</span> <span class="nx">resolve</span><span class="p">({</span><span class="nx">t</span><span class="p">,</span> <span class="nx">now</span><span class="p">}),</span> <span class="nx">t</span><span class="p">)</span>
+<span class="p">});</span>
+<span class="nx">k</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kr">async</span> <span class="kd">function</span> <span class="nx">onInterval</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// let&#39;s recall that functions are just objects in JS
+</span><span class="c1"></span>    <span class="c1">// we can track a property on the func, isRunning, that
+</span><span class="c1"></span>    <span class="c1">// will tell us if we are waiting on the asyncFunc to resolve
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nx">onInterval</span><span class="p">.</span><span class="nx">isRunning</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// if we are still waiting for the previous func&#39;s
+</span><span class="c1"></span>        <span class="c1">// promise to resolve, just exit
+</span><span class="c1"></span>        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="c1">// if we are here, this is our first iteration OR the async func
+</span><span class="c1"></span>    <span class="c1">// has resolved
+</span><span class="c1"></span>    <span class="nx">onInterval</span><span class="p">.</span><span class="nx">isRunning</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="k">const</span> <span class="nx">output</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">someAsyncFunc</span><span class="p">()</span>
+    <span class="k">const</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`--------
+</span><span class="sb">someAsyncFunc Ran For: </span><span class="si">${</span><span class="nx">output</span><span class="p">.</span><span class="nx">t</span><span class="si">}</span><span class="sb">, 
+</span><span class="sb">Time now vs when someAsyncFunc resolved: </span><span class="si">${</span><span class="nx">now</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">-</span> <span class="nx">output</span><span class="p">.</span><span class="nx">now</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span><span class="si">}</span><span class="sb">, 
+</span><span class="sb">Time now: </span><span class="si">${</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()</span><span class="si">}</span><span class="sb">
+</span><span class="sb">---------`</span><span class="p">)</span>
+    <span class="nx">onInterval</span><span class="p">.</span><span class="nx">isRunning</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">},</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--------
+someAsyncFunc Ran For: <span class="m">8261</span>.615781686205, 
+Time now vs when someAsyncFunc resolved: <span class="m">8261</span>, 
+Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:51:38 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span>
+---------
+VM297:22 --------
+someAsyncFunc Ran For: <span class="m">7269</span>.033684469877, 
+Time now vs when someAsyncFunc resolved: <span class="m">7272</span>, 
+Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:51:46 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span>
+---------
+VM297:22 --------
+someAsyncFunc Ran For: <span class="m">7857</span>.849152060381, 
+Time now vs when someAsyncFunc resolved: <span class="m">7850</span>, 
+Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:51:54 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span>
+---------
+clearInterval<span class="o">(</span>k<span class="o">)</span>
+undefined
+VM297:22 --------
+someAsyncFunc Ran For: <span class="m">8935</span>.12200335714, 
+Time now vs when someAsyncFunc resolved: <span class="m">8933</span>, 
+Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:52:03 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span>
+---------
+// proving clearInterval works
+new Date<span class="o">()</span>
+Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:52:18 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span></code></pre></div>
+<p>[My tweet](<a href="https://twitter.com/taqkarim/status/1483951580441362432}">https://twitter.com/taqkarim/status/1483951580441362432}</a></p>
+
+<p>IMO we can use <a href="https://2ality.com/2015/10/intercepting-method-calls.html">javsacript proxies here</a> to automate. May consider this in a future blog post.</p>
+
+<p>Cheers!</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fsetinterval-that-blocks-on-await%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fsetinterval-that-blocks-on-await%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fsetinterval-that-blocks-on-await%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

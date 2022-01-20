@@ -27,6 +27,20 @@ IIFE for setInterval in javascript In particular, this struck me as interesting:
     
     
     <item>
+      <title>setInterval that blocks on `await`</title>
+      <link>https://mottaquikarim.github.io/dev/posts/setinterval-that-blocks-on-await/</link>
+      <pubDate>Mon, 17 Jan 2022 22:39:04 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/setinterval-that-blocks-on-await/</guid>
+      <description>Table of Contents  David Walsh asks on twitter
+ Does anyone have a good example of chaining promises with setInterval so that multiple promises aren&amp;rsquo;t created concurrently?
+ Example of problem
+setInterval(async () =&amp;gt; { const result = await someAsyncFunc(); // The problem is that `someAsyncFunc` could hang during one of the loops,  // which would allow multiple active awaits }, 2000);  My solution: take advantage of js&amp;rsquo;s ability to set props on functions to track &amp;ldquo;state&amp;rdquo;</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Hacking Python With Spells From Harry Potter</title>
       <link>https://mottaquikarim.github.io/dev/posts/hacking-python-with-spells-from-harry-potter/</link>
       <pubDate>Sat, 20 Mar 2021 18:19:39 +0000</pubDate>
