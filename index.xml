@@ -6,9 +6,23 @@
     <description>Recent content on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sat, 20 Mar 2021 18:19:39 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 17 Jan 2022 22:39:04 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Immediately Execute Initial Conditions w/SetInterval in Javascipt</title>
+      <link>https://mottaquikarim.github.io/dev/posts/immediately-execute-initial-conditions-w/setinterval-in-javascipt/</link>
+      <pubDate>Mon, 17 Jan 2022 22:39:04 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/immediately-execute-initial-conditions-w/setinterval-in-javascipt/</guid>
+      <description>Table of Contents  I stumbled on David Welsh&amp;rsquo;s &amp;ldquo;Immediately Executing setInterval with JavaScript&amp;rdquo; blog post the other day.
+IIFE for setInterval in javascript In particular, this struck me as interesting:
+ If you truly want to isolate the function call to the setInterval, you can use this trick of self-executing function that returns itself:
+ // Use a named function ... setInterval(function myFunction() { // Do some stuff  // .</description>
+    </item>
     
     
     
