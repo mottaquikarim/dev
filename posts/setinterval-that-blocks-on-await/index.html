@@ -126,11 +126,24 @@ table td {
         
             <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
         <header id="post-header">
-        <h1>setInterval that blocks on `await`</h1><time>January 17, 2022</time></header><aside id="toc">
+        <h1>setInterval that blocks on `await`</h1><time>January 19, 2022</time></header>
+
+<aside id="toc">
     <h4>Table of Contents</h4>
-    
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#setinterval-and-promises-in-javascript"><code>setInterval</code> and promises in javascript</a></li>
+<li><a href="#take-1-hacking-it">Take 1: hacking it</a></li>
+<li><a href="#take-2-wrapping-into-a-function">Take 2: wrapping into a function</a></li>
+</ul></li>
+</ul>
+</nav>
 </aside>
 
+
+<h2 id="setinterval-and-promises-in-javascript"><code>setInterval</code> and promises in javascript</h2>
 
 <p>David Walsh asks <a href="https://twitter.com/davidwalshblog/status/1483824251362856967">on twitter</a></p>
 
@@ -146,6 +159,18 @@ table td {
 </span><span class="c1"></span>  <span class="c1">// which would allow multiple active awaits
 </span><span class="c1"></span><span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
 </code></pre></div>
+<p>To expound on this issue:</p>
+
+<ul>
+<li>Suppose <code>someAysncFunc</code> takes 1m to resolve</li>
+<li>Given this <code>setInterval</code> func, <code>someAsyncFunc</code> would actually be invoked 30x!</li>
+<li>Ideally, we want invoke <code>someAsyncFunc</code> and then <em>not</em> reinvoke it until the initial invocation had resolved.</li>
+</ul>
+
+<p>^ Given my interpretation of this issue, let&rsquo;s continue.</p>
+
+<h2 id="take-1-hacking-it">Take 1: hacking it</h2>
+
 <p>My solution: take advantage of js&rsquo;s ability to set props on functions to track &ldquo;state&rdquo;</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// this func will wait a random period of time from 1 - 10s
 </span><span class="c1"></span><span class="k">const</span> <span class="nx">someAsyncFunc</span> <span class="o">=</span> <span class="nx">_</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
@@ -202,6 +227,8 @@ Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span cl
 // proving clearInterval works
 new Date<span class="o">()</span>
 Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:52:18 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span></code></pre></div>
+<p>This works! Neat.</p>
+
 <p>Note that:</p>
 
 <ul>
@@ -209,11 +236,58 @@ Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18
 <li>the <code>setInterval</code> actually exectutes every 1s but we avoid re-invoking the promise until is running is completed</li>
 </ul>
 
-<p><a href="https://twitter.com/taqkarim/status/1483951580441362432">My tweet</a></p>
+<h2 id="take-2-wrapping-into-a-function">Take 2: wrapping into a function</h2>
 
-<p>IMO we can use <a href="https://2ality.com/2015/10/intercepting-method-calls.html">javsacript proxies here</a> to automate. May consider this in a future blog post.</p>
+<p>To make this code more easily reusable, let&rsquo;s wrap into a function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// this func will wait a random period of time from 1 - 10s
+</span><span class="c1"></span><span class="k">const</span> <span class="nx">someAsyncFunc</span> <span class="o">=</span> <span class="nx">_</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="nx">t</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">10000</span><span class="p">;</span>
+    <span class="k">const</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">_</span> <span class="p">=&gt;</span> <span class="nx">resolve</span><span class="p">({</span><span class="nx">t</span><span class="p">,</span> <span class="nx">now</span><span class="p">}),</span> <span class="nx">t</span><span class="p">)</span>
+<span class="p">});</span>
 
-<p>Cheers!</p>
+<span class="c1">// this returns a func that tracks the &#34;state&#34; of 
+</span><span class="c1">// our onInterval callback
+</span><span class="c1"></span><span class="kd">function</span> <span class="nx">setIntervalWithPromise</span><span class="p">(</span><span class="nx">target</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kr">async</span> <span class="kd">function</span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">target</span><span class="p">.</span><span class="nx">isRunning</span><span class="p">)</span> <span class="k">return</span>
+
+        <span class="c1">// if we are here, we can invoke our callback!
+</span><span class="c1"></span>        <span class="nx">target</span><span class="p">.</span><span class="nx">isRunning</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="kr">await</span> <span class="nx">target</span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span>
+        <span class="nx">target</span><span class="p">.</span><span class="nx">isRunning</span> <span class="o">=</span> <span class="kc">false</span>
+    <span class="p">}</span>  
+<span class="p">}</span>
+
+<span class="c1">// Now, we can run setInterval as per usual but wrapped in 
+</span><span class="c1">// `setIntervalWithPromise`
+</span><span class="c1"></span><span class="nx">k</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="nx">setIntervalWithPromise</span><span class="p">(</span><span class="kr">async</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// here, we can do as we please with promises, etc
+</span><span class="c1"></span>    <span class="c1">// all BAU
+</span><span class="c1"></span>    <span class="k">const</span> <span class="nx">output</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">someAsyncFunc</span><span class="p">()</span>
+    
+    <span class="c1">// this is just to prove timing works as expected
+</span><span class="c1"></span>    <span class="k">const</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`someAsyncFunc timeout: </span><span class="si">${</span><span class="nx">output</span><span class="p">.</span><span class="nx">t</span><span class="si">}</span><span class="sb">, Time now: </span><span class="si">${</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+<span class="p">}),</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<p>The result is the same:</p>
+
+<pre><code>someAsyncFunc timeout: 8475.130126684691, Time now: Thu Jan 20 2022 02:13:47 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 8176.9764095892515, Time now: Thu Jan 20 2022 02:13:56 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 3362.7717183204654, Time now: Thu Jan 20 2022 02:14:00 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 7939.80037795154, Time now: Thu Jan 20 2022 02:14:09 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 7984.381100145164, Time now: Thu Jan 20 2022 02:14:17 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 5770.4932457582945, Time now: Thu Jan 20 2022 02:14:22 GMT-0500 (Eastern Standard Time)
+someAsyncFunc timeout: 1932.7454950995527, Time now: Thu Jan 20 2022 02:14:25 GMT-0500 (Eastern Standard Time)
+clearInterval(k)
+someAsyncFunc timeout: 7951.747669489057, Time now: Thu Jan 20 2022 02:14:33 GMT-0500 (Eastern Standard Time)
+// proof that clearInterval works
+new Date()
+Thu Jan 20 2022 02:22:05 GMT-0500 (Eastern Standard Time)
+</code></pre>
+
+<p>Ta da!</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fsetinterval-that-blocks-on-await%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fsetinterval-that-blocks-on-await%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
