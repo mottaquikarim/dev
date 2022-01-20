@@ -202,9 +202,12 @@ Time now: Wed Jan <span class="m">19</span> <span class="m">2022</span> <span cl
 // proving clearInterval works
 new Date<span class="o">()</span>
 Wed Jan <span class="m">19</span> <span class="m">2022</span> <span class="m">18</span>:52:18 GMT-0500 <span class="o">(</span>Eastern Standard Time<span class="o">)</span></code></pre></div>
-<p>Note that:
-* the <code>Time now</code> differs by ~ the magnitude of the time seen in <code>someAsyncFunc Ran For</code>
-* the <code>setInterval</code> actually exectutes every 1s but we avoid re-invoking the promise until is running is completed</p>
+<p>Note that:</p>
+
+<ul>
+<li>the <code>Time now</code> differs by ~ the magnitude of the time seen in <code>someAsyncFunc Ran For</code></li>
+<li>the <code>setInterval</code> actually exectutes every 1s but we avoid re-invoking the promise until is running is completed</li>
+</ul>
 
 <p><a href="https://twitter.com/taqkarim/status/1483951580441362432">My tweet</a></p>
 
