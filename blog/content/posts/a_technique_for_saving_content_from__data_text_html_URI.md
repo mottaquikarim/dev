@@ -1,7 +1,7 @@
 ---
 title: "A technique for saving content from a `data:text/html` URI"
 date: 2022-01-22T12:39:04Z
-tags: ["javascript", "just for fun"]
+tags: ["featured", "javascript", "just for fun"]
 ---
 
 {{<toc>}}
