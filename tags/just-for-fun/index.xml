@@ -6,9 +6,24 @@
     <description>Recent content in just for fun on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 19 Jan 2022 22:39:04 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 22 Jan 2022 12:39:04 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/just-for-fun/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>A technique for saving content from a `data:text/html` URI</title>
+      <link>https://mottaquikarim.github.io/dev/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</link>
+      <pubDate>Sat, 22 Jan 2022 12:39:04 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</guid>
+      <description>Table of Contents  OMG! I finally got it. 🙌
+BLUF
+🙌 Turn your chrome tab into a &amp;ldquo;notepad&amp;rdquo; using: data:text/html, &amp;lt;html contenteditable&amp;gt; (copy and paste this into your URL bar to test it out)
+🚨 But! If you hit back or refresh by accident, you lose your notes (this sucks)
+✅ Using javsacript&amp;rsquo;s clipboard functionality, I came up with a solution that updates the clipboard everytime you type in to the &amp;ldquo;notepad&amp;rdquo;.</description>
+    </item>
     
     
     
