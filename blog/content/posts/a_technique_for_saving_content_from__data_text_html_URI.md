@@ -16,7 +16,8 @@ OMG! I finally got it. 🙌
 
 ✅ Using javsacript's clipboard functionality, I came up with a solution that updates the clipboard everytime you type in to the "notepad". 
 
-👉 Click **[`TabNotes`](data:text/html,%3Chtml%20contenteditable%3E%3Cscript%3Evar%20sel%3Ddocument.getSelection%28%29%3Bdocument.querySelector%28%22html%22%29.addEventListener%28%22input%22%2Cfunction%28%29%7Bsaved%3D%5Bsel.focusNode%2Csel.focusOffset%5D%2Cdocument.execCommand%28%22selectall%22%29%2Cdocument.execCommand%28%22copy%22%29%2Cwindow.getSelection%28%29.removeAllRanges%28%29%2Cdocument.querySelector%28%22html%22%29.focus%28%29%2Csel.collapse%28saved%5B0%5D%2Csaved%5B1%5D%29%7D%29%3B%3C%2Fscript%3E)** to see this working in action. 👈
+👉 Drag **[`TabNotes`](data:text/html,%3Chtml%20contenteditable%3E%3Cscript%3Evar%20sel%3Ddocument.getSelection%28%29%3Bdocument.querySelector%28%22html%22%29.addEventListener%28%22input%22%2Cfunction%28%29%7Bsaved%3D%5Bsel.focusNode%2Csel.focusOffset%5D%2Cdocument.execCommand%28%22selectall%22%29%2Cdocument.execCommand%28%22copy%22%29%2Cwindow.getSelection%28%29.removeAllRanges%28%29%2Cdocument.querySelector%28%22html%22%29.focus%28%29%2Csel.collapse%28saved%5B0%5D%2Csaved%5B1%5D%29%7D%29%3B%3C%2Fscript%3E)** to your bookmark bar to see this working in action. 👈
+(Note: In case you don't want to add as bookmark: clicking on this link directly will not work as it is a `data:text/html` URI but opening in a new tab will also do the trick)
 
 ## Background.
 
