@@ -101,5 +101,5 @@ example_elasticsearch | [2020-03-16T05:32:12,959][INFO ][o.e.t.TransportService 
 
 Once you see those three lines, you _should_ be safe to attempt your "healthcheck" such as visiting `http://localhost:9200` in the browser or curling for it.
 
-Alternatively, if something is foobar'd you'll see it here which gives you further clues as to what went wrong.
+Alternatively, if something is foobar'd you'll see it here which gives you further clues as to what went wrong. 
 
