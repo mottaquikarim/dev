@@ -1,7 +1,7 @@
 ---
 title: "Extending Pythons Builtin C Modules"
 date: 2021-03-17T20:58:20Z
-tags: ["featured", "python"]
+tags: ["python"]
 ---
 
 {{<toc>}}
