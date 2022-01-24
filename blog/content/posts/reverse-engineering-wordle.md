@@ -21,7 +21,7 @@ Ok let's get a few things out of the way first:
 * Yes, all the words (past and future) are available in the source (nothing too fancy here)
 * No, the purpose of this post is not to expose any of the upcoming solutions. But! Be warned fam, some of the techniques described here _can_ be used to cheat (but where's the fun in that, right?)
 
-I really like this game and primarily found myself wanting to play more - in particular previous words of the day since I only realized those emoji icons being shared all over twitter were actually Wordle outputs fairly recently.
+I really like this game and primarily found myself wanting to play more. In particular, I wanted to play  previous words of the day since I only discovered Wordle fairly recently.
 
 ## Requirements.
 
@@ -79,9 +79,9 @@ The reason I bring this up is because if we really _wanted_, we _could_ build a 
 
 > NOTE: all of this exploration was done on script version [main.e65ce0a5.js](https://www.powerlanguage.co.uk/wordle/main.e65ce0a5.js). My guess is if there are code changes, that hash value will likely update.
 
-Anyways, I digress. I started my experimentation by looking at the Network tab as I input guessed on Chrome.
+Anyways, I digress. I started my experimentation by looking at the Network tab as I input my guesses into the app on Chrome.
 
-I noted that there were no network requests sent which made me realize the solution must be bundled into the HTML/js code.
+I noted that there were no network requests being sent which made me realize the solution must be bundled into the HTML/js code.
 
 Looking into the js source (which was minified -- thankfully CHrome supports prettification as part of dev tools 🙏), I stumbled on to the famous list of solutions:
 
@@ -109,7 +109,7 @@ function Ga(e) {
 }
 ```
 
-In particular, function `Da` is interesting as it appears to return a particular word from `La`. Before going down further, let's see how `Da` is used (...by, you guessed it: searching the codebase for `Da` invocations!):
+In particular, function `Da` appears to return a word from `La`. Before going down further, let's see how `Da` is used (...by, you guessed it: searching the codebase for `Da` invocations!):
 
 ```javascript
 e.today = new Date; // <- important!
@@ -128,7 +128,7 @@ Ok so let's summarize what is going on here:
 
 There are a few other interesting bits here but this is all we really need to craft our solution.
 
-First thing I did was ensure that `Da`/`e.solution` were not available globally. (They are not -- interestingly, `window.wordle` is exposed but I went down this path a bit, I didn't make much progress because the game system uses `customElements` ([sauce](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)))
+First thing I did was ensure that `Da`/`e.solution` were not available globally. (They are not -- interestingly, `window.wordle` is exposed. I went down this path a bit but I didn't make much progress because the game system uses `customElements` ([sauce](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)))
 
 My next approach (and bear with me here) was to [monkeypatch](https://dev.to/napoleon039/monkey-patching-what-is-it-and-should-you-be-using-it-50db) the `Date` class itself, given that 
 
@@ -173,17 +173,16 @@ window.overrideDate = true;
 A few key notes:
 
 * `Date` is used everywhere in the codebase
-* I noted that (luckily?) `Da`'s usage of `Date` is actually a date object (remember: `e.today = new Date`); all other Date usages are either in timestamps or the longer form year/month/day instantiation
+* I noted that (luckily?) `Da`'s usage of `Date` is actually a date object (remember: `e.today = new Date`); all other Date uses are either in timestamps or the longer form year/month/day instantiation
 * ^ this is **mad lucky**! I took advantage of this luck to craft a new Date constructor that returns `new OriginalDate(year, month...)` where `year`, `month`, etc are inputs to a function that inits all of this madness
 
-
-This basically worked! 🎉
+This approeach worked! 🎉
 
 ## Output Artifact.
 
-Next challenge: how the hell do I run this before the game logic is exectured? (in other words: the game code execs immediately, monkey patching the Date afterwards does nothing because game has already "started" and state is set).
+Next challenge: how the hell do I run this before the game logic is exectuted? (In other words: the game code execs immediately, monkey patching the Date afterwards does nothing because game has already "started" and state is set).
 
-I went down multiple paths for this one, ultimately to no avail. (Tried exotic stuff like `newWin = window.open("about:blank")` and then wrote directly to `newWin` with `document.write(...)` and whatnot.
+I went down multiple paths for this one, ultimately to no avail. (Tried exotic stuff like `newWin = window.open("about:blank")` and then wrote directly to `newWin` with `document.write(...)` and whatnot).
 
 Eventually, I settled on a particularly egreious solution: fetch the HTML content of the original app, walk the nodes and load all the scripts _after_ running my Date hack.
 
@@ -241,15 +240,15 @@ fetch("https://x6ca288in5.execute-api.us-east-1.amazonaws.com/default/get_wordle
 .catch(console.log)
 ```
 
-The TL;DR here is that we insert the HTML head/body tags from Wordle's source, then walk the script tags. We do a hacky thing to detect for `main.*.js` type script srcs and then load them invidually (because for whatever reason, loading a script tag as part of `*.innerHTML += <code>` doesn't actually execture the script (so we need to create script element and load that way).
+The TL;DR here is that we insert the HTML head/body tags from Wordle's source, then walk the script tags. We do a hacky thing to detect for `main.*.js` type script srcs and then load them invidually (because for whatever reason, loading a script tag as part of `*.innerHTML += <code>` doesn't actually exectute the script (so we need to create a _new_ script element to run the code).
 
-Oh and to make everything even more fun, `fetch`-ing the actual HTML/js content does not work (for good reason!). So I put together a quick proxy lambda that just `requests.get()`s the sources.
+Oh and to make everything even more fun, `fetch`-ing the actual HTML/js content does not work (for good reason!). So I put together a quick proxy lambda that just `requests.get()`s the sources (this is so lame, tho).
 
-Ok so that finally did work (everything sucks, just a little bit 😭) and I was ready for the easy part: making the dates selectable.
+Ok so that finally did work (but like, everything sucks just a little bit 😭) and I was ready for the easy part: making the dates selectable.
 
-I chose to run with a simple datepicker (thank god for `input type="date"` 🙏) and called it a day. I wrapped the thing into GH pages and fired it up on my phone. Ended up playing ~5 games from June 19 2021 onwards _and_ decided to play Jan 24th's word about 1/2 an hour before midnight (eg: it wasn't "released" yet).
+I chose to run with a simple datepicker (thank god for `input type="date"` 🙏) and called it a day. I wrapped the thing into GH pages and fired it up on my phone. It worked! I ended up playing ~5 games from June 19 2021 onwards _and_ decided to play Jan 24th's word about 1/2 an hour before midnight (eg: it wasn't "released" yet).
 
-All in all, I'm happy with how this turned out (tho am still really surprised the hack worked!) and I hope others get to enjoy this as well before the src inevitably changes.
+All in all, I'm happy with how this turned out (tho am still really surprised the hack worked!) and I hope others get to enjoy this as well before the js src inevitably changes.
 
 On the bright side, I did download the state of the Wordle's src as it stands today so if things do change in the future I can probably still support this functionality by hosting the current src indefinitely.
 
