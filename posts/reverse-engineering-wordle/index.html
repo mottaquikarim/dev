@@ -166,7 +166,7 @@ table td {
 <li>No, the purpose of this post is not to expose any of the upcoming solutions. But! Be warned fam, some of the techniques described here <em>can</em> be used to cheat (but where&rsquo;s the fun in that, right?)</li>
 </ul>
 
-<p>I really like this game and primarily found myself wanting to play more - in particular previous words of the day since I only realized those emoji icons being shared all over twitter were actually Wordle outputs fairly recently.</p>
+<p>I really like this game and primarily found myself wanting to play more. In particular, I wanted to play  previous words of the day since I only discovered Wordle fairly recently.</p>
 
 <h2 id="requirements">Requirements.</h2>
 
@@ -221,9 +221,9 @@ table td {
 <p>NOTE: all of this exploration was done on script version <a href="https://www.powerlanguage.co.uk/wordle/main.e65ce0a5.js">main.e65ce0a5.js</a>. My guess is if there are code changes, that hash value will likely update.</p>
 </blockquote>
 
-<p>Anyways, I digress. I started my experimentation by looking at the Network tab as I input guessed on Chrome.</p>
+<p>Anyways, I digress. I started my experimentation by looking at the Network tab as I input my guesses into the app on Chrome.</p>
 
-<p>I noted that there were no network requests sent which made me realize the solution must be bundled into the HTML/js code.</p>
+<p>I noted that there were no network requests being sent which made me realize the solution must be bundled into the HTML/js code.</p>
 
 <p>Looking into the js source (which was minified &ndash; thankfully CHrome supports prettification as part of dev tools 🙏), I stumbled on to the famous list of solutions:</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"> <span class="kd">var</span> <span class="nx">La</span> <span class="o">=</span> <span class="p">[</span><span class="cm">/* SOLUTIONS */</span><span class="p">]</span>
@@ -245,7 +245,7 @@ table td {
     <span class="k">return</span> <span class="nx">Na</span><span class="p">(</span><span class="nx">Ha</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>In particular, function <code>Da</code> is interesting as it appears to return a particular word from <code>La</code>. Before going down further, let&rsquo;s see how <code>Da</code> is used (&hellip;by, you guessed it: searching the codebase for <code>Da</code> invocations!):</p>
+<p>In particular, function <code>Da</code> appears to return a word from <code>La</code>. Before going down further, let&rsquo;s see how <code>Da</code> is used (&hellip;by, you guessed it: searching the codebase for <code>Da</code> invocations!):</p>
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">e</span><span class="p">.</span><span class="nx">today</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">;</span> <span class="c1">// &lt;- important!
 </span><span class="c1"></span><span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">za</span><span class="p">();</span>
 <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">lastPlayedTs</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">lastPlayedTs</span><span class="p">,</span>
@@ -263,7 +263,7 @@ table td {
 
 <p>There are a few other interesting bits here but this is all we really need to craft our solution.</p>
 
-<p>First thing I did was ensure that <code>Da</code>/<code>e.solution</code> were not available globally. (They are not &ndash; interestingly, <code>window.wordle</code> is exposed but I went down this path a bit, I didn&rsquo;t make much progress because the game system uses <code>customElements</code> (<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">sauce</a>))</p>
+<p>First thing I did was ensure that <code>Da</code>/<code>e.solution</code> were not available globally. (They are not &ndash; interestingly, <code>window.wordle</code> is exposed. I went down this path a bit but I didn&rsquo;t make much progress because the game system uses <code>customElements</code> (<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">sauce</a>))</p>
 
 <p>My next approach (and bear with me here) was to <a href="https://dev.to/napoleon039/monkey-patching-what-is-it-and-should-you-be-using-it-50db">monkeypatch</a> the <code>Date</code> class itself, given that</p>
 
@@ -308,17 +308,17 @@ table td {
 
 <ul>
 <li><code>Date</code> is used everywhere in the codebase</li>
-<li>I noted that (luckily?) <code>Da</code>&rsquo;s usage of <code>Date</code> is actually a date object (remember: <code>e.today = new Date</code>); all other Date usages are either in timestamps or the longer form year/month/day instantiation</li>
+<li>I noted that (luckily?) <code>Da</code>&rsquo;s usage of <code>Date</code> is actually a date object (remember: <code>e.today = new Date</code>); all other Date uses are either in timestamps or the longer form year/month/day instantiation</li>
 <li>^ this is <strong>mad lucky</strong>! I took advantage of this luck to craft a new Date constructor that returns <code>new OriginalDate(year, month...)</code> where <code>year</code>, <code>month</code>, etc are inputs to a function that inits all of this madness</li>
 </ul>
 
-<p>This basically worked! 🎉</p>
+<p>This approeach worked! 🎉</p>
 
 <h2 id="output-artifact">Output Artifact.</h2>
 
-<p>Next challenge: how the hell do I run this before the game logic is exectured? (in other words: the game code execs immediately, monkey patching the Date afterwards does nothing because game has already &ldquo;started&rdquo; and state is set).</p>
+<p>Next challenge: how the hell do I run this before the game logic is exectuted? (In other words: the game code execs immediately, monkey patching the Date afterwards does nothing because game has already &ldquo;started&rdquo; and state is set).</p>
 
-<p>I went down multiple paths for this one, ultimately to no avail. (Tried exotic stuff like <code>newWin = window.open(&quot;about:blank&quot;)</code> and then wrote directly to <code>newWin</code> with <code>document.write(...)</code> and whatnot.</p>
+<p>I went down multiple paths for this one, ultimately to no avail. (Tried exotic stuff like <code>newWin = window.open(&quot;about:blank&quot;)</code> and then wrote directly to <code>newWin</code> with <code>document.write(...)</code> and whatnot).</p>
 
 <p>Eventually, I settled on a particularly egreious solution: fetch the HTML content of the original app, walk the nodes and load all the scripts <em>after</em> running my Date hack.</p>
 
@@ -373,15 +373,15 @@ table td {
 <span class="p">})</span>
 <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
 </code></pre></div>
-<p>The TL;DR here is that we insert the HTML head/body tags from Wordle&rsquo;s source, then walk the script tags. We do a hacky thing to detect for <code>main.*.js</code> type script srcs and then load them invidually (because for whatever reason, loading a script tag as part of <code>*.innerHTML += &lt;code&gt;</code> doesn&rsquo;t actually execture the script (so we need to create script element and load that way).</p>
+<p>The TL;DR here is that we insert the HTML head/body tags from Wordle&rsquo;s source, then walk the script tags. We do a hacky thing to detect for <code>main.*.js</code> type script srcs and then load them invidually (because for whatever reason, loading a script tag as part of <code>*.innerHTML += &lt;code&gt;</code> doesn&rsquo;t actually exectute the script (so we need to create a <em>new</em> script element to run the code).</p>
 
-<p>Oh and to make everything even more fun, <code>fetch</code>-ing the actual HTML/js content does not work (for good reason!). So I put together a quick proxy lambda that just <code>requests.get()</code>s the sources.</p>
+<p>Oh and to make everything even more fun, <code>fetch</code>-ing the actual HTML/js content does not work (for good reason!). So I put together a quick proxy lambda that just <code>requests.get()</code>s the sources (this is so lame, tho).</p>
 
-<p>Ok so that finally did work (everything sucks, just a little bit 😭) and I was ready for the easy part: making the dates selectable.</p>
+<p>Ok so that finally did work (but like, everything sucks just a little bit 😭) and I was ready for the easy part: making the dates selectable.</p>
 
-<p>I chose to run with a simple datepicker (thank god for <code>input type=&quot;date&quot;</code> 🙏) and called it a day. I wrapped the thing into GH pages and fired it up on my phone. Ended up playing ~5 games from June 19 2021 onwards <em>and</em> decided to play Jan 24th&rsquo;s word about <sup>1</sup>&frasl;<sub>2</sub> an hour before midnight (eg: it wasn&rsquo;t &ldquo;released&rdquo; yet).</p>
+<p>I chose to run with a simple datepicker (thank god for <code>input type=&quot;date&quot;</code> 🙏) and called it a day. I wrapped the thing into GH pages and fired it up on my phone. It worked! I ended up playing ~5 games from June 19 2021 onwards <em>and</em> decided to play Jan 24th&rsquo;s word about <sup>1</sup>&frasl;<sub>2</sub> an hour before midnight (eg: it wasn&rsquo;t &ldquo;released&rdquo; yet).</p>
 
-<p>All in all, I&rsquo;m happy with how this turned out (tho am still really surprised the hack worked!) and I hope others get to enjoy this as well before the src inevitably changes.</p>
+<p>All in all, I&rsquo;m happy with how this turned out (tho am still really surprised the hack worked!) and I hope others get to enjoy this as well before the js src inevitably changes.</p>
 
 <p>On the bright side, I did download the state of the Wordle&rsquo;s src as it stands today so if things do change in the future I can probably still support this functionality by hosting the current src indefinitely.</p>
 
