@@ -3,44 +3,55 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/reverse-engineering-wordle/</loc>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://mottaquikarim.github.io/dev/tags/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mottaquikarim.github.io/dev/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/</loc>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mottaquikarim.github.io/dev/tags/featured/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mottaquikarim.github.io/dev/tags/javascript/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://mottaquikarim.github.io/dev/tags/just-for-fun/</loc>
-    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</loc>
+    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
   </url>
   
   <url>
@@ -77,12 +88,6 @@
   <url>
     <loc>https://mottaquikarim.github.io/dev/posts/hacking-the-covid-appointment-queue/</loc>
     <lastmod>2021-02-27T19:45:28+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/</loc>
-    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

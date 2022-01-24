@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Reverse Engineering Wordle</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/featured/">featured</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/javascript/">javascript</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/">chrome dev tools</a></strong></small>
+        <header id="post-header">
+        <h1>Reverse Engineering Wordle</h1><time>January 24, 2022</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#background">Background.</a></li>
+<li><a href="#requirements">Requirements.</a></li>
+<li><a href="#aside">Aside.</a></li>
+<li><a href="#experimentation">Experimentation.</a></li>
+<li><a href="#output-artifact">Output Artifact.</a></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<p><strong>BLUF</strong></p>
+
+<p>👀 I looked into + grokked <a href="https://www.powerlanguage.co.uk/wordle/">Wordle&rsquo;s</a> javascript source code</p>
+
+<p>🐱💻 Then, I managed to come up with a workaround that enables loading <strong>any</strong> <em>previous</em> word of the day puzzle</p>
+
+<p>🙌 I wrote a little tool to load the original Wordle site but with my &ldquo;hack&rdquo; injected allowing anyone to play any past word of the day puzzle. I call it: <strong><a href="https://mottaquikarim.github.io/wordle_timemachine/">Wordle Time Machine</a></strong> 🎉</p>
+
+<h2 id="background">Background.</h2>
+
+<p>Ok let&rsquo;s get a few things out of the way first:</p>
+
+<ul>
+<li>Yes, all the words (past and future) are available in the source (nothing too fancy here)</li>
+<li>No, the purpose of this post is not to expose any of the upcoming solutions. But! Be warned fam, some of the techniques described here <em>can</em> be used to cheat (but where&rsquo;s the fun in that, right?)</li>
+</ul>
+
+<p>I really like this game and primarily found myself wanting to play more - in particular previous words of the day since I only realized those emoji icons being shared all over twitter were actually Wordle outputs fairly recently.</p>
+
+<h2 id="requirements">Requirements.</h2>
+
+<p>Here are the requirements I set for myself:</p>
+
+<ul>
+<li>enable playing past words</li>
+<li>don&rsquo;t actually recreate any parts of the game itself (eg: don&rsquo;t copy/paste the source code and modify - a viable option but again, no fun in that)</li>
+<li>no chrome extension type stuff (I want to play on mobile)</li>
+</ul>
+
+<h2 id="aside">Aside.</h2>
+
+<p>Btdubs fam &ndash; did you know that the game state is saved in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage">Local Storage</a>?</p>
+
+<p>If we run the following in Chrome&rsquo;s &ldquo;console&rdquo; in the Web Dev Tools:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s2">&#34;gameState&#34;</span><span class="p">)</span>
+</code></pre></div>
+<p>we observe:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;boardState&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;evaluations&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="kc">null</span><span class="p">,</span>
+    <span class="kc">null</span><span class="p">,</span>
+    <span class="kc">null</span><span class="p">,</span>
+    <span class="kc">null</span><span class="p">,</span>
+    <span class="kc">null</span><span class="p">,</span>
+    <span class="kc">null</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;rowIndex&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nt">&#34;solution&#34;</span><span class="p">:</span> <span class="s2">&#34;😜&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;gameStatus&#34;</span><span class="p">:</span> <span class="s2">&#34;IN_PROGRESS&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;lastPlayedTs&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nt">&#34;lastCompletedTs&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nt">&#34;restoringFromLocalStorage&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nt">&#34;hardMode&#34;</span><span class="p">:</span> <span class="kc">false</span>
+<span class="p">}</span></code></pre></div>
+<p>Note the <code>solution</code> field &ndash; this will store the answer for the word of the day. (This has nothing to do with my solution).</p>
+
+<p>The reason I bring this up is because if we really <em>wanted</em>, we <em>could</em> build a version of my Wordle tool that allows folks to inject their own &ldquo;word of the day&rdquo; to challenge friends with custom words. The only requirement would be the word must be a part of the &ldquo;acceptable words&rdquo; list bundled into Wordle&rsquo;s src.</p>
+
+<h2 id="experimentation">Experimentation.</h2>
+
+<blockquote>
+<p>NOTE: all of this exploration was done on script version <a href="https://www.powerlanguage.co.uk/wordle/main.e65ce0a5.js">main.e65ce0a5.js</a>. My guess is if there are code changes, that hash value will likely update.</p>
+</blockquote>
+
+<p>Anyways, I digress. I started my experimentation by looking at the Network tab as I input guessed on Chrome.</p>
+
+<p>I noted that there were no network requests sent which made me realize the solution must be bundled into the HTML/js code.</p>
+
+<p>Looking into the js source (which was minified &ndash; thankfully CHrome supports prettification as part of dev tools 🙏), I stumbled on to the famous list of solutions:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"> <span class="kd">var</span> <span class="nx">La</span> <span class="o">=</span> <span class="p">[</span><span class="cm">/* SOLUTIONS */</span><span class="p">]</span>
+     <span class="p">,</span> <span class="nx">Ta</span> <span class="o">=</span> <span class="p">[</span><span class="cm">/* ACCEPTABLE WORDS */</span><span class="p">]</span>
+</code></pre></div>
+<p>Searching the codebase for <code>La</code> led to interesting results:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Ha</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="kd">function</span> <span class="nx">Na</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+      <span class="p">,</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">a</span><span class="p">).</span><span class="nx">setHours</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="nx">s</span><span class="p">.</span><span class="nx">setHours</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">t</span> <span class="o">/</span> <span class="mi">864</span><span class="nx">e5</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Da</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">Ga</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">s</span> <span class="o">%</span> <span class="nx">La</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+    <span class="nx">La</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Ga</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">Na</span><span class="p">(</span><span class="nx">Ha</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In particular, function <code>Da</code> is interesting as it appears to return a particular word from <code>La</code>. Before going down further, let&rsquo;s see how <code>Da</code> is used (&hellip;by, you guessed it: searching the codebase for <code>Da</code> invocations!):</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">e</span><span class="p">.</span><span class="nx">today</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">;</span> <span class="c1">// &lt;- important!
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">za</span><span class="p">();</span>
+<span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">lastPlayedTs</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">lastPlayedTs</span><span class="p">,</span>
+<span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">lastPlayedTs</span> <span class="o">||</span> <span class="nx">Na</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">lastPlayedTs</span><span class="p">),</span> <span class="nx">e</span><span class="p">.</span><span class="nx">today</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="o">?</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">boardState</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">6</span><span class="p">).</span><span class="nx">fill</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">),</span>
+<span class="nx">e</span><span class="p">.</span><span class="nx">evaluations</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">6</span><span class="p">).</span><span class="nx">fill</span><span class="p">(</span><span class="kc">null</span><span class="p">),</span>
+<span class="nx">e</span><span class="p">.</span><span class="nx">solution</span> <span class="o">=</span> <span class="nx">Da</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">today</span><span class="p">),</span> <span class="c1">// &lt;- important!
+</span></code></pre></div>
+<p>Ok so let&rsquo;s summarize what is going on here:</p>
+
+<ul>
+<li><code>Da</code> returns <code>La[a]</code>; presumably <code>a</code> is an index and <code>La[a]</code> therefore is the word of the day</li>
+<li><code>e.solution</code> is storing the return value of <code>Da</code>, meaning this is likely going to store the actual answer of the day</li>
+<li><code>e.today</code> is just <code>new Date</code> (look at the first line above), eg: today&rsquo;s date</li>
+</ul>
+
+<p>There are a few other interesting bits here but this is all we really need to craft our solution.</p>
+
+<p>First thing I did was ensure that <code>Da</code>/<code>e.solution</code> were not available globally. (They are not &ndash; interestingly, <code>window.wordle</code> is exposed but I went down this path a bit, I didn&rsquo;t make much progress because the game system uses <code>customElements</code> (<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">sauce</a>))</p>
+
+<p>My next approach (and bear with me here) was to <a href="https://dev.to/napoleon039/monkey-patching-what-is-it-and-should-you-be-using-it-50db">monkeypatch</a> the <code>Date</code> class itself, given that</p>
+
+<ul>
+<li><code>e.today</code> appears to be the entry point to this functionality</li>
+<li>there&rsquo;s no other way to access <code>e.solution</code> (without like, recreating the entire <code>game-app</code> which I wasn&rsquo;t prepared to do)</li>
+<li><code>Date</code> itself is available globally so this is a viable entrypoint</li>
+</ul>
+
+<p>Here&rsquo;s what my solution looked like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// Don&#39;t try this at home kids, this hack is dirty
+</span><span class="c1">// basically overwrite Date object to trick the src code to 
+</span><span class="c1">// pick the appropriate solution for that date
+</span><span class="c1"></span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="nx">today</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span>
+    <span class="kd">var</span> <span class="nx">OriginalDate</span> <span class="o">=</span> <span class="nb">Date</span>
+    <span class="nb">Date</span> <span class="o">=</span> <span class="nx">OriginalDate</span><span class="p">;</span>
+    <span class="nb">Date</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">OriginalDate</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+    <span class="nb">Date</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span> 
+                <span class="o">&amp;&amp;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">overrideDate</span> <span class="o">==</span> <span class="kc">true</span> 
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getFullYear</span>
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getMonth</span>
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getDate</span>
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getFullYear</span><span class="p">()</span> <span class="o">==</span> <span class="nx">today</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">()</span> 
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getMonth</span><span class="p">()</span> <span class="o">==</span> <span class="nx">today</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span>
+                <span class="o">&amp;&amp;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getDate</span><span class="p">()</span> <span class="o">==</span> <span class="nx">today</span><span class="p">.</span><span class="nx">getDate</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nx">OriginalDate</span><span class="p">(</span><span class="nx">year</span><span class="p">,</span><span class="nx">month</span><span class="p">,</span><span class="nx">date</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">OriginalDate</span><span class="p">(...</span><span class="nx">arguments</span><span class="p">)</span>
+    <span class="p">};</span>
+    <span class="c1">// lol, `Date.now` is not part of the prototype
+</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">prop</span> <span class="k">of</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyNames</span><span class="p">(</span><span class="nx">OriginalDate</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nb">Date</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">OriginalDate</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">,</span> <span class="nx">OriginalDate</span><span class="p">[</span><span class="s2">&#34;now&#34;</span><span class="p">])</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyNames</span><span class="p">(</span><span class="nb">Date</span><span class="p">),</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyNames</span><span class="p">(</span><span class="nx">OriginalDate</span><span class="p">))</span>
+<span class="p">})();</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">overrideDate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</code></pre></div>
+<p>A few key notes:</p>
+
+<ul>
+<li><code>Date</code> is used everywhere in the codebase</li>
+<li>I noted that (luckily?) <code>Da</code>&rsquo;s usage of <code>Date</code> is actually a date object (remember: <code>e.today = new Date</code>); all other Date usages are either in timestamps or the longer form year/month/day instantiation</li>
+<li>^ this is <strong>mad lucky</strong>! I took advantage of this luck to craft a new Date constructor that returns <code>new OriginalDate(year, month...)</code> where <code>year</code>, <code>month</code>, etc are inputs to a function that inits all of this madness</li>
+</ul>
+
+<p>This basically worked! 🎉</p>
+
+<h2 id="output-artifact">Output Artifact.</h2>
+
+<p>Next challenge: how the hell do I run this before the game logic is exectured? (in other words: the game code execs immediately, monkey patching the Date afterwards does nothing because game has already &ldquo;started&rdquo; and state is set).</p>
+
+<p>I went down multiple paths for this one, ultimately to no avail. (Tried exotic stuff like <code>newWin = window.open(&quot;about:blank&quot;)</code> and then wrote directly to <code>newWin</code> with <code>document.write(...)</code> and whatnot.</p>
+
+<p>Eventually, I settled on a particularly egreious solution: fetch the HTML content of the original app, walk the nodes and load all the scripts <em>after</em> running my Date hack.</p>
+
+<p>WARNING: this code is pretty cringe &ndash; pls don&rsquo;t judge:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="c1">// everything else is purely in the service of loading the src code
+</span><span class="c1"></span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&#34;https://x6ca288in5.execute-api.us-east-1.amazonaws.com/default/get_wordle&#34;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="p">=&gt;</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">text</span><span class="p">()).</span><span class="nx">then</span><span class="p">(</span><span class="nx">html</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// Convert the HTML string into a document object
+</span><span class="c1"></span>    <span class="kd">var</span> <span class="nx">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DOMParser</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nx">parser</span><span class="p">.</span><span class="nx">parseFromString</span><span class="p">(</span><span class="nx">html</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span>
+
+    <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">;</span>
+    <span class="nx">loaders</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s2">&#34;body &gt; script&#34;</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">scr</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="c1">// very gross, inserting HTML does not actually run the scripts, so we resort to dirty tricks
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">).</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">).</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;www.powerlanguage.co.uk/wordle/&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">))</span>
+            <span class="nx">newScr</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span>
+            <span class="nx">newScr</span><span class="p">.</span><span class="nx">type</span>  <span class="o">=</span> <span class="s2">&#34;text/javascript&#34;</span><span class="p">;</span>
+            <span class="nx">newScr</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">).</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;www.powerlanguage.co.uk/wordle/&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">loaders</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&#34;https://x6ca288in5.execute-api.us-east-1.amazonaws.com/default/get_wordle?script=&#34;</span> <span class="o">+</span> <span class="nx">scr</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">))</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">loaders</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newScr</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">newScr</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span>
+        <span class="nx">newScr</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">scr</span><span class="p">.</span><span class="nx">text</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newScr</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="k">return</span> <span class="nx">loaders</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">urls</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;here&#39;</span><span class="p">,</span> <span class="nx">loaders</span><span class="p">)</span>
+    <span class="nx">urls</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">url</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+        <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="p">=&gt;</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">text</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">js</span> <span class="p">=&gt;</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span>
+            <span class="nx">newScr</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span>
+            <span class="nx">newScr</span><span class="p">.</span><span class="nx">type</span>  <span class="o">=</span> <span class="s2">&#34;text/javascript&#34;</span><span class="p">;</span>
+            <span class="nx">newScr</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">js</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newScr</span><span class="p">);</span>
+        <span class="p">})</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+</code></pre></div>
+<p>The TL;DR here is that we insert the HTML head/body tags from Wordle&rsquo;s source, then walk the script tags. We do a hacky thing to detect for <code>main.*.js</code> type script srcs and then load them invidually (because for whatever reason, loading a script tag as part of <code>*.innerHTML += &lt;code&gt;</code> doesn&rsquo;t actually execture the script (so we need to create script element and load that way).</p>
+
+<p>Oh and to make everything even more fun, <code>fetch</code>-ing the actual HTML/js content does not work (for good reason!). So I put together a quick proxy lambda that just <code>requests.get()</code>s the sources.</p>
+
+<p>Ok so that finally did work (everything sucks, just a little bit 😭) and I was ready for the easy part: making the dates selectable.</p>
+
+<p>I chose to run with a simple datepicker (thank god for <code>input type=&quot;date&quot;</code> 🙏) and called it a day. I wrapped the thing into GH pages and fired it up on my phone. Ended up playing ~5 games from June 19 2021 onwards <em>and</em> decided to play Jan 24th&rsquo;s word about <sup>1</sup>&frasl;<sub>2</sub> an hour before midnight (eg: it wasn&rsquo;t &ldquo;released&rdquo; yet).</p>
+
+<p>All in all, I&rsquo;m happy with how this turned out (tho am still really surprised the hack worked!) and I hope others get to enjoy this as well before the src inevitably changes.</p>
+
+<p>On the bright side, I did download the state of the Wordle&rsquo;s src as it stands today so if things do change in the future I can probably still support this functionality by hosting the current src indefinitely.</p>
+
+<p>Happy Wordle-ing! 🎉</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2freverse-engineering-wordle%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2freverse-engineering-wordle%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2freverse-engineering-wordle%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

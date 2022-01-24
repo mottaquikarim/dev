@@ -6,9 +6,23 @@
     <description>Recent content in chrome dev tools on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sat, 27 Feb 2021 19:45:28 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 24 Jan 2022 12:24:16 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/chrome-dev-tools/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Reverse Engineering Wordle</title>
+      <link>https://mottaquikarim.github.io/dev/posts/reverse-engineering-wordle/</link>
+      <pubDate>Mon, 24 Jan 2022 12:24:16 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/reverse-engineering-wordle/</guid>
+      <description>Table of Contents  BLUF
+👀 I looked into + grokked Wordle&amp;rsquo;s javascript source code
+🐱💻 Then, I managed to come up with a workaround that enables loading any previous word of the day puzzle
+🙌 I wrote a little tool to load the original Wordle site but with my &amp;ldquo;hack&amp;rdquo; injected allowing anyone to play any past word of the day puzzle. I call it: Wordle Time Machine 🎉</description>
+    </item>
     
     
     
@@ -22,7 +36,7 @@
 BLUF
 🙌 Turn your chrome tab into a &amp;ldquo;notepad&amp;rdquo; using: data:text/html, &amp;lt;html contenteditable&amp;gt; (copy and paste this into your URL bar to test it out)
 🚨 But! If you hit back or refresh by accident, you lose your notes (this sucks)
-✅ Using javsacript&amp;rsquo;s clipboard functionality, I came up with a solution that updates the clipboard everytime you type in to the &amp;ldquo;notepad&amp;rdquo;.</description>
+✅ Using javsacript&amp;rsquo;s clipboard functionality, I came up with a solution that updates the clipboard (eg: available to recover by &amp;ldquo;pasting&amp;rdquo; into your favorite word editor) everytime you type in to the &amp;ldquo;notepad&amp;rdquo;.</description>
     </item>
     
     
