@@ -253,3 +253,12 @@ All in all, I'm happy with how this turned out (tho am still really surprised th
 On the bright side, I did download the state of the Wordle's src as it stands today so if things do change in the future I can probably still support this functionality by hosting the current src indefinitely.
 
 Happy Wordle-ing! 🎉
+
+## Update(s).
+
+I've been tinkering with the game source code for the past week or so and have learned a lot more about how the app works in general. I've applied my learned to two new variants:
+
+* [Wordle Time Machine v2](https://mottaquikarim.github.io/wordle_timemachine/v2.html?d=2021-06-19)
+* [Wordle with Friends](https://mottaquikarim.github.io/wordle_with_friends/)
+
+Enjoy!

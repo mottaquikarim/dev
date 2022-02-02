@@ -162,3 +162,8 @@ After saving this change, I was able to run the `javascript:` code on safari as 
 <img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_9_mobile.JPG">
 
 
+## **Aside 2:** Transferring from Homescreen App.
+
+One big drawback of my technique is afaik, there is no way to actually transfer this data if you've saved the game as part of your "homescreen". Apple seems to discourage this behavior anyways (the act of adding to Homescreen is buried within the "share" modal under bookmarks, add to favorites, etc)
+
+Importantly, it appears that once you _do_ add to homescreen, iOS minimally spawns a new instance of LocalStorage that is distinct from the Safari instance. Because of this, it does appear to be impossible (at least from my understanding today) to transfer localstorage data from the homescreen without a code change to the original app itself.
