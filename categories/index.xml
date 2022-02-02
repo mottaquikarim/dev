@@ -12,6 +12,21 @@
     
     
     <item>
+      <title>A Hack for Transferring Cross Domain Localstorage Data</title>
+      <link>https://mottaquikarim.github.io/dev/posts/a-hack-for-transferring-cross-domain-localstorage-data/</link>
+      <pubDate>Wed, 02 Feb 2022 08:24:42 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/a-hack-for-transferring-cross-domain-localstorage-data/</guid>
+      <description>Table of Contents  BLUF
+🎉 Wordle has been purchased by the NYTimes!
+🐱‍💻 I wanted to cache the game in its current state, so I downloaded source and uploaded to my own server: Wordle Classic
+🤔 But! I wanted to transfer my streaks data to my new hosted app
+💡 Thanks to javascript: and a small code addition to Wordle Classic, I was able to transfer my streaks without having to open up Chrome&amp;rsquo;s Dev Console</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Reverse Engineering Wordle</title>
       <link>https://mottaquikarim.github.io/dev/posts/reverse-engineering-wordle/</link>
       <pubDate>Mon, 24 Jan 2022 12:24:16 +0000</pubDate>
