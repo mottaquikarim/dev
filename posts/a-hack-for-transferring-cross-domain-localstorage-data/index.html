@@ -147,6 +147,7 @@ table td {
 <li><a href="#4-stats-dialog-in-wordle-classic-reflects-transferred-state">4. Stats dialog in &ldquo;Wordle Classic&rdquo; reflects transferred state 🎉</a></li>
 </ul></li>
 <li><a href="#aside-considerations-for-mobile"><strong>Aside:</strong> Considerations for Mobile.</a></li>
+<li><a href="#aside-2-transferring-from-homescreen-app"><strong>Aside 2:</strong> Transferring from Homescreen App.</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -296,6 +297,12 @@ table td {
 
 <p><img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_8_mobile.JPG">
 <img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_9_mobile.JPG"></p>
+
+<h2 id="aside-2-transferring-from-homescreen-app"><strong>Aside 2:</strong> Transferring from Homescreen App.</h2>
+
+<p>One big drawback of my technique is afaik, there is no way to actually transfer this data if you&rsquo;ve saved the game as part of your &ldquo;homescreen&rdquo;. Apple seems to discourage this behavior anyways (the act of adding to Homescreen is buried within the &ldquo;share&rdquo; modal under bookmarks, add to favorites, etc)</p>
+
+<p>Importantly, it appears that once you <em>do</em> add to homescreen, iOS minimally spawns a new instance of LocalStorage that is distinct from the Safari instance. Because of this, it does appear to be impossible (at least from my understanding today) to transfer localstorage data from the homescreen without a code change to the original app itself.</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fa-hack-for-transferring-cross-domain-localstorage-data%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fa-hack-for-transferring-cross-domain-localstorage-data%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
