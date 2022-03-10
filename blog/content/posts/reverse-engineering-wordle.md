@@ -12,7 +12,7 @@ tags: ["featured", "javascript", "just for fun", "chrome dev tools"]
 
 🐱💻 Then, I managed to come up with a workaround that enables loading **any** _previous_ word of the day puzzle
 
-🙌 I wrote a little tool to load the original Wordle site but with my "hack" injected allowing anyone to play any past word of the day puzzle. I call it: **[Wordle Time Machine](https://mottaquikarim.github.io/wordle_timemachine/)** 🎉
+🙌 I wrote a little tool to load the original Wordle site but with my "hack" injected allowing anyone to play any past word of the day puzzle. I call it: **[Wordle Time Machine](https://mottaquikarim.github.io/wordle_timemachine/)** (**EDIT**: v2 can be found **[here](https://mottaquikarim.github.io/wordle_timemachine/v2.html)**) 🎉
 
 ## Background.
 
