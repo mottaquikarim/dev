@@ -6,9 +6,24 @@
     <description>Recent content in Tags on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 02 Feb 2022 08:24:42 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 04 Sep 2022 00:46:49 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Proving the Squaring Numbers Ending in 5 Trick</title>
+      <link>https://mottaquikarim.github.io/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/</link>
+      <pubDate>Sun, 04 Sep 2022 00:46:49 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/</guid>
+      <description>Table of Contents  So here’s a neat trick. What’s a quick way to square numbers that end in — 5 in your head?
+For example, what is $$25*25 = ?$$
+(Plug into a calculator real quick). We expect our trick to help up compute the solution, 625, quickly.
+Ok, let’s break down the approach.
+Example: what is 25^2?. First, let&amp;rsquo;s re-write our number (25) in a slightly different but equivalent manner:</description>
+    </item>
     
     
     
