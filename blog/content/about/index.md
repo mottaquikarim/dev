@@ -7,9 +7,11 @@ type: "bulkhead"
 👋👋, Wrold.
 
 I am an immigrant originally from [Bangladesh](https://en.wikipedia.org/wiki/Bangladesh); my family moved to the US in the mid 90s when I was 5 years old.
-As a Queens native, I have had the fortune to attend and graduate from two top tier academic institutions in NYC: [Stuyvesant High School](https://en.wikipedia.org/wiki/Stuyvesant_High_School) and [the Cooper Union](https://en.wikipedia.org/wiki/Cooper_Union).
+As a Queens native, I have had the good fortune to attend and graduate from two top tier academic institutions in NYC: [Stuyvesant High School](https://en.wikipedia.org/wiki/Stuyvesant_High_School) and [the Cooper Union](https://en.wikipedia.org/wiki/Cooper_Union).
 
-Currently I lead the Leaderboard and Metrics+Messaging teams at Peloton -- we own and operate ~8 services that help power the leaderboard. In the recent past, I also moonlighted as an [adjunct professor](https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2637751) at [Baruch University](https://zicklin.baruch.cuny.edu/faculty-research/academic-departments/information-technology-statistics/) and as an [instructor](https://generalassemb.ly/instructors/taqqui-karim/1667) at [General Assembly](https://generalassemb.ly/). (I have since scaled back my activities to focus on building the best possible team experience I can at PTON).
+Currently I am a Senior Engineering Manager at Peloton; I have the privilege of leading three teams: the Product API Internal team, the Leaderboard team and the Metrics and Messaging team. We own and operate microservices that help power the leaderboard, real-time in class notifications and a GraphQL gateway for client <> API communications. In sum, we are responsible for operating services that account for ~85% of _all_ traffic coming in to the API.
+
+In the recent past, I also moonlighted as an [adjunct professor](https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2637751) at [Baruch University](https://zicklin.baruch.cuny.edu/faculty-research/academic-departments/information-technology-statistics/) and as an [instructor](https://generalassemb.ly/instructors/taqqui-karim/1667) at [General Assembly](https://generalassemb.ly/). (I have since scaled back my activities to focus on building the best possible team experience I can at PTON).
 
 I've posted on and off on platforms such as [Medium](https://taqkarim.medium.com/) and [Dev.to](https://dev.to/taqkarim) in the past - this blog is an exercise in asserting better ownership of my content (mainly for the purpose of retaining long term access). 
 
