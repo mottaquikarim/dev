@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Demonstrating and Proving Tricks for Squaring Numbers</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Demonstrating and Proving Tricks for Squaring Numbers</h1><time>September 4, 2022</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#methodology">Methodology.</a></li>
+<li><a href="#numbers-where-n-6-eg-16-26-etc">Numbers where <strong>n=6</strong> (eg: <strong>16</strong>, <strong>26</strong>, etc).</a>
+<ul>
+<li><a href="#proof">Proof.</a></li>
+<li><a href="#example-what-is-36-2">Example: What is 36^2?</a>
+<ul>
+<li><a href="#1-let-t-the-number-in-the-tens-place-3-let-p-t-1-or-4">1. Let <strong>t=</strong> the number in the <strong>tens</strong> place, <strong>3</strong>. Let <strong>p= t+1</strong>, or <strong>4</strong></a></li>
+<li><a href="#2-now-let-k-t-p-or-12">2. Now let <strong>k= t * p</strong>, or <strong>12</strong>.</a></li>
+<li><a href="#3-next-let-m-2t-3-or-9">3. Next let <strong>m= 2t * 3</strong>, or <strong>9</strong>.</a></li>
+<li><a href="#4-finally-combine-k-12-m-9-and-6-to-get-1296-done">4. Finally, combine <strong>k</strong> (12), <strong>m</strong> (9) and <strong>6</strong> to get: <strong>1296</strong>. Done!</a></li>
+</ul></li>
+<li><a href="#some-quick-examples">Some quick examples.</a>
+<ul>
+<li><a href="#6-2-36">6^2 = 36</a></li>
+<li><a href="#86-2-7396">86^2 = 7396</a></li>
+</ul></li>
+<li><a href="#final-comments">Final comments.</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<!--
+Katex:
+- https://katex.org/docs/supported.html#style-color-size-and-font
+- https://katex.org/docs/support_table.html
+-->
+
+<p><strong>NOTE</strong>: This post builds on my post <a href="/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/">&ldquo;Proving the Squaring Numbers Ending in 5 Trick&rdquo;</a>. I&rsquo;ll be heavily referencing it in this post.</p>
+
+<h2 id="methodology">Methodology.</h2>
+
+<p>In my last post on this topic (referenced above), we proved that numbers ending in <strong>&ndash;5</strong> have a neat property, namely that if:</p>
+
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+a &amp;= (10t + n) \cr
+\text{Where: } \cr
+n &amp;= 5 \cr
+\end{aligned}
+$$</p>
+
+<p>Then:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t + 5)(10t + 5) \cr
+&amp;= 10 * 10 * t * t + 10 * 5 * t + 10 * 5 * t + 5 * 5 \cr
+&amp;= \bold{10}\Bigg[ 10 * t * t + t * (5) + t * (5) \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + t * \bold{(5)} + t * \bold{(5)} \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5}\bigg[  2 * t * t + t + t \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5}\bigg[  2 * t * t + 2 * t \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5} * \bold{2 * t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{10} * \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p>Our result:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p>demonstrates <em>why</em> <a href="/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/#example-what-is-25-2">the trick</a> works.</p>
+
+<p>Let&rsquo;s review it here once more for funsies though. We write our number in this form:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t + n)(10t + n) \cr
+\bold{Let: } \cr
+n &amp;= 5 \cr
+\bold{So: } \cr
+a^2 &amp;= (10t + 5)(10t + 5) \cr
+\end{aligned}
+$$</p>
+
+<p>So, we can interpret <strong>t</strong> as the numerical value <em>not</em> in the ones place (I say this because if <strong>a = 105</strong>, we let <strong>t=10</strong>, not <strong>0</strong>). Our formula:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p>lets us wave our hands a bit like so:</p>
+
+<p>$$
+\begin{aligned}
+\bold{Let: } \cr
+a &amp;= 25 \cr
+\bold{So: } \cr
+t &amp;= 2 \cr
+n &amp;= 5 \cr
+\end{aligned}
+$$</p>
+
+<ol>
+<li>Take <strong>t</strong>, add <strong>1</strong> to it (so <strong>t + 1 = 2 +1 = 3</strong>).</li>
+<li>Multiply the result from (1) with <strong>t</strong> (so <strong>2 * 3 = 6</strong>)</li>
+<li>Concatenate with <strong>25</strong>, which gives us a grand total of: <strong>625</strong>.</li>
+</ol>
+
+<p>Step (3) is the hand-wavey part and it only works because our <strong>t[t+1]</strong> term is multiplied by <strong>100</strong>, enabling us to &ldquo;concatenate&rdquo; without worry.</p>
+
+<p>And more importantly, <strong>n=5</strong> is <em>crucial</em> here because we are able to factor:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t + 5)(10t + 5) \cr
+&amp;= 10 * 10 * t * t + 10 * 5 * t + 10 * 5 * t + 5 * 5 \cr
+\end{aligned}
+$$</p>
+
+<p>to a representation like:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p><strong><em>because</em></strong> the value in our ones place (<strong>n=5</strong>) is a multiple of <em>10</em>, which allows us to pull out the <strong>5</strong> from:</p>
+
+<p>$$
+\begin{aligned}
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + t * \bold{(5)} + t * \bold{(5)} \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p>into:</p>
+
+<p>$$
+\begin{aligned}
+&amp;= \bold{10}\Bigg[ \bold{5} * \bold{2 * t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+
+<p>So: That <strong>5</strong> is important!</p>
+
+<p>And, while working on this post, it occurred to me that we can represent <em>any</em> whole number (eg: <strong>n=1</strong>, <strong>n=2</strong>, etc) in terms of <strong>5</strong> (for instance <strong>n=6</strong> could be represented as <strong>n=5+1</strong>). For this reason, I believe we can find similar (but less pretty) tricks for <em>any</em> whole number.</p>
+
+<p>In the rest of this (admittely long post), I will work backwards from the proof to the trick for numbers where <strong>n=1</strong>, <strong>n=2</strong>, etc.</p>
+
+<h2 id="numbers-where-n-6-eg-16-26-etc">Numbers where <strong>n=6</strong> (eg: <strong>16</strong>, <strong>26</strong>, etc).</h2>
+
+<h3 id="proof">Proof.</h3>
+
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+a &amp;= (10t + n) \cr
+\text{Where: } \cr
+n &amp;= 6 \cr
+\end{aligned}
+$$</p>
+
+<p>Then:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t + \bold{6})(10t + \bold{6}) \cr
+&amp;= 10 * 10 * t * t + 10 * \bold{6} * t + 10 * \bold{6} * t + \bold{6} * \bold{6} \cr
+\end{aligned}
+$$</p>
+
+<p>We may represent <strong>6</strong> as <strong>6 = 5 + 1</strong>. (Note, we just multiply the last term, <strong>6 * 6</strong>, for the sake of simplicity). Substituting:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t + \bold{6})(10t + \bold{6}) \cr
+&amp;= 10 * 10 * t * t + 10 * \bold{6} * t + 10 * \bold{6} * t + \bold{6} * \bold{6} \cr
+&amp;= 10 * 10 * t * t + 10 * (\bold{5 + 1}) * t + 10 * (\bold{5 + 1}) * t + 36 \cr
+\end{aligned}
+$$</p>
+
+<p>Let&rsquo;s now simplify this number sentence, our goal is to get it to look as close as possible to our <strong>t(t+1)</strong> formula:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= 10 * 10 * t * t + 10 * (\bold{5 + 1}) * t + 10 * (\bold{5 + 1}) * t + 36 \cr
+&amp;= 10 * 10 * t * t + 10 * \bold{5} * t + 10 * \bold{1} * t + 10 * \bold{5} * t + 10 * \bold{1} * t + 36 \cr
+&amp;= \bigg[10 * 10 * t * t + 10 * \bold{5} * t + 10 * \bold{5} * t \bigg] + 10 * \bold{1} * t + 10 * \bold{1} * t + 36 \cr
+\end{aligned}
+$$</p>
+
+<p>Note that the last representation above (in square brackets) looks just like the result we were working with when proving the <strong>n=5</strong> trick. Let&rsquo;s complete our simplification:</p>
+
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bigg[10 * 10 * t * t + 10 * \bold{5} * t + 10 * \bold{5} * t \bigg] + 10 * \bold{1} * t + 10 * \bold{1} * t + 36 \cr
+&amp;= 10 \Bigg[ 10 * t * t + \bold{5} * t + \bold{5} * t \Bigg] + 10t + 10t + 36 \cr
+&amp;= 10 \Bigg[ 5 \bigg[ 2 * t * t + t + t \bigg] \Bigg] + 20t + 36 \cr
+&amp;= 10 \Bigg[ 5 \bigg[ 2 * t * t + 2 * t \bigg] \Bigg] + 20t + 36 \cr
+&amp;= \bold{10}\Bigg[ \bold{5} * \bold{2 * t}\bigg[  t + 1 \bigg]  \Bigg] + 20t + 36 \cr
+&amp;= \bold{10}\Bigg[ \bold{10} * \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + 20t + 36 \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] +  20t + 36 \cr
+\end{aligned}
+$$</p>
+
+<p>Tada! We have now shown that the square of numbers where <strong>n=6</strong> look <em>just like</em> the square of numbers where <strong>n=5</strong> but with the <strong>25</strong> replaced by <strong>20t + 36</strong>. This is a pretty cool result in and of itself &ndash; for example what is <strong>26^2</strong>?</p>
+
+<p>Easy,</p>
+
+<ol>
+<li><strong>t(t+1)</strong> is <strong>6</strong>,</li>
+<li><strong>20t + 36</strong> is <strong>40 + 36</strong> or <strong>76</strong></li>
+</ol>
+
+<p>So the result is: <strong>676</strong>. But, we can do better. (Why? Because <strong>20t + 36</strong> may get annoying when <strong>t=12</strong> let&rsquo;s say)</p>
+
+<p>Let&rsquo;s start with the last line from above and simplify the last two terms:</p>
+
+<p>$$
+\begin{aligned}
+a ^ 2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] +  20t + 36 \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] +  20t + 30 + 6 \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] +  10 * \bold{2} * t + 10 * \bold{3} + 6 \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] +  10 \Bigg[ \bold{2}t + \bold{3} \Bigg] + 6 \cr
+\end{aligned}
+$$</p>
+
+<p>Now <em>this</em> is pretty cool. Let&rsquo;s try this again for <strong>26^2</strong>:</p>
+
+<ol>
+<li><strong>t(t+1)</strong> is <strong>6</strong>,</li>
+<li><strong>2t + 3</strong> is <strong>7</strong>,</li>
+<li>We can <em>concatenate</em> here because <strong>6</strong> is in the <em>hundreds</em> place, <strong>7</strong> is in the <em>tens</em> place and the last <strong>6</strong> is in the <em>ones</em> place.</li>
+</ol>
+
+<p>So the result is <strong>676</strong> (but without having to add two two-digit numbers together). Another way to think about this:</p>
+
+<p>$$
+\begin{aligned}
+t\big[t + 1 \big] &amp;= 600 \cr
+2t + 3 &amp;= \space\space 70 \cr
+6 &amp;= \space\space\space\space 6 \cr
+\hline \cr
+&amp;= 676
+\end{aligned}
+$$</p>
+
+<p>Basically, ignore the <strong>0</strong>s and we can easily synthesize the solution.</p>
+
+<h3 id="example-what-is-36-2">Example: What is 36^2?</h3>
+
+<p>Let&rsquo;s put this to the test with an example.</p>
+
+<h4 id="1-let-t-the-number-in-the-tens-place-3-let-p-t-1-or-4">1. Let <strong>t=</strong> the number in the <strong>tens</strong> place, <strong>3</strong>. Let <strong>p= t+1</strong>, or <strong>4</strong></h4>
+
+<p>$$
+\begin{aligned}
+t &amp;= \bold{3} \cr
+p &amp;= t + 1 \cr
+&amp;= 3 + 1 \cr
+&amp;= \bold{4}
+\end{aligned}
+$$</p>
+
+<h4 id="2-now-let-k-t-p-or-12">2. Now let <strong>k= t * p</strong>, or <strong>12</strong>.</h4>
+
+<p>$$
+\begin{aligned}
+k &amp;= t * p \cr
+&amp;= t\big[t + 1\big] \cr
+&amp;= 3 \big[4\big] \cr
+&amp;= \bold{12}
+\end{aligned}
+$$</p>
+
+<h4 id="3-next-let-m-2t-3-or-9">3. Next let <strong>m= 2t * 3</strong>, or <strong>9</strong>.</h4>
+
+<p>$$
+\begin{aligned}
+m &amp;= 2t * 3 \cr
+&amp;= 2 * \bold{3} + 3 \cr
+&amp;= 6 + 3 \cr
+&amp;= \bold{9}
+\end{aligned}
+$$</p>
+
+<h4 id="4-finally-combine-k-12-m-9-and-6-to-get-1296-done">4. Finally, combine <strong>k</strong> (12), <strong>m</strong> (9) and <strong>6</strong> to get: <strong>1296</strong>. Done!</h4>
+
+<p>$$
+\begin{aligned}
+t\big[t + 1 \big] &amp;= 1200 \cr
+2t + 3 &amp;= \space\space\space\space 90 \cr
+6 &amp;= \space\space\space\space\space\space 6 \cr
+\hline \cr
+&amp;= 1296
+\end{aligned}
+$$</p>
+
+<p>We lucked out here because <strong>m</strong> is just <strong>9</strong>, so we concatenate to get <strong>1296</strong>.</p>
+
+<h3 id="some-quick-examples">Some quick examples.</h3>
+
+<p>Let&rsquo;s put this to the test!</p>
+
+<h4 id="6-2-36">6^2 = 36</h4>
+
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+t &amp;= 0 \cr
+n &amp;= 6 \cr
+t\big[t + 1 \big] &amp;= \space\space\space\space\space\space 0 \cr
+2t + 3 &amp;= \space\space\space\space 30 \cr
+6 &amp;= \space\space\space\space\space\space 6 \cr
+\hline \cr
+&amp;= \space\space\space\space\space\space 36
+\end{aligned}
+$$</p>
+
+<h4 id="86-2-7396">86^2 = 7396</h4>
+
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+t &amp;= 8 \cr
+n &amp;= 6 \cr
+t\big[t + 1 \big] &amp;= 7200 \cr
+2t + 3 &amp;= \space\space 190 \cr
+6 &amp;= \space\space\space\space\space\space 6 \cr
+\hline \cr
+&amp;= 7396
+\end{aligned}
+$$</p>
+
+<p><strong>NOTE</strong>: for numbers where <strong>2t+3</strong> &gt; 10, we can just add the number in the <em>tens</em> place (like <strong>1</strong> in the case of <strong>19</strong> above) to the <em>ones</em> place digit of <strong>t(t+1)</strong> (like <strong>2</strong> in the case of <strong>72</strong> above). So, the computation becomes something like:</p>
+
+<p>$$
+\begin{aligned}
+t\big[t + 1 \big] &amp;= 7\bold{2} \cr
+2t + 3 &amp;=\space\space \bold{1}9 \cr
+6 &amp;= \space\space\space\space\space\space 6 \cr
+\hline \cr
+&amp;= 7\bold{3}96
+\end{aligned}
+$$</p>
+
+<p>(Note the bolds; personally I find this a bit easier when computing mentally).</p>
+
+<h3 id="final-comments">Final comments.</h3>
+
+<p>While this outcome isn&rsquo;t <em>as pretty</em> as the <strong>n=5</strong> observation, IMO it is pretty <em>awesome</em> that we can use the technique demonstrated above to find tricks for basically all whole numbers. For the rest of this post, I will be leveraging this approach to highlight tricks for the rest of our set of <strong>n=[1,2,&hellip;]</strong> (with some tricks being better/easier than others).</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fdemonstrating-and-proving-tricks-for-squaring-numbers%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fdemonstrating-and-proving-tricks-for-squaring-numbers%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fdemonstrating-and-proving-tricks-for-squaring-numbers%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>
