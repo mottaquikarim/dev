@@ -1,7 +1,7 @@
 ---
 title: "Grokking Builtin.all in Python"
 date: 2021-03-16T22:26:46Z
-tags: ["featured", "python"]
+tags: ["python"]
 ---
 
 {{<toc>}}
