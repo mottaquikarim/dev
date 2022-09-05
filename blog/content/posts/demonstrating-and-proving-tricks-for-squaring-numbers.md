@@ -1,5 +1,5 @@
 ---
-title: "Demonstrating and Proving Tricks for Squaring Numbers"
+title: "Demonstrating a Trick for Squaring Numbers Ending in 6"
 date: 2022-09-04T11:13:37Z
 tags: ["math", "just for fun"]
 katex: true
@@ -15,7 +15,7 @@ Katex:
 
 **NOTE**: This post builds on my post ["Proving the Squaring Numbers Ending in 5 Trick"](/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/). I'll be heavily referencing it in this post.
 
-## Methodology.
+# Methodology.
 
 In my last post on this topic (referenced above), we proved that numbers ending in **--5** have a neat property, namely that if:
 
@@ -131,9 +131,9 @@ And, while working on this post, it occurred to me that we can represent _any_ w
 
 In the rest of this (admittely long post), I will work backwards from the proof to the trick for numbers where **n=1**, **n=2**, etc.
 
-## Numbers where **n=6** (eg: **16**, **26**, etc).
+# Numbers where **n=6** (eg: **16**, **26**, etc).
 
-### Proof.
+## Proof.
 
 $$
 \begin{aligned}
@@ -228,11 +228,11 @@ $$
 
 Basically, ignore the **0**s and we can easily synthesize the solution.
 
-### Example: What is 36^2?
+## Example: What is 36^2?
 
 Let's put this to the test with an example.
 
-#### 1. Let **t=** the number in the **tens** place, **3**. Let **p= t+1**, or **4**
+### 1. Let **t=** the number in the **tens** place, **3**. Let **p= t+1**, or **4**
 
 $$
 \begin{aligned}
@@ -243,7 +243,7 @@ p &= t + 1 \cr
 \end{aligned}
 $$
 
-#### 2. Now let **k= t * p**, or **12**.
+### 2. Now let **k= t * p**, or **12**.
 
 $$
 \begin{aligned}
@@ -254,7 +254,7 @@ k &= t * p \cr
 \end{aligned}
 $$
 
-#### 3. Next let **m= 2t * 3**, or **9**.
+### 3. Next let **m= 2t * 3**, or **9**.
 
 $$
 \begin{aligned}
@@ -265,7 +265,7 @@ m &= 2t * 3 \cr
 \end{aligned}
 $$
 
-#### 4. Finally, combine **k** (12), **m** (9) and **6** to get: **1296**. Done!
+### 4. Finally, combine **k** (12), **m** (9) and **6** to get: **1296**. Done!
 
 $$
 \begin{aligned}
@@ -279,11 +279,11 @@ $$
 
 We lucked out here because **m** is just **9**, so we concatenate to get **1296**. 
 
-### Some quick examples.
+## Some quick examples.
 
 Let's put this to the test!
 
-#### 6^2 = 36
+### 6^2 = 36
 
 $$
 \begin{aligned}
@@ -299,7 +299,7 @@ t\big[t + 1 \big] &= \space\space\space\space\space\space 0 \cr
 $$
 
 
-#### 86^2 = 7396
+### 86^2 = 7396
 
 $$
 \begin{aligned}
@@ -328,7 +328,7 @@ $$
 
 (Note the bolds; personally I find this a bit easier when computing mentally).
 
-### Final comments.
+## Final comments.
 
 While this outcome isn't _as pretty_ as the **n=5** observation, IMO it is pretty _awesome_ that we can use the technique demonstrated above to find tricks for basically all whole numbers. For the rest of this post, I will be leveraging this approach to highlight tricks for the rest of our set of **n=[1,2,...]** (with some tricks being better/easier than others).
 
