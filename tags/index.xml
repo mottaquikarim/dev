@@ -6,18 +6,31 @@
     <description>Recent content in Tags on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sun, 04 Sep 2022 11:13:37 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 05 Sep 2022 04:28:00 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     
     <item>
-      <title>Demonstrating and Proving Tricks for Squaring Numbers</title>
-      <link>https://mottaquikarim.github.io/dev/posts/demonstrating-and-proving-tricks-for-squaring-numbers/</link>
+      <title>Generic Trick for Squaring All Numbers</title>
+      <link>https://mottaquikarim.github.io/dev/posts/generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 05 Sep 2022 04:28:00 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/generic-trick-for-squaring-all-numbers/</guid>
+      <description>Table of Contents  TL;DR: The Trick. Let&amp;rsquo;s first grok the trick just by pattern recognition.
+Example: 31^2= $$ \begin{aligned} 3\bold{1}^2 &amp;amp;= (\bold{3} * 10 + \bold{1}) \cr \bold{3} * (3\bold{1} + \bold{1}) &amp;amp;= 96\text{\textunderscore} \cr 1^2 &amp;amp;= \space\space\space\space 1\cr \hline &amp;amp;= 961 \end{aligned} $$
+Example: 54^2= $$ \begin{aligned} 5\bold{4}^2 &amp;amp;= (\bold{5} * 10 + \bold{4}) \cr \bold{5} * (5\bold{4} + \bold{4}) &amp;amp;= 290\text{\textunderscore} \cr 4^2 &amp;amp;= \space\space\space\space 16\cr \hline &amp;amp;= 2916 \end{aligned} $$</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Demonstrating a Trick for Squaring Numbers Ending in 6</title>
+      <link>https://mottaquikarim.github.io/dev/posts/demonstrating-a-trick-for-squaring-numbers-ending-in-6/</link>
       <pubDate>Sun, 04 Sep 2022 11:13:37 +0000</pubDate>
       
-      <guid>https://mottaquikarim.github.io/dev/posts/demonstrating-and-proving-tricks-for-squaring-numbers/</guid>
+      <guid>https://mottaquikarim.github.io/dev/posts/demonstrating-a-trick-for-squaring-numbers-ending-in-6/</guid>
       <description>Table of Contents  NOTE: This post builds on my post &amp;ldquo;Proving the Squaring Numbers Ending in 5 Trick&amp;rdquo;. I&amp;rsquo;ll be heavily referencing it in this post.
 Methodology. In my last post on this topic (referenced above), we proved that numbers ending in &amp;ndash;5 have a neat property, namely that if:
 $$ \begin{aligned} \text{Let: } \cr a &amp;amp;= (10t + n) \cr \text{Where: } \cr n &amp;amp;= 5 \cr \end{aligned} $$</description>
