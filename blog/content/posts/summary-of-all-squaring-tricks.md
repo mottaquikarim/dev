@@ -8,6 +8,12 @@ draft: true
 
 {{<toc>}}
 
+# TODOs
+
+* square of numbers that can be represented as sum of arithmetic sequence
+* cubes
+* proof of Any number **a**, given we know **(a-1)^2**
+
 # TL;DR: The Trick(s).
 
 Here are all the tricks, presented without proof.
