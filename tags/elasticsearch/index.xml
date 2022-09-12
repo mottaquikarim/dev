@@ -13,6 +13,21 @@
     
     
     <item>
+      <title>Second Generic Identity for Squaring All Numbers</title>
+      <link>https://mottaquikarim.github.io/dev/posts/second-generic-identity-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 12 Sep 2022 00:48:23 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/second-generic-identity-for-squaring-all-numbers/</guid>
+      <description>Table of Contents  Part 1: the Basic Trick Let&amp;rsquo;s begin with a very simplistic version of this trick.
+Consider:
+$$ \begin{aligned} 11 ^ 2 &amp;amp;= ? \cr &amp;amp;= 10 * 10 + 11 + 10 \cr &amp;amp;= 100 + 21 \cr &amp;amp;= 121 \end{aligned} $$
+In words:
+ Suppose we have a number N to square. If we know the square of N-1, the square of N is simply (N-1)(N-1) plus N plus N-1.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Generic Trick for Squaring All Numbers</title>
       <link>https://mottaquikarim.github.io/dev/posts/generic-trick-for-squaring-all-numbers/</link>
       <pubDate>Mon, 05 Sep 2022 04:28:00 +0000</pubDate>
