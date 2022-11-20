@@ -1,6 +1,7 @@
 ---
 title: "Trick for Squaring 40s (and 50s)"
 date: 2022-11-20T22:36:58Z
+tags: ["math", "just for fun"]
 katex: true
 ---
 
