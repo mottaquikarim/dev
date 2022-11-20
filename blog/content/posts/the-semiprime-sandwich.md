@@ -137,7 +137,12 @@ $$
 Since \\(5\\) is a prime number, we can skip \\(6\\). For this analysis, \\(34\\) (and \\(33\\), \\(35\\)) emerge as the first example of a semiprime sandwich.
 
 
+# PS!
 
+An "almost prime" or **k-prime** number is:
 
+> A natural number with k prime factors. For example, semiprimes can be thought of as "almost prime" with k=2. To that end, a prime number is a k-prime where k=1
+
+I don't know how to prove this yet but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \\([2,3]\\). For semiprimes \\(k==2\\), the longest consecutive sequence possible is 3, as shown here, etc. 
 
 
