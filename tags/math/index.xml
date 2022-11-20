@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>Trick for Squaring 40s (and 50s)</title>
+      <link>https://mottaquikarim.github.io/dev/posts/trick-for-squaring-40s-and-50s/</link>
+      <pubDate>Sun, 20 Nov 2022 22:36:58 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/trick-for-squaring-40s-and-50s/</guid>
+      <description>Table of Contents  The Trick (I) Here&amp;rsquo;s a really cute trick for squaring numbers in the \(40\)s.
+$$ \begin{aligned} 40^2 &amp;amp;= 1600 \cr &amp;amp;= [16] \text{ and } [00] \cr 41^2 &amp;amp;= 1681 \cr &amp;amp;= [16] \text{ and } [81] \cr &amp;amp;= [16 + 0] \text{ and } [9^2] \cr 42^2 &amp;amp;= 1764 \cr &amp;amp;= [17] \text{ and } [64] \cr &amp;amp;= [16 + 1] \text{ and } [8^2] \cr &amp;amp;= [16 + \bold{1}] \text{ and } [(10-\bold{2})^2] \cr 43^2 &amp;amp;= 1849 \cr &amp;amp;= [18] \text{ and } [49] \cr &amp;amp;= [16 + \bold{2}] \text{ and } [(10-\bold{3})^2] \cr 44^2 &amp;amp;= 1936 \cr &amp;amp;= [19] \text{ and } [36] \cr &amp;amp;= [16 + \bold{3}] \text{ and } [(10-\bold{4})^2] \cr 45^2 &amp;amp;= 2025 \cr &amp;amp;= [20] \text{ and } [25] \cr &amp;amp;= [16 + \bold{4}] \text{ and } [(10-\bold{5})^2] \cr \end{aligned} $$</description>
+    </item>
+    
+    
+    
+    <item>
       <title>The Semiprime Sandwich</title>
       <link>https://mottaquikarim.github.io/dev/posts/the-semiprime-sandwich/</link>
       <pubDate>Sun, 20 Nov 2022 21:29:05 +0000</pubDate>
