@@ -102,12 +102,12 @@ and,
 
 If \\(n\\) is an _even_ semiprime, then \\(n-1\\) and \\(n+1\\) are both odd. So, it is _possible_ for one or both numbers to be semiprime.
 
-> (Quick intuition check here: suppose we have two numbers \\(a\\) and \\(b\\) that are consecutive such that \\(a < b \\). If \\(b\\) ends in \\(5\\) then it is possible it is a distinct semiprime (for instance, if the other factor is any prime number > \\(2\\). **IF**, \\(b\\) ends in \\(5\\), then \\(a\\) **must** end in \\(3\\). It is possible for \\(a\\) to be a distinct semiprime as well if \\(a\\) is not prime, clearly then \\(3\\) must be a factor of \\(a\\) and the second factor could be any prime number > \\(2\\))
+> (Quick intuition check here: suppose we have two numbers \\(a\\) and \\(b\\) that are consecutively odd such that \\(a < b \\) (in other words, \\(b = a + 2\\)). If \\(b\\) ends in \\(5\\) then it is possible that \\(b\\) is a distinct semiprime (\\(35, 55, 65\\) are just a few examples of this). **Also**, if \\(b\\) ends in \\(5\\), then \\(a\\) **must** end in \\(3\\) as per our defintion that \\(b = a + 2\\). It is possible then for \\(a\\) to be a distinct semiprime if \\(3\\) is be a factor of \\(a\\) and the second factor of \\(a\\) is be any prime number > \\(2\\), such as \\(11\\) or \\(31\\)).
 
-Moreover, supposing \\([n-1, n, n+1]\\) do indeed form a semiprime sandwich, we **know** that \\(n-2\\) and \\(n+2)\\ could _not_ be distinct semiprimes because:
+Moreover, supposing \\([n-1, n, n+1]\\) do indeed form a semiprime sandwich, we **know** that \\(n-2\\) and \\(n+2\\) could _not_ be distinct semiprimes because:
 
 * \\(n\\) is an even distinct semiprime, so \\(n = 2*k \\) where \\(k\\) is odd.
-* \\(n-2\\) is also even but factors to \\(n-2 = 2*(k-1)\\), meaning \\(k-1\\) must be even and therefore not prime (unless \\(k-1 == 2\\) but that would make \\(n == 4\\) which is a semiprime but not a **distinct** semiprime)
+* \\(n-2\\) is also even but factors to \\(n-2 = 2*(k-1)\\), meaning \\(k-1\\) must be even (since \\(k\\) is odd) and so it is not prime (unless \\(k-1 == 2\\) but that would make \\(n == 4\\) which is a semiprime but not a **distinct** semiprime)
 * likewise, \\(n+2\\) is also even but factors to \\(n+2 = 2*(k+1)\\), meaning \\(k+1\\) must be even and therefore not prime
 
 In short, we must conclude that:
