@@ -166,9 +166,9 @@ table td {
 
 <p>I had the opportunity to catch up with my old friend, Chai, earlier this week. It has been a <em>while</em> since we talked and the topic of aging and birthdays came up.</p>
 
-<p>Chai is turning 32, or \(2^5\) years old!, later on this year. This is the (reasonably speaking) penultimate doubling of age in most of our lives: while an uncomfortable thought, it is highly unlikely anyone reading this article in the year 2022 will live to the age of \(2^7\)). (BTW: if you&rsquo;re reading this: happy early birthday, fam!)</p>
+<p>Chai is turning 32, or \(2^5\) years old(!!), later on this year. This is the (reasonably speaking) penultimate \(2^n\)<em>th</em> of age in most of our lives: while an uncomfortable thought, it is highly unlikely anyone reading this article in the year 2022 will live to the age of \(2^7\)). (BTW: Chai if you&rsquo;re reading this (<em>and</em> Date.now() &lt; 1670302800000): happy early birthday, fam! 🎉🎉)</p>
 
-<p>In that conversation, something occurred to me: the numbers \([33, 34, 35]\) are consecutive (distinct) semiprimes!</p>
+<p>During that conversation, something occurred to me: the numbers \([33, 34, 35]\) are consecutive (distinct) semiprimes!</p>
 
 <p>A quick refresher:</p>
 
@@ -182,22 +182,28 @@ table td {
 <p><strong>distinct semiprime</strong>: a semiprime that is <em>not</em> a perfect square (eg: 25 may count as a <strong>semiprime</strong> but it is not a <strong>distinct</strong> semiprime)</p>
 </blockquote>
 
-<p>Observing that \([33, 34, 35]\) were <em>consecutive</em> is pretty neat: it occurred to me that this particular set was <em>probably</em> special.</p>
+<p>Observing that \([33, 34, 35]\) were <em>consecutive</em> is pretty neat: it occurred to me that this particular set was <em>probably</em> special (or at the very least, interesting <em>to me</em>).</p>
 
 <p>After some reflection, I am certain that:</p>
 
 <ol>
 <li>The <strong>longest</strong> possible chain of consecutive, distinct semiprimes is <strong>three</strong>. For fun, I will refer to this as a <strong>🥪 semiprime sandwich 🥪</strong></li>
-<li>The first occurance of a <strong>semiprime sandwich</strong> starts at 33 (so 33, 34, 35 is the <strong>first</strong> possible semiprime sandwich). (<strong>SIDEBAR</strong>| This my friends, makes the 30s a delightfully special decade of our lives - the next time we may hope to encounter a semiprime sandwich age is at age 93!</li>
+<li>The first occurance of a <strong>semiprime sandwich</strong> starts at 33 (so 33, 34, 35 is the <strong>first</strong> semiprime sandwich).</li>
 </ol>
 
-<p>(<em>FWIW</em>, this curious property is not present on the <a href="https://en.wikipedia.org/wiki/Semiprime">wikipedia page on semiprimes</a>, which leads me to believe that either this observation is obvious, inconsequential, or both. Still, it was fun to think about and for me at least, a source of delight during an otherwise stressful week. Onwards with this post!)</p>
+<blockquote>
+<p>(<strong>SIDEBAR</strong>| This my friends, makes the 30s a delightfully special decade of our lives - the next time we may hope to encounter a semiprime sandwich age range would be from age 93!)</p>
+</blockquote>
+
+<p>(<em>FWIW</em>, this curious property is not present on the <a href="https://en.wikipedia.org/wiki/Semiprime">wikipedia page on semiprimes</a>, which leads me to believe that either this observation is obvious, inconsequential, or both. Still, it was fun to think about and for me at least, a source of delight during an otherwise stressful week. Anyways, onwards with this post!)</p>
 
 <h1 id="justification">Justification</h1>
 
-<p>Note, I am <em>not</em> calling this a proof because my reasoning below will be pretty informal.</p>
+<p>Note, I am <em>not</em> labeling this a proof because my reasoning below will be pretty informal.</p>
 
-<p>Suppose we have some number sequence \(n-1\), \(n\), and \(n+1\) such that they are all distinct semiprimes.</p>
+<hr />
+
+<p>Suppose we have some number sequence \(n-1\), \(n\), and \(n+1\) such that they are all distinct semiprimes. (It goes without saying that they are all also consecutive).</p>
 
 <p>We have two options to consider:</p>
 
@@ -206,19 +212,19 @@ table td {
 <li>\(n\) could be <strong>even</strong></li>
 </ul>
 
-<p>Let&rsquo;s start with the case that \(n\) is <strong>odd</strong>.</p>
-
 <h2 id="a-possible-semiprime-n-where-n-is-odd">A (possible) semiprime 🍞\(n\)🍞 where \(n\) is odd.</h2>
 
 <p>If \(n\) is odd <em>and</em> a semiprime, we know that its two prime factors must <strong>also</strong> be odd. (eg: if \(n == 35\) then its factors are \(5\) and \(7\)).</p>
 
-<p>Also, then \(n-1\) and \(n+1\) <em>must</em> be <strong>even</strong>. Now semiprimes <em>can</em> be even, if they are then \(2\) must be one of their prime factors.</p>
+<p>Also, because \(n\) is <strong>odd</strong>, then \(n-1\) and \(n+1\) <em>must</em> be <strong>even</strong>. Now semiprimes <em>can</em> be even, if they are then \(2\) must be one of their prime factors. Because we are surmising \([n-1, n, n+1]\) are all distinct semiprimes, \(n-1\) and \(n+1\) must be <strong>even</strong> semiprimes.</p>
+
+<p>Note that:</p>
 
 <blockquote>
 <p>Given an <strong>even</strong> distinct semiprime, one factor must be \(2\) and the other (prime) factor <strong>must</strong> be <strong>odd</strong>.</p>
 </blockquote>
 
-<p>^ The reason for this is because \(2\) is the only even prime number. Suppose then that:</p>
+<p>^ The reason for this is because \(2\) is the only even prime number. Since we are considering only distinct semiprimes, the other prime factor for an even semiprime <strong>cannot</strong> be \(2\). Therefore, that prime factor <strong>must</strong> be odd. Suppose then that:</p>
 
 <p>$$
 \begin{aligned}
@@ -226,7 +232,7 @@ n - 1 &amp;= 2 * k
 \end{aligned}
 $$</p>
 
-<p>where \(k\) is an odd number. The <em>next</em> even number \([n - 1] + 2\) factors to:</p>
+<p>where \(k\) is an odd number. The <em>next</em> even number, \([n - 1] + 2\), is expressed as:</p>
 
 <p>$$
 \begin{aligned}
@@ -237,7 +243,7 @@ n + 1 &amp;= 2\big(k + 1\big) \cr
 \end{aligned}
 $$</p>
 
-<p>So! Now, we can rewrite:</p>
+<p>So! Now, we may now rewrite:</p>
 
 <p>$$
 \begin{aligned}
@@ -255,13 +261,15 @@ $$</p>
 
 <p>Given that <strong>if</strong> \(2k\) is semiprime, then \(k\) is <strong>odd</strong>, it is clear that \(k+1\) <strong>must be even</strong>. For this reason, \(n+1\) <em>cannot</em> be a semiprime.</p>
 
-<p>So, we come to two conclusions:</p>
+<p>From the analysis above, we arrive at two conclusions:</p>
 
 <blockquote>
 <p>Given \(n\), an odd semiprime, <em>either</em> \(n-1\) <strong>or</strong> \(n+1\) is a semiprime but <strong>not</strong> both.</p>
 </blockquote>
 
-<p>and,</p>
+<p>In otherwords, an <strong>odd</strong> semiprime cannot be preceeded <strong>and</strong> succeeded by a semiprime.</p>
+
+<p>Also,</p>
 
 <blockquote>
 <p>The longest possible semiprime chain when \(n\) is an odd semiprime is <strong>two</strong>.</p>
@@ -269,29 +277,40 @@ $$</p>
 
 <h2 id="a-semiprime-n-where-n-is-even">A semiprime 🍞\(n\)🍞 where \(n\) is even.</h2>
 
-<p>If \(n\) is an <em>even</em> semiprime, then \(n-1\) and \(n+1\) are both odd. So, it is <em>possible</em> for one or both numbers to be semiprime.</p>
+<p>If \(n\) is an <em>even</em> semiprime, then \(n-1\) and \(n+1\) are both odd. So, it is <em>possible</em> for one or both numbers (\(n-1\) and / or \(n+1\)) to be semiprime.</p>
 
 <blockquote>
-<p>(Quick intuition check here: suppose we have two numbers \(a\) and \(b\) that are consecutively odd such that \(a &lt; b \) (in other words, \(b = a + 2\)). If \(b\) ends in \(5\) then it is possible that \(b\) is a distinct semiprime (\(35, 55, 65\) are just a few examples of this). <strong>Also</strong>, if \(b\) ends in \(5\), then \(a\) <strong>must</strong> end in \(3\) as per our defintion that \(b = a + 2\). It is possible then for \(a\) to be a distinct semiprime if \(3\) is be a factor of \(a\) and the second factor of \(a\) is be any prime number &gt; \(2\), such as \(11\) or \(31\)).</p>
+<p><strong>Quick intuition sidebar here</strong>| suppose we have two numbers \(a\) and \(b\) that are consecutively odd such that \(a &lt; b \) (in other words, \(b = a + 2\)). Suppose now that \(b\) ends in \(5\). Then it is possible that \(b\) is a distinct semiprime (\(35, 55, 65\) are just a few examples of this). <strong>Also</strong>, if \(b\) ends in \(5\), then \(a\) <strong>must</strong> end in \(3\) as per our defintion that \(b = a + 2\). It is possible then for \(a\) to be a distinct semiprime if \(3\) is be a factor of \(a\) and the second factor of \(a\) is be any prime number &gt; \(2\), such as \(11\) or \(31\). In fact, we have an example of this phenomenon from our primary example: if \(b == 35\), then \(a == 33\), both numbers are distince semiprimes.</p>
 </blockquote>
 
-<p>Moreover, supposing \([n-1, n, n+1]\) do indeed form a semiprime sandwich, we <strong>know</strong> that \(n-2\) and \(n+2\) could <em>not</em> be distinct semiprimes because:</p>
+<p>Moreover, supposing \([n-1, n, n+1]\) do indeed form a semiprime sandwich (giving us a consecutive semiprime chain length of <strong>three</strong>), we <strong>know</strong> that \(n-2\) and \(n+2\) could <em>not</em> be distinct semiprimes because:</p>
 
 <ul>
-<li>\(n\) is an even distinct semiprime, so \(n = 2*k \) where \(k\) is odd.</li>
-<li>\(n-2\) is also even but factors to \(n-2 = 2*(k-1)\), meaning \(k-1\) must be even (since \(k\) is odd) and so it is not prime (unless \(k-1 == 2\) but that would make \(n == 4\) which is a semiprime but not a <strong>distinct</strong> semiprime)</li>
-<li>likewise, \(n+2\) is also even but factors to \(n+2 = 2*(k+1)\), meaning \(k+1\) must be even and therefore not prime</li>
+<li>\(n\) is an even distinct semiprime, so \(n = 2*k \) where \(k\) is odd (as per our reasoning in the previous section).</li>
+<li>\(n-2\) is also even but factors to \(n-2 = 2*(k-1)\).
+
+<ul>
+<li>So \(k-1\) must be even (since \(k\) is odd) and so it is not prime</li>
+<li><strong>pedantic note</strong>| (unless \(k-1 == 2\) but that would make \(n == 4\) which is a semiprime but not a <strong>distinct</strong> semiprime)</li>
+</ul></li>
+<li>likewise, \(n+2\) is also even but factors to \(n+2 = 2*(k+1)\).
+
+<ul>
+<li>So \(k+1\) must be even and therefore not prime</li>
+</ul></li>
 </ul>
 
 <p>In short, we must conclude that:</p>
 
 <blockquote>
-<p><strong>IF</strong> \(n\) is an even distinct semiprime, then the longest possible chain of consecutive distinct semiprimes must be \([n-1, n, n+1]\), or <strong>3</strong>.</p>
+<p><strong>IF</strong> \(n\) is an even distinct semiprime, then the longest possible chain of consecutive distinct semiprimes it <em>may</em> fall within must be \([n-1, n, n+1]\), with a length of <strong>3</strong>.</p>
 </blockquote>
+
+<p>Another interpretation of our analysis here is that a <strong>semiprime sandwich</strong> (consecutive distinct semiprimes of length <strong>3</strong>) <em>must</em> have an <strong>even</strong> distinct semiprime as the middle component (or <em>meat</em>, if you will).</p>
 
 <h1 id="big-33-34-35-big-is-the-first-semiprime">\(\big[33,34,35\big]\) is the first semiprime 🥪</h1>
 
-<p>The easiest way I could think of to show this was by first enumerating the first few even semiprimes. This is easy to do, let&rsquo;s take the first few primes:</p>
+<p>The easiest way I could think of to show this was by first enumerating the first few even semiprimes. This is simple to do by hand, let&rsquo;s take the first few primes:</p>
 
 <p>$$
 \begin{aligned}
@@ -300,26 +319,29 @@ k   &amp;=[3,5,7,11,13,17] \cr
 \end{aligned}
 $$</p>
 
+<p><em>(We multiply by \(2\) because we know that a semiprime sandwich must have an <strong>even</strong> semiprime as the middle element)</em></p>
+
 <p>For each of the results above, look before and after and analyze if distinct semiprime or not, eg:</p>
 
 <p>$$
 \begin{aligned}
 k   &amp;= 6 \cr
 k - 1 &amp;= 5 \cr
+k + 1 &amp;= 7 \cr
 \end{aligned}
 $$</p>
 
-<p>Since \(5\) is a prime number, we can skip \(6\). For this analysis, \(34\) (and \(33\), \(35\)) emerge as the first example of a semiprime sandwich.</p>
+<p>Since \(5\) is a prime number, we know that \(\big[5, 6, 7\big]\) is not a valid semiprime sandwich. For this analysis, \(34\) (and \(33\), \(35\)) emerge as the <em>first</em> example of a semiprime sandwich.</p>
 
 <h1 id="ps">PS!</h1>
 
-<p>An &ldquo;almost prime&rdquo; or <strong>k-prime</strong> number is:</p>
+<p>A random side note here: an &ldquo;almost prime&rdquo; or <strong>k-prime</strong> number is:</p>
 
 <blockquote>
 <p>A natural number with k prime factors. For example, semiprimes can be thought of as &ldquo;almost prime&rdquo; with k=2. To that end, a prime number is a k-prime where k=1</p>
 </blockquote>
 
-<p>I don&rsquo;t know how to prove this yet but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \([2,3]\). For semiprimes \(k==2\), the longest consecutive sequence possible is 3, as shown here, etc.</p>
+<p>I don&rsquo;t know how to prove this yet (and I could be very wrong here!) but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \([2,3]\) since primes can be thought of as k-prime numbers where k=1. For semiprimes, eg: k-primes where \(k==2\), the longest consecutive sequence possible is 3, as shown here, etc.</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fthe-semiprime-sandwich%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fthe-semiprime-sandwich%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
