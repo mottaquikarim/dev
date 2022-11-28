@@ -152,6 +152,7 @@ table td {
     <nav id="TableOfContents">
 <ul>
 <li><a href="#derivation">Derivation</a></li>
+<li><a href="#quick-proof">Quick Proof</a></li>
 <li><a href="#recap">Recap</a></li>
 </ul>
 </nav>
@@ -257,6 +258,40 @@ a^2         &amp;= (c+b)(c-b) \cr
 $$</p>
 
 <p>(FWIW, \( 519 + 7225 \) <em>may</em> some scary at first to perform mentally but I swear it isn&rsquo;t! Just add \( 520 \) to \( 7200 \) (that should be easy: \( 7720 \)) and then add back \( 25 \), so \( 7745 \) and then take away \( 1 \) which gets you \( 7744\) )</p>
+
+<h1 id="quick-proof">Quick Proof</h1>
+
+<p>Here&rsquo;s a quick proof of the above. As we said, let there be some number \(c\) that we want to square. Additionally, let there be some number \(b\) that we already <em>know</em> how to square. Then, there is some number \( a \) such that:</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2 &amp;= c^2 \cr
+\end{aligned}
+$$</p>
+
+<p>We can compute \(a\) &ldquo;quickly&rdquo; here by:</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2 &amp;= c^2 \cr
+a^2       &amp;= c^2 - b^2 \cr
+a^2       &amp;= (c+b)(c-b) \cr
+\end{aligned}
+$$</p>
+
+<p>Finally, we can just substitute into our original equation to compute \(c\). This will always work because:</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2           &amp;= c^2 \cr
+a^2                 &amp;= (c+b)(c-b) \cr
+(c+b)(c-b) + b^2    &amp;= c^2 \cr
+c^2 - b^2 + b^2     &amp;= c^2 \cr
+c^2                 &amp;= c^2 \cr
+\end{aligned}
+$$</p>
+
+<p>^ this might have been obvious but wanted to share out here to close the loop.</p>
 
 <h1 id="recap">Recap</h1>
 
