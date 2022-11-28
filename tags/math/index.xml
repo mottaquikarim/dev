@@ -6,9 +6,22 @@
     <description>Recent content in math on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 28 Nov 2022 06:22:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 28 Nov 2022 06:52:49 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Fifth Generic Trick for Squaring All Numbers</title>
+      <link>https://mottaquikarim.github.io/dev/posts/fifth-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 06:52:49 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/fifth-generic-trick-for-squaring-all-numbers/</guid>
+      <description>Table of Contents  Ok so for this one, no proof (at least not yet). But, we will demonstrate by example.
+Squaring \( \bold{30} \)s Let&amp;rsquo;s begin here.
+   Number Square     \( 30^2 \) \(900\)   \( 31^2 \) \(961\)   \( 32^2 \) \(1024\)   \( 33^2 \) \(1089\)   \( 34^2 \) \(1156\)   \( 35^2 \) \(1225\)   \( 36^2 \) \(1296\)   \( 39^2 \) \(1521\)    So far, there&amp;rsquo;s no real pattern here.</description>
+    </item>
     
     
     
