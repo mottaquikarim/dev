@@ -81,7 +81,7 @@ and likewise with \\(52^2\\):
 
 $$
 \begin{aligned}
-51^2 &= (50+2)^2 \cr
+52^2 &= (50+2)^2 \cr
 	 &= (50^2 + 2*2*50 + 4) \cr
      &= (50^2 + 4*50 +4) \cr
 	 &= (5^2*10^2 + 4*50 + 4) \cr
@@ -94,3 +94,95 @@ $$
 
 
 etc. At some point later on I'll follow up with some justification for this.
+
+# Update: demonstrating why this works
+
+Let's generalize our numbers here, our numbers \\(\bold{5}1, \bold{5}2, ..., \bold{5}9, \\) can be expressed as:
+
+$$
+50 + n
+$$
+
+(Note that _any_ number can be expressed this way, including say 37, in this case \\(\bold{n} = -13\\). The formula we are about to derive will work for this case _but_ it won't be very useful).
+
+Ok so our goal now is to come up with a representation of:
+
+$$
+(50 + n)^2
+$$
+
+that proves our assertion above. Let's get started.
+
+$$
+\begin{aligned}
+(50 + n)^2 &= (50+n)(50 + n) \cr
+		 &= (50*50 + 50 * n + 50 * n + n^2) \cr
+\end{aligned}
+$$
+
+Since \\(50 = 2 * 25 = 2 * 5 * 5\\), we substitute all occurrences of \\(\bold{50}\\):
+
+$$
+\begin{aligned}
+(50 + n)^2 &= (50*50 + 50 * n + 50 * n + n^2) \cr
+	 	 &= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+\end{aligned}
+$$
+
+Let's rearrange our number sentence a bit (note the bolds):
+
+$$
+\begin{aligned}
+(50 + n)^2 &= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+	 	 &= (\bold{2 * 2 * 5 * 5} * 5 * 5 + \bold{2 * 2 * 5 * 5} * n + n^2) \cr
+	 	 &= \bold{2 * 2 * 5 * 5}(5 * 5 + n) + n^2 \cr
+	 	 &= \bold{100}(25+ n) + n^2 \cr
+\end{aligned}
+$$
+
+That last line: \\(\bold{100}(25+ n) + n^2\\) proves our assertion.
+
+Let's plug a few usecases in:
+
+## \\(\bold{52}^2\\)
+
+$$
+\begin{aligned}
+	    n &= 2 \cr
+(50 + n)^2 &= \bold{100}(25+ n) + n^2 \cr
+	 	 &= \bold{100}(25+ (2)) + (2)^2 \cr
+	 	 &= \bold{100}(27) + 4 \cr
+	 	 &= 2704
+\end{aligned}
+$$
+
+## \\(\bold{44}^2\\)
+
+Since \\(50 + (-6) == 44\\), here \\(n == -6 \\)
+
+$$
+\begin{aligned}
+	    n &= -6 \cr
+(50 + n)^2 &= \bold{100}(25+ n) + n^2 \cr
+	 	 &= \bold{100}(25+ (-6)) + (-6)^2 \cr
+	 	 &= \bold{100}(19) + 36 \cr
+	 	 &= 1936
+\end{aligned}
+$$
+
+## \\(\bold{24}^2\\)
+
+Since \\(50 + (-26) == 24\\), here \\(n == -26 \\)
+
+$$
+\begin{aligned}
+	    n &= -26 \cr
+(50 + n)^2 &= \bold{100}(25+ n) + n^2 \cr
+	 	 &= \bold{100}(25+ (-26)) + (-26)^2 \cr
+	 	 &= \bold{100}(-1) + 676 \cr
+	 	 &= -100 + 676 \cr
+	 	 &= 576 \cr
+\end{aligned}
+$$
+
+^ This particular example shows us that while we _can_ indeed use this formula for all numbers less than and greater than 50, it loses value as a mental math trick if we attempt to apply this for squares of numbers \\( < 40 \\) or \\( > 50 \\).
