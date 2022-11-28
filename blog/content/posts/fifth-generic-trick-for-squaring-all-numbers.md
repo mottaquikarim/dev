@@ -1,7 +1,7 @@
 ---
 title: "Fifth Generic Trick for Squaring All Numbers"
 date: 2022-11-28T06:52:49Z
-tags: ["math", "just for fun", "featured"]
+tags: ["math", "just for fun"]
 katex: true
 ---
 
