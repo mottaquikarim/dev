@@ -6,9 +6,22 @@
     <description>Recent content in Posts on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 28 Nov 2022 05:35:45 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 28 Nov 2022 06:22:00 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Fourth Generic Trick for Squaring All Numbers</title>
+      <link>https://mottaquikarim.github.io/dev/posts/fourth-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 06:22:00 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/fourth-generic-trick-for-squaring-all-numbers/</guid>
+      <description>Table of Contents  This approach my friends is pretty damn cool 😎.
+Derivation Let&amp;rsquo;s get straight to the derivation here as IMO that is the best way to grok this problem. Suppose we have some number - let&amp;rsquo;s say 82 - that we&amp;rsquo;d like to square.
+Moreover, suppose there was a number close to 82 that we knew how to square easily. In this case, let&amp;rsquo;s go with 80 since \( 80^2 = \bold{6400} \) (and this is something we can easily compute mentally).</description>
+    </item>
     
     
     

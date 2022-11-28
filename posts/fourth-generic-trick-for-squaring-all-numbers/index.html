@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Fourth Generic Trick for Squaring All Numbers</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/featured/">featured</a></strong></small>
+        <header id="post-header">
+        <h1>Fourth Generic Trick for Squaring All Numbers</h1><time>November 28, 2022</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#derivation">Derivation</a></li>
+<li><a href="#recap">Recap</a></li>
+</ul>
+</nav>
+</aside>
+
+
+<p>This approach my friends is <em>pretty damn cool</em> 😎.</p>
+
+<h1 id="derivation">Derivation</h1>
+
+<p>Let&rsquo;s get straight to the derivation here as IMO that is the best way to grok this problem. Suppose we have some number - let&rsquo;s say <strong>82</strong> - that we&rsquo;d like to square.</p>
+
+<p>Moreover, suppose there was a number <em>close</em> to <strong>82</strong> that we knew how to square easily. In this case, let&rsquo;s go with <strong>80</strong> since \( 80^2 = \bold{6400} \) (and this is something we can easily compute mentally).</p>
+
+<p>Now comes the fun part, let:</p>
+
+<ul>
+<li>\( \bold{b} = 80 \): the number that we can square easily</li>
+<li>\( \bold{c} = 82 \): the number that we wish to find the solution for</li>
+</ul>
+
+<p>Also, lete there be some number \( a \) such that:</p>
+
+<p>$$
+a^2 + b^2 = c^2
+$$</p>
+
+<p>Ok, symbolically, we solve for \(a\) here easily enough:</p>
+
+<p>$$
+a^2 = c^2 - b^2
+$$</p>
+
+<p>By itself, this is not super useful. <strong>However</strong>, recall that the <em>difference</em> of two squares can be simplied such that:</p>
+
+<p>$$
+c^2 - b^2 = (c+b)(c-b)
+$$</p>
+
+<p>Meaning:</p>
+
+<p>$$
+a^2 = (c+b)(c-b)
+$$</p>
+
+<p>Let&rsquo;s now substitute super quick with the example values we chose:</p>
+
+<p>$$
+\begin{aligned}
+a^2         &amp;= (c+b)(c-b) \cr
+            &amp;= (82+80)(82-80) \cr
+            &amp;= (162)(2) \cr
+\bold{a^2}  &amp;= \bold{324}
+\end{aligned}
+$$</p>
+
+<p>Ok, so what? Well, if we add this back to \( 80^2 \):</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2 &amp;= c^2 \cr
+a^2  &amp;= 324 \cr
+b^2  &amp;= 6400 \cr
+324 + 6400 &amp;= c^2 \cr
+6724     &amp;= (82)^2 \cr
+\end{aligned}
+$$</p>
+
+<p>Tada! This approach is super neat because you can use <em>any</em> square you know as a starting point!</p>
+
+<p>For instance, suppose we wanted to find \( 88^2 \) and we wanted to start with \( 90^2 \) since we can compute the square in our head. Then:</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2   &amp;= c^2 \cr
+c^2         &amp;= (88)^2 \cr
+b^2         &amp;= (90)^2 \cr
+            &amp;= 8100 \cr
+a^2         &amp;= (c+b)(c-b) \cr
+            &amp;= (88+90)(88-90) \cr
+            &amp;= (178)(-2) \cr
+            &amp;= -356 \cr
+-356 + 8100 &amp;= c^2 \cr
+7744     &amp;= (88)^2 \cr
+\end{aligned}
+$$</p>
+
+<p>Ok, that one wasn&rsquo;t a great example for mental math (but kudos to you if you can quickly (and accurately!) subtract 356 from 8100 in your head!) but overall this principle works great! Let&rsquo;s try that same problem above but know our &ldquo;known&rdquo; starting point is \( 85^2 \) (which we can compute easily with the ending in 5 trick).</p>
+
+<p>$$
+\begin{aligned}
+a^2 + b^2   &amp;= c^2 \cr
+c^2         &amp;= (88)^2 \cr
+b^2         &amp;= (85)^2 \cr
+            &amp;= 7225 \cr
+a^2         &amp;= (c+b)(c-b) \cr
+            &amp;= (88+85)(88-85) \cr
+            &amp;= (173)(3) \cr
+            &amp;= 519 \cr
+519 + 7225 &amp;= c^2 \cr
+7744     &amp;= (88)^2 \cr
+\end{aligned}
+$$</p>
+
+<p>(FWIW, \( 519 + 7225 \) <em>may</em> some scary at first to perform mentally but I swear it isn&rsquo;t! Just add \( 520 \) to \( 7200 \) (that should be easy: \( 7720 \)) and then add back \( 25 \), so \( 7745 \) and then take away \( 1 \) which gets you \( 7744\) )</p>
+
+<h1 id="recap">Recap</h1>
+
+<p>Ok so let&rsquo;s recap this - given some number \( n \) you want to square:</p>
+
+<ol>
+<li>Find a number <em>close by</em> to \( n \) that you know how to square in your head (either because you have it memorized or because you have a trick that makes it significantly easier). Let&rsquo;s call this number \( \bold{k} \).</li>
+<li>Compute \( \big[ n+k \big]\big[ n-k \big] \)</li>
+<li>Add the result from (2) to \( \bold{k}^2 \)</li>
+<li>???</li>
+<li>Profit!</li>
+</ol>
+
+<p>I really like this one!</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2ffourth-generic-trick-for-squaring-all-numbers%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2ffourth-generic-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2ffourth-generic-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>
