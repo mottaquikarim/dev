@@ -105,6 +105,41 @@ $$
 
 (FWIW, \\( 519 + 7225 \\) _may_ some scary at first to perform mentally but I swear it isn't! Just add \\( 520 \\) to \\( 7200 \\) (that should be easy: \\( 7720 \\)) and then add back \\( 25 \\), so \\( 7745 \\) and then take away \\( 1 \\) which gets you \\( 7744\\) )
 
+# Quick Proof
+
+Here's a quick proof of the above. As we said, let there be some number \\(c\\) that we want to square. Additionally, let there be some number \\(b\\) that we already _know_ how to square. Then, there is some number \\( a \\) such that:
+
+$$
+\begin{aligned}
+a^2 + b^2 &= c^2 \cr
+\end{aligned}
+$$
+
+We can compute \\(a\\) "quickly" here by:
+
+$$
+\begin{aligned}
+a^2 + b^2 &= c^2 \cr
+a^2 	  &= c^2 - b^2 \cr
+a^2 	  &= (c+b)(c-b) \cr
+\end{aligned}
+$$
+
+Finally, we can just substitute into our original equation to compute \\(c\\). This will always work because:
+
+$$
+\begin{aligned}
+a^2 + b^2 			&= c^2 \cr
+a^2 	  			&= (c+b)(c-b) \cr
+(c+b)(c-b) + b^2 	&= c^2 \cr
+c^2 - b^2 + b^2 	&= c^2 \cr
+c^2 			 	&= c^2 \cr
+\end{aligned}
+$$
+
+^ this might have been obvious but wanted to share out here to close the loop.
+
+
 # Recap
 
 Ok so let's recap this - given some number \\( n \\) you want to square:
