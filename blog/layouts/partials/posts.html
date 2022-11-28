@@ -12,31 +12,39 @@
 
 <main class="content" role="main">
     <div class="inner">
-        <h3>noteworthy</h3>
-        <ul class="archive-list">
-        {{ range first 3 .Site.Taxonomies.tags.featured }}
+        <!--
+        {{/* range first 3 .Site.Taxonomies.tags.featured */}}
             <li>
-                {{ .PublishDate.Format "02 Jan 2006" }}
+                {{/* .PublishDate.Format "02 Jan 2006" */}}
                 - 
-                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                <a href="{{ .RelPermalink }}">{{/* .Title */}}</a>
             </li>
-        {{ end }}
-        </ul>
+        {{/* end */}}
+        -->
+<strong>noteworthy topics: </strong>
+{{ range $taxonomyname, $taxonomy := .Site.Taxonomies.tags }}
+{{ if eq $taxonomyname "math" }}
+<a href='{{ "/tags/" | relLangURL }}{{ $taxonomyname | urlize }}'>{{ $taxonomyname }}</a>
+{{end}}
+{{ if eq $taxonomyname "featured" }}
+<a href='{{ "/tags/" | relLangURL }}{{ $taxonomyname | urlize }}'>{{ $taxonomyname }}</a>
+{{end}}
+{{ end }}
 
         {{ range (.Site.RegularPages.GroupByDate "2006") }}
             <h3>{{ .Key }}</h3>
 
-            <ul class="archive-list">
+            <ol class="archive-list">
                 {{ range (where .Pages "Type" "in" site.Params.mainSections) }}
-                {{ if not (in .Params.tags "featured") }}
-                    <li>
-                        {{ .PublishDate.Format "02 Jan" }}
+                {{/* if (and (not (in .Params.tags "featured")) (not (in .Params.tags "math")) ) */}}
+                    <li style="font-weight: bolder;">
+                        <span style="font-weight: normal;">({{ .PublishDate.Format "02 Jan" }})</span>
                         - 
-                        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                        <a  style="font-weight: normal;" href="{{ .RelPermalink }}">{{ .Title }}</a>
                     </li>
+                {{/* end */}}
                 {{ end }}
-                {{ end }}
-            </ul>
+            </ol>
         {{ end }}
     </div>
 </main>
