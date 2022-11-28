@@ -12,6 +12,19 @@
     
     
     <item>
+      <title>Third Generic Trick for Squaring All Numbers</title>
+      <link>https://mottaquikarim.github.io/dev/posts/third-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 05:35:45 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/third-generic-trick-for-squaring-all-numbers/</guid>
+      <description>Table of Contents  TL;DR: The Trick. \(\bold{56}^2\) $$ \begin{aligned} (56)^2 &amp;amp;= (\bold{55} + 1)^2 \cr &amp;amp;= 3025 + \bold{2}(55) + 1 \cr &amp;amp;= 3025 + 110 + 1 \cr &amp;amp;= 3136 \end{aligned} $$
+Note that:
+ \(55^2\) can be computed using the ending in 5 trick the really important part here is the \(\bold{2}*55\) bit this applies generally but becomes less useful the further we get from a number ending in 5.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Trick for Squaring 40s (and 50s)</title>
       <link>https://mottaquikarim.github.io/dev/posts/trick-for-squaring-40s-and-50s/</link>
       <pubDate>Sun, 20 Nov 2022 22:36:58 +0000</pubDate>

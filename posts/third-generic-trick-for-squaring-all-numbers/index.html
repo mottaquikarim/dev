@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Third Generic Trick for Squaring All Numbers</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/featured/">featured</a></strong></small>
+        <header id="post-header">
+        <h1>Third Generic Trick for Squaring All Numbers</h1><time>November 28, 2022</time></header>
+
+<aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#tl-dr-the-trick">TL;DR: The Trick.</a>
+<ul>
+<li><a href="#bold-56-2">\(\bold{56}^2\)</a></li>
+<li><a href="#bold-57-2">\(\bold{57}^2\)</a></li>
+<li><a href="#bold-58-2">\(\bold{58}^2\)</a></li>
+<li><a href="#bold-54-2">\(\bold{54}^2\)</a></li>
+</ul></li>
+<li><a href="#demonstrating-why-this-works">Demonstrating why this works</a>
+<ul>
+<li><a href="#applying-to-numbers-ending-in-bold-6-only">Applying to numbers ending in \( \bold{6} \) only.</a></li>
+<li><a href="#generic-solution">Generic solution</a>
+<ul>
+<li><a href="#bold-56-2-1">\(\bold{56}^2\)</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+</aside>
+
+
+<h1 id="tl-dr-the-trick">TL;DR: The Trick.</h1>
+
+<h2 id="bold-56-2">\(\bold{56}^2\)</h2>
+
+<p>$$
+\begin{aligned}
+(56)^2 &amp;= (\bold{55} + 1)^2 \cr
+         &amp;= 3025 + \bold{2}(55) + 1 \cr
+         &amp;= 3025 + 110 + 1 \cr
+         &amp;= 3136
+\end{aligned}
+$$</p>
+
+<p>Note that:</p>
+
+<ul>
+<li>\(55^2\) can be computed <a href="/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/">using the ending in 5 trick</a></li>
+<li>the really important part here is the \(\bold{2}*55\) bit</li>
+<li>this applies generally but becomes less useful the further we get from a number ending in 5.</li>
+</ul>
+
+<h2 id="bold-57-2">\(\bold{57}^2\)</h2>
+
+<p>$$
+\begin{aligned}
+(57)^2 &amp;= (\bold{55} + 2)^2 \cr
+         &amp;= 3025 + \bold{4}(55) + 4 \cr
+         &amp;= 3025 + 220 + 4 \cr
+         &amp;= 3249
+\end{aligned}
+$$</p>
+
+<p>Note that:</p>
+
+<ul>
+<li>since we are <strong>2</strong> away from \(55\) here, we multiply by <strong>4</strong>.</li>
+</ul>
+
+<h2 id="bold-58-2">\(\bold{58}^2\)</h2>
+
+<p>$$
+\begin{aligned}
+(58)^2 &amp;= (\bold{55} + 3)^2 \cr
+         &amp;= 3025 + \bold{6}(55) + 9 \cr
+         &amp;= 3025 + 330 + 9 \cr
+         &amp;= 3364
+\end{aligned}
+$$</p>
+
+<p>Note that:</p>
+
+<ul>
+<li>since we are <strong>3</strong> away from \(55\) here, we multiply by <strong>9</strong>.</li>
+</ul>
+
+<h2 id="bold-54-2">\(\bold{54}^2\)</h2>
+
+<p>$$
+\begin{aligned}
+(54)^2 &amp;= (\bold{55} - 1)^2 \cr
+         &amp;= 3025 - \bold{2}(55) + 1 \cr
+         &amp;= 3025 - 110 + 1 \cr
+         &amp;= 2916
+\end{aligned}
+$$</p>
+
+<p>Note that:</p>
+
+<ul>
+<li>since we are <strong>-1</strong> away from \(55\) here, we multiply by <strong>-2</strong>.</li>
+</ul>
+
+<h1 id="demonstrating-why-this-works">Demonstrating why this works</h1>
+
+<p>Let&rsquo;s start with a very simple example and then we can expound from there. Say we have a number that ends in \(6\), such as \(46\) or \(56\).</p>
+
+<h2 id="applying-to-numbers-ending-in-bold-6-only">Applying to numbers ending in \( \bold{6} \) only.</h2>
+
+<p>We can express this number as:</p>
+
+<p>$$
+10a + 6
+$$</p>
+
+<p>where \(a\) represents the digit in the <strong>tens place</strong>. Now, as we know, we have a <a href="/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/">shortcut for figuring out how to square numbers ending in 5</a>. Let&rsquo;s try to use that knowledge as a starting point here. Let&rsquo;s rewrite our number as:</p>
+
+<p>$$
+\begin{aligned}
+10a + 6 &amp;= \bigg[\big( 10a + 5 \big) + 1 \bigg] \cr
+\end{aligned}
+$$</p>
+
+<p>Ok! This is cool, because we can now express \( (10a + 6)^2 \) as:</p>
+
+<p>$$
+\begin{aligned}
+(10a + 6)^2 &amp;= \bigg[\big( 10a + 5 \big) + 1 \bigg]^2 \cr
+            &amp;= \big( 10a + 5 \big)^2 + 2(1)\big( 10a + 5 \big) + 1 \cr
+\end{aligned}
+$$</p>
+
+<p>Now remember, \( 10a + 5 \) is the number we know how to square quickly/easily. So, our problem now simplifies to:</p>
+
+<ol>
+<li>First, apply the trick for squaring the number ending in 5</li>
+<li>Then, double the number ending in 5</li>
+<li>Finally, add the result from (1) to the result from (2) and then add our third piece, the \( \bold{1} \) to the sum. This gives us our solution/trick for squaring <strong>all numbers ending in 6</strong>.</li>
+</ol>
+
+<h2 id="generic-solution">Generic solution</h2>
+
+<p>Instead of numbers ending in \(6\) let&rsquo;s now consider any number \(n\) such that \( 0 &lt; n &lt; 10 \). Now we can express our number as:</p>
+
+<p>$$
+10a + n
+$$</p>
+
+<p>We still want to decompose our number, \( 10a + n \) into some form such that we have a number ending in <strong>5</strong>. Let there be some number \(k\) such that \( n = 5 + k \). Then:</p>
+
+<p>$$
+\begin{aligned}
+10a + n &amp;= \bigg[\big( 10a + 5 \big) + k \bigg] \cr
+\end{aligned}
+$$</p>
+
+<p>We&rsquo;re in business! Note that if we were considering a number ending in <strong>6</strong>, then \(k = 1\) as we saw in the previous section. Let&rsquo;s simplify:</p>
+
+<p>$$
+\begin{aligned}
+(10a + n)^2 &amp;= \bigg[\big( 10a + 5 \big) + k \bigg]^2 \cr
+            &amp;= \big( 10a + 5 \big)^2 + 2(k)\big( 10a + 5 \big) + k^2 \cr
+\end{aligned}
+$$</p>
+
+<p>Tada! While it doesn&rsquo;t look like much, this actually brings us to the examples we saw earlier. Let&rsquo;s try one of our examples again, but now with our formula applied.</p>
+
+<h3 id="bold-56-2-1">\(\bold{56}^2\)</h3>
+
+<p>$$
+\begin{aligned}
+(10a + n)^2 &amp;= \big( 10a + 5 \big)^2 + 2(k)\big( 10a + 5 \big) + k^2 \cr
+\end{aligned}
+$$</p>
+
+<p>Here, \( a = 5 \), \( n = 6 \) and \( k = 1 \). Substitute:</p>
+
+<p>$$
+\begin{aligned}
+(10a + n)^2     &amp;= \big( 10a + 5 \big)^2 + 2(k)\big( 10a + 5 \big) + k^2 \cr
+(10(5) + 6)^2   &amp;= \big( 10(5) + 5 \big)^2 + 2(1)\big( 10(5) + 5 \big) + (1)^2 \cr
+                &amp;= \big( 55 \big)^2 + 2(1)\big( 55 \big) + (1)^2 \cr
+\end{aligned}
+$$</p>
+
+<p>This may looks weird / difficult but it&rsquo;s actually really easy to compute mentally since the ending in 5 trick is so simple. The real drawback to this solution is honestly the middle term, as our number ends in a digit further away from 5, the cognitive load for computing 2 times that number or 4 times that number starts to get more difficult.</p>
+
+<p>Thankfully, there are better solutions to this (that I have stumbled on). More on those in subsequent posts.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fthird-generic-trick-for-squaring-all-numbers%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fthird-generic-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fthird-generic-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>
