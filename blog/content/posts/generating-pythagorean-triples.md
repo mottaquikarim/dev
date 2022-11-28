@@ -1,5 +1,5 @@
 ---
-title: "Generating Pythagorean Triples"
+title: "Novel Algorithm(?) for Generating Pythagorean Triples"
 date: 2022-11-28T07:18:09Z
 tags: ["math", "just for fun"]
 katex: true
@@ -19,7 +19,7 @@ $$
 
 A pythagorean triple is a set of three natural numbers (\\(a,b,c\\)) such that \\( a^2 + b^2 = c^2 \\). We express such a triple as \\( \big( a,b,c \big) \\) with the understanding that \\( c \\) is the hypotenuse. Because we are only interested in natural number solutions, the equation \\( a^2 + b^2 = c^2 \\) is an example of a [nonlinear diophantine equation](https://en.wikipedia.org/wiki/Diophantine_equation).
 
-FWIW, I have been fascinated by diophantine equatiosn lately, primarily thanks to my recent re-learning of the [taxicab number](https://en.wikipedia.org/wiki/Taxicab_number), fabled to have been derived from a conversation between Hardy and Ramanujan himself:
+FWIW, I have been fascinated by diophantine equations lately, primarily thanks to my recent re-learning of the [taxicab number](https://en.wikipedia.org/wiki/Taxicab_number), fabled to have been derived from a conversation between Hardy and Ramanujan himself:
 
 > I remember once going to see him [Ramanujan] when he was lying ill at Putney. I had ridden in taxi-cab No. 1729, and remarked that the number seemed to be rather a dull one, and that I hoped it was not an unfavourable omen. "No," he replied, "it is a very interesting number; it is the smallest number expressible as the sum of two [positive] cubes in two different ways.
 
@@ -27,7 +27,7 @@ FWIW, I have been fascinated by diophantine equatiosn lately, primarily thanks t
 
 It is worth noting that generating pythagorean triples appears to be a solved problem. Here's a whole list of algorithms for [generating pythagorean triples](https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples#Euclid's,_Pythagoras',_and_Plato's_formulas).
 
-In this post, I will put forth what I _think_ is an original approach to generating pythagorean triples (eg: at least it isn't explicitly described in the wiki post I referenced). 
+> In this post, I will put forth what I _believe_ may possibly be an original approach to generating pythagorean triples (eg: my method is at least not explicitly described in the ["Formulas for generating Pythagorean triples"](https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples) wikipedia page I referenced). 
 
 # My Algorithm 
 
@@ -104,11 +104,12 @@ If \\(a\\) is **even**, then \\(a^2\\) must also be even. (**WHY?**: An even tim
 
 So, we want to find \\(a^2 = b + c \\) where \\(c = b + 1 \\).
 
-Therefore: \\(\\) or
+So:
 
 $$
 \begin{aligned}
-a^2 &= b + b + 1 \cr
+a^2 &= c^2 - b^2 \cr
+	&= (b + 1) + b \cr
     &= 2b + 1 \cr
 \end{aligned}
 $$ 
@@ -124,7 +125,7 @@ $$
 
 > Since \\(a^2\\) is even, \\(a^2-1\\) **must** be odd. Thus, there are no solutions for **even** values of \\(a\\) where we have a consecutive values \\(b,c\\) that add up to \\(a^2\\)
 
-(FWIW: this doesn't mean there are no pythagorean triples with even legs (obviously since we noted a few examples to start off with here), it just means that with this approach as it stands so far we cannot find any.)
+(FWIW: this doesn't mean there are no pythagorean triples with even legs (obviously since we noted a few examples to start off with here), it just means that with this approach as it stands so far we cannot find any even \\(a\\) such that \\(b\\) and \\(c\\) are consecutive.)
 
 ## \\(a\\) is **odd**
 
@@ -171,7 +172,7 @@ We can do this all day, actually.
 
 ## Finding more possible solutions
 
-Let's revisit our slightly modified version of the equation:
+This was fun! But we can do better. Let's revisit our slightly modified version of the equation:
 
 $$
 \begin{aligned}
@@ -179,7 +180,7 @@ a^2 &= c^2 - b^2 \cr
 \end{aligned}
 $$
 
-We have considered the cause where \\(c = b + 1 \\). But, this is but one possible condition, for instance it is possible to have an \\(a\\) such that \\(a^2 = b+c \\) where \\(c = b +2 \\) or \\(c = b + 3\\), etc. To explore this usecase, let's slightly modify our equation again:
+We have considered the cause where \\(c = b + 1 \\). However, this is but one possible condition; for instance it is possible to have an \\(a\\) such that \\(a^2 = b+c \\) where \\(c = b +2 \\) or \\(c = b + 3\\), etc. To explore this usecase, let's slightly modify our equation again:
 
 $$
 \begin{aligned}
@@ -201,7 +202,7 @@ a^2 &= c^2 - b^2 \cr
 \end{aligned}
 $$
 
-^ This of course brings us back to the formula derived in the previous section. **BUT**: this approach is easier to grok (and minimally easier to type!), allowing us to extend out reach, like so:
+^ This of course brings us back to the formula derived in the previous section. **BUT**: this approach is easier to grok (and minimally easier to type!), allowing us to extend our reach, like so:
 
 $$
 \begin{aligned}
@@ -236,13 +237,14 @@ Let's get this in tabular form:
 | \\( b+3 \\)      		| \\(6b+9\\)   |
 | \\( b+4 \\)      		| \\(8b+16\\)  |
 | \\( b+5 \\)      		| \\(10b+25\\) |
+| ...		      		| ...		   |
 | \\( b+n \\)      		| \\(2nb+n^2\\)|
 
 Also worth observing that run out of possible solutions when \\(n^2 >= a^2\\). (For example, when \\(a = 13 \\), the largest \\(n\\) that may provide us with a solution is \\(n = 12 \\))
 
 ### Testing
 
-Let's test this by looking for triples from \\(a = 3 \\) to \\(a = 9 \\). It looks like we expect only the following (source (don't judge me) [here](https://www.avc.edu/sites/default/files/studentservices/lc/math/pythagorean_triples.pdf)):
+Let's test this by looking for triples from \\(a = 3 \\) to \\(a = 9 \\). It looks like we expect only the following triples (source (don't judge me) [here](https://www.avc.edu/sites/default/files/studentservices/lc/math/pythagorean_triples.pdf)):
 
 | Row       | Triple       |
 | -----------  | -----------  |
@@ -254,6 +256,9 @@ Let's test this by looking for triples from \\(a = 3 \\) to \\(a = 9 \\). It loo
 | 6  | \\(9,12,15\\) |
 | 7  | \\(9,40,41\\) |
 
+Ok, as per our formula, we can start with \\(a = 3\\) and continue until \\(n^2 >= a^2\\). For each iteration, as we find triples in the table above, we will denote with "**FOUND(Row)?**:"
+
+So for instance, if we find rows 6 and 7 in one of our iterations, we will note it as: "**FOUND(Row)?**: 6,7"
 
 #### \\(a = 3 \\) 
 
@@ -359,7 +364,7 @@ For what it's worth, we can always filter out the non primitive triples from thi
 
 # Commentary
 
-This is really cool! I appreciate the simplicity of this approach in that we can find all possible triples simply by incrementing \\(a\\) starting at \\(a = 3\\). Moreover, it appears that my approach solves an issue with **Euclid's formula**:
+This is really cool! I appreciate the simplicity of this approach in that we can find all possible triples just by incrementing \\(a\\) starting at \\(a = 3\\). Moreover, it appears that my approach solves an issue with **Euclid's formula**:
 
 > Despite generating all primitive triples, Euclid's formula does not produce all triples—for example, (9, 12, 15) cannot be generated using integer m and n.
 
@@ -367,4 +372,16 @@ This is really cool! I appreciate the simplicity of this approach in that we can
 
 While there are solutions put forth to remedy this, the approach listed here does not need any additional tweaks to render all triples.
 
-At some point, I'd like to implement this algorithm in code to generate the first 100 or 1000 primes and also, I'd like to explore any possible optimizations here (for instance, I have a gut feeling that stopping when \\(n^2 >= a\\) might be sufficient instead of going all the way out to \\(n^2 >= a^2\\) but I have no way to really tell further exploration.)
+At some point, I'd like to implement this algorithm in code to generate the first 100 or 1000 primes and also, I'd like to explore any possible optimizations here, if plausible. (For instance, I have a gut feeling that stopping when \\(n^2 >= a\\) might be sufficient instead of going all the way out to \\(n^2 >= a^2\\) but I have no way to really tell without further exploration.)
+
+# References
+
+(I tried to link within the body of the post itself but will add here too for those who are interested)
+
+1. [Pythagorean triple](https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple)
+2. [Diophantine equation](https://en.wikipedia.org/wiki/Diophantine_equation)
+3. [Taxicab number](https://en.wikipedia.org/wiki/Taxicab_number)
+4. [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem)
+5. [Formulas for generating Pythagorean triples](https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples)
+6. [Pythagorean Triple (Wolfram)](https://mathworld.wolfram.com/PythagoreanTriple.html#:~:text=Shanks)
+7. [Pythagorean triples](https://www.avc.edu/sites/default/files/studentservices/lc/math/pythagorean_triples.pdf)
