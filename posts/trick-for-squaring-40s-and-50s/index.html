@@ -151,6 +151,12 @@ table td {
 <ul>
 <li><a href="#the-trick-i">The Trick (I)</a></li>
 <li><a href="#the-trick-ii">The Trick (II)</a></li>
+<li><a href="#update-demonstrating-why-this-works">Update: demonstrating why this works</a>
+<ul>
+<li><a href="#bold-52-2">\(\bold{52}^2\)</a></li>
+<li><a href="#bold-44-2">\(\bold{44}^2\)</a></li>
+<li><a href="#bold-24-2">\(\bold{24}^2\)</a></li>
+</ul></li>
 </ul>
 </nav>
 </aside>
@@ -230,7 +236,7 @@ $$</p>
 
 <p>$$
 \begin{aligned}
-51^2 &amp;= (50+2)^2 \cr
+52^2 &amp;= (50+2)^2 \cr
      &amp;= (50^2 + 2*2*50 + 4) \cr
      &amp;= (50^2 + 4*50 +4) \cr
      &amp;= (5^2*10^2 + 4*50 + 4) \cr
@@ -242,6 +248,98 @@ $$</p>
 $$</p>
 
 <p>etc. At some point later on I&rsquo;ll follow up with some justification for this.</p>
+
+<h1 id="update-demonstrating-why-this-works">Update: demonstrating why this works</h1>
+
+<p>Let&rsquo;s generalize our numbers here, our numbers \(\bold{5}1, \bold{5}2, &hellip;, \bold{5}9, \) can be expressed as:</p>
+
+<p>$$
+50 + n
+$$</p>
+
+<p>(Note that <em>any</em> number can be expressed this way, including say 37, in this case \(\bold{n} = -13\). The formula we are about to derive will work for this case <em>but</em> it won&rsquo;t be very useful).</p>
+
+<p>Ok so our goal now is to come up with a representation of:</p>
+
+<p>$$
+(50 + n)^2
+$$</p>
+
+<p>that proves our assertion above. Let&rsquo;s get started.</p>
+
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= (50+n)(50 + n) \cr
+         &amp;= (50*50 + 50 * n + 50 * n + n^2) \cr
+\end{aligned}
+$$</p>
+
+<p>Since \(50 = 2 * 25 = 2 * 5 * 5\), we substitute all occurrences of \(\bold{50}\):</p>
+
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= (50*50 + 50 * n + 50 * n + n^2) \cr
+         &amp;= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+\end{aligned}
+$$</p>
+
+<p>Let&rsquo;s rearrange our number sentence a bit (note the bolds):</p>
+
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+         &amp;= (\bold{2 * 2 * 5 * 5} * 5 * 5 + \bold{2 * 2 * 5 * 5} * n + n^2) \cr
+         &amp;= \bold{2 * 2 * 5 * 5}(5 * 5 + n) + n^2 \cr
+         &amp;= \bold{100}(25+ n) + n^2 \cr
+\end{aligned}
+$$</p>
+
+<p>That last line: \(\bold{100}(25+ n) + n^2\) proves our assertion.</p>
+
+<p>Let&rsquo;s plug a few usecases in:</p>
+
+<h2 id="bold-52-2">\(\bold{52}^2\)</h2>
+
+<p>$$
+\begin{aligned}
+        n &amp;= 2 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+         &amp;= \bold{100}(25+ (2)) + (2)^2 \cr
+         &amp;= \bold{100}(27) + 4 \cr
+         &amp;= 2704
+\end{aligned}
+$$</p>
+
+<h2 id="bold-44-2">\(\bold{44}^2\)</h2>
+
+<p>Since \(50 + (-6) == 44\), here \(n == -6 \)</p>
+
+<p>$$
+\begin{aligned}
+        n &amp;= -6 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+         &amp;= \bold{100}(25+ (-6)) + (-6)^2 \cr
+         &amp;= \bold{100}(19) + 36 \cr
+         &amp;= 1936
+\end{aligned}
+$$</p>
+
+<h2 id="bold-24-2">\(\bold{24}^2\)</h2>
+
+<p>Since \(50 + (-26) == 24\), here \(n == -26 \)</p>
+
+<p>$$
+\begin{aligned}
+        n &amp;= -26 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+         &amp;= \bold{100}(25+ (-26)) + (-26)^2 \cr
+         &amp;= \bold{100}(-1) + 676 \cr
+         &amp;= -100 + 676 \cr
+         &amp;= 576 \cr
+\end{aligned}
+$$</p>
+
+<p>^ This particular example shows us that while we <em>can</em> indeed use this formula for all numbers less than and greater than 50, it loses value as a mental math trick if we attempt to apply this for squares of numbers \( &lt; 40 \) or \( &gt; 50 \).</p>
 
 	    <h2>Share</h2>
 	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2ftrick-for-squaring-40s-and-50s%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2ftrick-for-squaring-40s-and-50s%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
