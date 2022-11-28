@@ -6,9 +6,23 @@
     <description>Recent content on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 28 Nov 2022 06:52:49 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 28 Nov 2022 07:18:09 +0000</lastBuildDate>
     
 	<atom:link href="https://mottaquikarim.github.io/dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>Generating Pythagorean Triples</title>
+      <link>https://mottaquikarim.github.io/dev/posts/generating-pythagorean-triples/</link>
+      <pubDate>Mon, 28 Nov 2022 07:18:09 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/generating-pythagorean-triples/</guid>
+      <description>Table of Contents  Background The pythagorean theorem states that given any right triangle with legs \(a \), \(b\) and hypotenuse \(c\):
+$$ a^2 + b^2 = c^2 $$
+(For those who are curious to learn more, please check out wikipedia)
+A pythagorean triple is a set of three natural numbers (\(a,b,c\)) such that \( a^2 + b^2 = c^2 \). We express such a triple as \( \big( a,b,c \big) \) with the understanding that \( c \) is the hypotenuse.</description>
+    </item>
     
     
     
