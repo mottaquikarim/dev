@@ -26,12 +26,6 @@
   </url>
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/tags/featured/</loc>
-    <lastmod>2022-11-28T06:52:49+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/tags/just-for-fun/</loc>
     <lastmod>2022-11-28T06:52:49+00:00</lastmod>
     <priority>0</priority>
@@ -103,6 +97,12 @@
   <url>
     <loc>https://mottaquikarim.github.io/dev/posts/reverse-engineering-wordle/</loc>
     <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/tags/featured/</loc>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
