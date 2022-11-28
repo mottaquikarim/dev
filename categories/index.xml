@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Generating Pythagorean Triples</title>
-      <link>https://mottaquikarim.github.io/dev/posts/generating-pythagorean-triples/</link>
+      <title>Novel Algorithm(?) for Generating Pythagorean Triples</title>
+      <link>https://mottaquikarim.github.io/dev/posts/novel-algorithm-for-generating-pythagorean-triples/</link>
       <pubDate>Mon, 28 Nov 2022 07:18:09 +0000</pubDate>
       
-      <guid>https://mottaquikarim.github.io/dev/posts/generating-pythagorean-triples/</guid>
+      <guid>https://mottaquikarim.github.io/dev/posts/novel-algorithm-for-generating-pythagorean-triples/</guid>
       <description>Table of Contents  Background The pythagorean theorem states that given any right triangle with legs \(a \), \(b\) and hypotenuse \(c\):
 $$ a^2 + b^2 = c^2 $$
 (For those who are curious to learn more, please check out wikipedia)
