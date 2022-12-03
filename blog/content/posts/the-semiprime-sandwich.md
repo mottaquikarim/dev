@@ -159,4 +159,4 @@ A random side note here: an "almost prime" or **k-prime** number is:
 
 I don't know how to prove this yet (and I could be very wrong here!) but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \\([2,3]\\) since primes can be thought of as k-prime numbers where k=1. For semiprimes, eg: k-primes where \\(k==2\\), the longest consecutive sequence possible is 3, as shown here, etc. 
 
-
+UPDATE/PS: I proved myself wrong! Read more [here]({{< relref "posts/the-kth-prime-sandwich.md" >}})
