@@ -12,6 +12,19 @@
     
     
     <item>
+      <title>🍞 The K-Prime 🍞</title>
+      <link>https://mottaquikarim.github.io/dev/posts/the-k-prime/</link>
+      <pubDate>Sat, 03 Dec 2022 05:27:51 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/the-k-prime/</guid>
+      <description>Table of Contents  Hol up. Remember this? 🍞 The Semiprime 🍞
+Towards the bottom, I made a bold claim!
+ I don&amp;rsquo;t know how to prove this yet (and I could be very wrong here!) but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \([2,3]\) since primes can be thought of as k-prime numbers where k=1.</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Novel Algorithm(?) for Generating Pythagorean Triples</title>
       <link>https://mottaquikarim.github.io/dev/posts/novel-algorithm-for-generating-pythagorean-triples/</link>
       <pubDate>Mon, 28 Nov 2022 07:18:09 +0000</pubDate>
