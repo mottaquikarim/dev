@@ -1,5 +1,5 @@
 ---
-title: "Observation About Twin Primes"
+title: "The Twin Prime Generator"
 date: 2022-12-08T10:24:40Z
 tags: ["math", "just for fun"]
 katex: true
@@ -71,9 +71,7 @@ And so, \\(p+1\\) is also be divisible by \\(6\\). For this reason:
 
 Ta-da 🎉
 
-## | Sidebar
-
-If we were to continue our table above (but truncated, because lazy)
+And finally, if we were to continue our table above (but truncated, because lazy)
 
 | q  |
 | ------------------------ |
@@ -91,7 +89,15 @@ If we were to continue our table above (but truncated, because lazy)
 | \\( 6 * 30 \\)           |
 | \\( 6 * 32 \\)           |
 
-We arrive at a number sequence: \\( p(x) = 1,2,3,5,7,10,12,17,18,23,25,30,32... \\) that we can think of as a **twin prime generator**. Provided we have some \\(x\\) such that we can evaluate \\(p(x)\\), we are guaranteed to find a twin prime at \\((p(x)-1, p(x)+1) \\).
+We arrive at a number sequence: 
 
-I'm not yet sure _how_ \\(p(x)\\) can be evaluated though (for now at least). Will report back any breakthroughs if/as they occur to me  🙏
+$$
+p(x) = 1,2,3,5,7,10,12,17,18,23,25,30,32... 
+$$
+
+that we can think of as a **twin prime generator**. 
+
+Basically, provided we have some \\(x\\) such that we can evaluate \\(p(x)\\), we are guaranteed to find \\(x\\)_th_ twin prime pair at \\((p(x)-1, p(x)+1) \\).
+
+I'm not yet sure _how_ \\(p(x)\\) can be computed though (for now at least - though it is likely that no such computation exists). Will report back any breakthroughs if/as they occur 🙏
 
