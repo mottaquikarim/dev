@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="https://mottaquikarim.github.io/dev/favicon.ico">
+    <link href="https://mottaquikarim.github.io/dev/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/dev/css/style.min.css">
+
+    <title>Observation About Twin Primes</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/dev/" title="home">home</a>
+            </li><li>
+                <a href="/dev/about/" title="about">about</a>
+            </li><li>
+                <a href="/dev/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="https://mottaquikarim.github.io/dev/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Observation About Twin Primes</h1><time>December 8, 2022</time></header><blockquote>
+<p>A twin prime is a prime number that is either 2 less or 2 more than another prime number—for example, either member of the twin prime pair (41, 43).</p>
+</blockquote>
+
+<p>(<a href="https://en.wikipedia.org/wiki/Twin_prime">source</a>)</p>
+
+<p>So I realized something interesting the other day, given twin primes \(p, p+2\) and \(q\) the number occurring in between:</p>
+
+<table>
+<thead>
+<tr>
+<th>p</th>
+<th>q</th>
+<th>p + 2</th>
+<th>is \(q \) a multiple of 6?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>\( 2  \)</td>
+<td>\( 3 \)</td>
+<td>\( 3n + 1 \)</td>
+<td>no</td>
+</tr>
+
+<tr>
+<td>\( 3  \)</td>
+<td>\( 4 \)</td>
+<td>\( 5 \)</td>
+<td>no</td>
+</tr>
+
+<tr>
+<td>\( 5  \)</td>
+<td>\( 6 \)</td>
+<td>\( 7 \)</td>
+<td>yes, \( 6 * 1 \)</td>
+</tr>
+
+<tr>
+<td>\( 11 \)</td>
+<td>\( 12 \)</td>
+<td>\( 13 \)</td>
+<td>yes, \( 6 * 2 \)</td>
+</tr>
+
+<tr>
+<td>\( 17 \)</td>
+<td>\( 18 \)</td>
+<td>\( 19 \)</td>
+<td>yes, \( 6 * 3 \)</td>
+</tr>
+
+<tr>
+<td>\( 29 \)</td>
+<td>\( 30 \)</td>
+<td>\( 31 \)</td>
+<td>yes, \( 6 * 5 \)</td>
+</tr>
+
+<tr>
+<td>\( 41 \)</td>
+<td>\( 42 \)</td>
+<td>\( 43 \)</td>
+<td>yes, \( 6 * 7 \)</td>
+</tr>
+
+<tr>
+<td>\( 59 \)</td>
+<td>\( 60 \)</td>
+<td>\( 61 \)</td>
+<td>yes, \( 6 * 10 \)</td>
+</tr>
+
+<tr>
+<td>\( 71 \)</td>
+<td>\( 72 \)</td>
+<td>\( 73 \)</td>
+<td>yes, \( 6 * 12 \)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Note that \( q \) is <em>always</em> divisible by \( 6 \)! As you can imagine, Dear Reader, I wondered if this held true generally. (And is it turns out, yes. It <em>does</em>!)</p>
+
+<p>Let&rsquo;s convince ourselves of this.</p>
+
+<p>First, let&rsquo;s remember that we only care about twin primes &gt; 4. Then, as we showed in a previous post:</p>
+
+<blockquote>
+<p>Given any three consecutive numbers, exactly one number will be divisible by 3.</p>
+</blockquote>
+
+<p>^ Just to rehash the above super quick, suppose we have some consecutive number sequence</p>
+
+<blockquote>
+<p>\( p, q, r, s \)</p>
+</blockquote>
+
+<p>such that</p>
+
+<blockquote>
+<p>\( q = p + 1 \), \( r = p + 2 \) and \( s = p + 3 \)</p>
+</blockquote>
+
+<p>Let&rsquo;s let \( p \) be divisble by \( 3 \), or in other words \( p = 3n \) where \( n \) is some natural number.</p>
+
+<p>Now, we can represent \( p, q, r, s \) as \( 3n, 3n + 1, 3n + 2, 3n + 3 \).</p>
+
+<p>Let&rsquo;s look at this set in groups of \( 3 \), eg:</p>
+
+<ul>
+<li>\( \bold{3n, 3n+1, 3n+2}, 3n + 3\) | here, \( 3n \) is clearly divisible by \( 3 \)</li>
+<li>\( 3n, \bold{3n+1, 3n+2, 3n + 3}\) | here, \( 3n + 3 \) is clearly divisible by \( 3 \)</li>
+</ul>
+
+<p>(And of course, if \( 3n \) is in the middle of the set, so \( 3n -1, 3n, 3n + 1 \), we observe the same result).</p>
+
+<p>All in all, let&rsquo;s move forward having convinced ourselves that given any set of three consecutive numbers one number will be a multiple of three.</p>
+
+<p>Now,</p>
+
+<blockquote>
+<p>Given a set of twin primes \( p, p+2 \) (such that \( p \) &gt; 4), we know that there exists a <strong>non prime</strong> \( p + 1 \) in between <em>and</em> that by definition \( p \) and \( p + 2 \) cannot be divisible by \( 3 \) (because they are prime). Therefore, \( p + 1 \) <strong>must</strong> be divisible by 3 (as per our conclusion above)</p>
+</blockquote>
+
+<p>Also:</p>
+
+<blockquote>
+<p>Given a set of twin primes \( p, p+2 \) (such that \( p \) &gt; 4), we know that both \(p\) <em>and</em> \(p+2\) must be <em>odd</em>. Therefore, \(p+1\) <strong>must</strong> be even.</p>
+</blockquote>
+
+<p>For this reason, we can conclude that:</p>
+
+<ul>
+<li>\(p+1\) is even (it is divisible by 2)</li>
+<li>\(p+1\) is divisible by 3</li>
+</ul>
+
+<p>And so, \(p+1\) is also be divisible by \(6\). For this reason:</p>
+
+<blockquote>
+<p>Any number \(q\) occurring between twin primes \(p\) and \(p+2\) <strong>must</strong> be a multiple of \(6\).</p>
+</blockquote>
+
+<p>Ta-da 🎉</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fobservation-about-twin-primes%2f&text=Check out this article by @taqkarim: https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fobservation-about-twin-primes%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=https%3a%2f%2fmottaquikarim.github.io%2fdev%2fposts%2fobservation-about-twin-primes%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

@@ -13,6 +13,20 @@
     
     
     <item>
+      <title>Observation About Twin Primes</title>
+      <link>https://mottaquikarim.github.io/dev/posts/observation-about-twin-primes/</link>
+      <pubDate>Thu, 08 Dec 2022 10:24:40 +0000</pubDate>
+      
+      <guid>https://mottaquikarim.github.io/dev/posts/observation-about-twin-primes/</guid>
+      <description>A twin prime is a prime number that is either 2 less or 2 more than another prime number—for example, either member of the twin prime pair (41, 43).
+ (source)
+So I realized something interesting the other day, given twin primes \(p, p+2\) and \(q\) the number occurring in between:
+   p q p + 2 is \(q \) a multiple of 6?     \( 2 \) \( 3 \) \( 3n + 1 \) no   \( 3 \) \( 4 \) \( 5 \) no   \( 5 \) \( 6 \) \( 7 \) yes, \( 6 * 1 \)   \( 11 \) \( 12 \) \( 13 \) yes, \( 6 * 2 \)   \( 17 \) \( 18 \) \( 19 \) yes, \( 6 * 3 \)   \( 29 \) \( 30 \) \( 31 \) yes, \( 6 * 5 \)   \( 41 \) \( 42 \) \( 43 \) yes, \( 6 * 7 \)   \( 59 \) \( 60 \) \( 61 \) yes, \( 6 * 10 \)   \( 71 \) \( 72 \) \( 73 \) yes, \( 6 * 12 \)    Note that \( q \) is always divisible by \( 6 \)!</description>
+    </item>
+    
+    
+    
+    <item>
       <title>🍞 The K-Prime 🍞</title>
       <link>https://mottaquikarim.github.io/dev/posts/the-k-prime/</link>
       <pubDate>Sat, 03 Dec 2022 05:27:51 +0000</pubDate>
