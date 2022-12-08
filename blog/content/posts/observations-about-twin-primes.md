@@ -70,3 +70,28 @@ And so, \\(p+1\\) is also be divisible by \\(6\\). For this reason:
 > Any number \\(q\\) occurring between twin primes \\(p\\) and \\(p+2\\) **must** be a multiple of \\(6\\).
 
 Ta-da 🎉
+
+## | Sidebar
+
+If we were to continue our table above (but truncated, because lazy)
+
+| q  |
+| ------------------------ |
+| \\( 6 * 1 \\)            |
+| \\( 6 * 2 \\)            |
+| \\( 6 * 3 \\)            |
+| \\( 6 * 5 \\)            |
+| \\( 6 * 7 \\)            |
+| \\( 6 * 10 \\)           |
+| \\( 6 * 12 \\)           |
+| \\( 6 * 17 \\)           |
+| \\( 6 * 18 \\)           |
+| \\( 6 * 23 \\)           |
+| \\( 6 * 25 \\)           |
+| \\( 6 * 30 \\)           |
+| \\( 6 * 32 \\)           |
+
+We arrive at a number sequence: \\( p(x) = 1,2,3,5,7,10,12,17,18,23,25,30,32... \\) that we can think of as a **twin prime generator**. Provided we have some \\(x\\) such that we can evaluate \\(p(x)\\), we are guaranteed to find a twin prime at \\((p(x)-1, p(x)+1) \\).
+
+I'm not yet sure _how_ \\(p(x)\\) can be evaluated though (for now at least). Will report back any breakthroughs if/as they occur to me  🙏
+
