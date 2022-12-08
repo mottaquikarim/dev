@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://mottaquikarim.github.io/dev/posts/observation-about-twin-primes/</loc>
-    <lastmod>2022-12-08T10:24:40+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mottaquikarim.github.io/dev/posts/</loc>
     <lastmod>2022-12-08T10:24:40+00:00</lastmod>
     <priority>0</priority>
@@ -23,6 +18,11 @@
     <loc>https://mottaquikarim.github.io/dev/</loc>
     <lastmod>2022-12-08T10:24:40+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mottaquikarim.github.io/dev/posts/the-twin-prime-generator/</loc>
+    <lastmod>2022-12-08T10:24:40+00:00</lastmod>
   </url>
   
   <url>

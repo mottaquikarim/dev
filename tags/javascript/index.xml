@@ -13,11 +13,11 @@
     
     
     <item>
-      <title>Observation About Twin Primes</title>
-      <link>https://mottaquikarim.github.io/dev/posts/observation-about-twin-primes/</link>
+      <title>The Twin Prime Generator</title>
+      <link>https://mottaquikarim.github.io/dev/posts/the-twin-prime-generator/</link>
       <pubDate>Thu, 08 Dec 2022 10:24:40 +0000</pubDate>
       
-      <guid>https://mottaquikarim.github.io/dev/posts/observation-about-twin-primes/</guid>
+      <guid>https://mottaquikarim.github.io/dev/posts/the-twin-prime-generator/</guid>
       <description>A twin prime is a prime number that is either 2 less or 2 more than another prime number—for example, either member of the twin prime pair (41, 43).
  (source)
 So I realized something interesting the other day, given twin primes \(p, p+2\) and \(q\) the number occurring in between:
