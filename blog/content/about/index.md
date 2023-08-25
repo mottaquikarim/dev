@@ -15,6 +15,8 @@ Currently, I serve as Director of Core Platform Software at Peloton; I am lucky 
 * **Observability**: instrument, ingest, analyze and visualize all pillars of observability.
 * **Core**: tier0 services and service components powering foundational capabilities such as user identity resolution and shared components in Peloton's monolithic API service
 
+
+
 <!-- Currently, I am the Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers owning and operating the core kubernetes infrastructure that all of our prod / lower env services run on. We also maintain and operate microservice enabling functionality (like an API Gateway + Service Mesh), promote Peloton's SRE + infra sec practice, own the org's infrastructure as code software (built on top of terraform) and ensure the API Monolith (which is where _most_ of our backend software lives) is stable and functional. -->
 
 <!-- Currently I am a Senior Engineering Manager at Peloton; I have the privilege of leading four teams: the Product API Internal team, the Workout Journey team, the Leaderboard team and the Metrics and Messaging team. We own and operate microservices that help power the leaderboard, real-time in class notifications and a GraphQL gateway for client <> API communications. In sum, we are responsible for operating services that account for a substantial portion of _all_ traffic coming in to the Peloton API. -->
