@@ -32,8 +32,8 @@ Thanks for stopping by, fam.
 
 ## Talks
 
-* [Pytennessee 2020](http://taq.website/pytn/)
-* [AWS Re:Invent 2019](http://taq.website/reinvent/)
-* [Datadog Dash 2019](http://taq.website/dash/)
-* [DevOpsDays Hartford 2019](http://taq.website/hartford/)
+* [Pytennessee 2020](https://mottaquikarim.github.io/WEBSITE2/pytn/)
+* [AWS Re:Invent 2019](https://mottaquikarim.github.io/WEBSITE2/reinvent/)
+* [Datadog Dash 2019](https://mottaquikarim.github.io/WEBSITE2/dash/)
+* [DevOpsDays Hartford 2019](https://mottaquikarim.github.io/WEBSITE2/hartford/)
 * [GA Instructor Summit 2019](https://docs.google.com/presentation/d/1Mtv1yR3zBIFK_NVz4x0UG4agvc8Nawo2NmvqkMiAHrQ/edit?usp=sharing)
