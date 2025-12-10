@@ -1,14 +1,86 @@
 <!DOCTYPE html>
-<html><head>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
     
-    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
-    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
 
     <style>
 #post-header {
     text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
 }
     </style>
 
@@ -16,6 +88,9 @@
     <link rel="stylesheet" href="/css/style.min.css">
 
     <title>Safely Construct Elasticsearch Queries w/Golang</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
 </head>
 <body><header id="banner">
     
@@ -36,209 +111,191 @@
                 <a href="/" title="home">home</a>
             </li><li>
                 <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
             </li>
         </ul>
     </nav>
 </header>
 <main id="content">
 <article>
-    <header id="post-header">
-        <h1>Safely Construct Elasticsearch Queries w/Golang</h1><time>December 16, 2020</time></header>
-
-<p><aside id="toc">
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/golang/">golang</a></strong></small>
+        <header id="post-header">
+        <h1>Safely Construct Elasticsearch Queries w/Golang</h1><time>December 16, 2020</time></header><p><aside id="toc">
     <h4>Table of Contents</h4>
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#the-why"><strong>The Why</strong></a>
-<ul>
-<li><a href="#using-strings"><strong>Using strings</strong></a></li>
-<li><a href="#using-use-case-specific-structs"><strong>Using (use-case specific) structs</strong></a></li>
-<li><a href="#what-does-google-say"><strong>What does Google say?</strong></a></li>
-</ul></li>
-<li><a href="#package-esquerydsl"><strong><code>package esquerydsl</code></strong></a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#the-why"><strong>The Why</strong></a>
+      <ul>
+        <li><a href="#using-strings"><strong>Using strings</strong></a></li>
+        <li><a href="#using-use-case-specific-structs"><strong>Using (use-case specific) structs</strong></a></li>
+        <li><a href="#what-does-google-say"><strong>What does Google say?</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#package-esquerydsl"><strong><code>package esquerydsl</code></strong></a></li>
+  </ul>
 </nav>
 </aside>
 
 <strong>TL; DR</strong>: ya boy wrote a golang elasticsearch query dsl utility. <a href="https://github.com/mottaquikarim/esquerydsl">Find it here!</a></p>
-
-<hr />
-
+<hr>
 <h2 id="the-why"><strong>The Why</strong></h2>
-
 <p>If you&rsquo;ve used elasticsearch with golang, then you&rsquo;ve probably used the <a href="https://github.com/elastic/go-elasticsearch">official elasticsearch go client</a>.</p>
-
 <p>The es go client is exhaustive and generally, pretty great. However, it can be a bit&hellip;scary when having to deal with constructing search queries using the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl.html">elasticsearch query dsl</a></p>
-
 <p>Take for instance the following (from <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html#query-filter-context-ex">here</a> in the docs):</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="err">GET</span> <span class="err">/_search</span>
-<span class="p">{</span>
-  <span class="nt">&#34;query&#34;</span><span class="p">:</span> <span class="p">{</span> 
-    <span class="nt">&#34;bool&#34;</span><span class="p">:</span> <span class="p">{</span> 
-      <span class="nt">&#34;must&#34;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span> <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;title&#34;</span><span class="p">:</span>   <span class="s2">&#34;Search&#34;</span>        <span class="p">}},</span>
-        <span class="p">{</span> <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;Elasticsearch&#34;</span> <span class="p">}}</span>
-      <span class="p">],</span>
-      <span class="nt">&#34;filter&#34;</span><span class="p">:</span> <span class="p">[</span> 
-        <span class="p">{</span> <span class="nt">&#34;term&#34;</span><span class="p">:</span>  <span class="p">{</span> <span class="nt">&#34;status&#34;</span><span class="p">:</span> <span class="s2">&#34;published&#34;</span> <span class="p">}},</span>
-        <span class="p">{</span> <span class="nt">&#34;range&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;publish_date&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;gte&#34;</span><span class="p">:</span> <span class="s2">&#34;2015-01-01&#34;</span> <span class="p">}}}</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<h3 id="using-strings"><strong>Using strings</strong></h3>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">GET</span> <span class="err">/_search</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;query&#34;</span><span class="p">:</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;bool&#34;</span><span class="p">:</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;must&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;title&#34;</span><span class="p">:</span>   <span class="s2">&#34;Search&#34;</span>        <span class="p">}},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;Elasticsearch&#34;</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;filter&#34;</span><span class="p">:</span> <span class="p">[</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nt">&#34;term&#34;</span><span class="p">:</span>  <span class="p">{</span> <span class="nt">&#34;status&#34;</span><span class="p">:</span> <span class="s2">&#34;published&#34;</span> <span class="p">}},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nt">&#34;range&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;publish_date&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;gte&#34;</span><span class="p">:</span> <span class="s2">&#34;2015-01-01&#34;</span> <span class="p">}}}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="using-strings"><strong>Using strings</strong></h3>
 <p>In my experience, the simplest/fastest way to construct this json string is with&hellip;well, a string:</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">elasticQuery</span> <span class="o">:=</span> <span class="s">`
-</span><span class="s">{
-</span><span class="s">  &#34;query&#34;: { 
-</span><span class="s">    &#34;bool&#34;: { 
-</span><span class="s">      &#34;must&#34;: [
-</span><span class="s">        { &#34;match&#34;: { &#34;title&#34;:   &#34;Search&#34;        }},
-</span><span class="s">        { &#34;match&#34;: { &#34;content&#34;: &#34;Elasticsearch&#34; }}
-</span><span class="s">      ],
-</span><span class="s">      &#34;filter&#34;: [ 
-</span><span class="s">        { &#34;term&#34;:  { &#34;status&#34;: &#34;published&#34; }},
-</span><span class="s">        { &#34;range&#34;: { &#34;publish_date&#34;: { &#34;gte&#34;: &#34;2015-01-01&#34; }}}
-</span><span class="s">      ]
-</span><span class="s">    }
-</span><span class="s">  }
-</span><span class="s">}
-</span><span class="s">`</span></code></pre></div>
-<p>If we need to inject variable values, we just use <code>fmt.Sprintf</code> and move on with our lives. The primary issue here is that validating/formatting these json strings require additional work and can be error prone (ie: fat-fingering an additional comma somewhere, etc).</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">elasticQuery</span> <span class="o">:=</span> <span class="s">`
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;query&#34;: { 
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;bool&#34;: { 
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;must&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">        { &#34;match&#34;: { &#34;title&#34;:   &#34;Search&#34;        }},
+</span></span></span><span class="line"><span class="cl"><span class="s">        { &#34;match&#34;: { &#34;content&#34;: &#34;Elasticsearch&#34; }}
+</span></span></span><span class="line"><span class="cl"><span class="s">      ],
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;filter&#34;: [ 
+</span></span></span><span class="line"><span class="cl"><span class="s">        { &#34;term&#34;:  { &#34;status&#34;: &#34;published&#34; }},
+</span></span></span><span class="line"><span class="cl"><span class="s">        { &#34;range&#34;: { &#34;publish_date&#34;: { &#34;gte&#34;: &#34;2015-01-01&#34; }}}
+</span></span></span><span class="line"><span class="cl"><span class="s">      ]
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">  }
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">`</span>
+</span></span></code></pre></div><p>If we need to inject variable values, we just use <code>fmt.Sprintf</code> and move on with our lives. The primary issue here is that validating/formatting these json strings require additional work and can be error prone (ie: fat-fingering an additional comma somewhere, etc).</p>
 <h3 id="using-use-case-specific-structs"><strong>Using (use-case specific) structs</strong></h3>
-
 <p>The <em>other</em> approach would be to make everything hyper specific and create structs / custom marshal-ers that would generate the query DSL json format when <code>json.Marshal</code> is called (on said custom struct(s)).</p>
-
 <p>This approach requires creating custom structs and code for the sole purpose of building these queries. (This may work for certain usecases! But, it also means more code and therefore additional maintenance and more trouble translating to other projects).</p>
-
 <h3 id="what-does-google-say"><strong>What does Google say?</strong></h3>
-
 <p>The best &ldquo;documentation&rdquo;/support I could find through google-fu was <a href="https://kb.objectrocket.com/elasticsearch/how-to-construct-elasticsearch-queries-from-a-string-using-golang-550">this article</a> that also just suggested building a json string and crossing your fingers.</p>
-
 <p>(excerpt from the blog post above):</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">constructQuery</span><span class="p">(</span><span class="nx">q</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">size</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">strings</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
-
-	<span class="c1">// Build a query string from string passed to function
-</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">query</span> <span class="p">=</span> <span class="s">`{&#34;query&#34;: {`</span>
-
-	<span class="c1">// Concatenate query string with string passed to method call
-</span><span class="c1"></span>	<span class="nx">query</span> <span class="p">=</span> <span class="nx">query</span> <span class="o">+</span> <span class="nx">q</span>
-
-	<span class="c1">// Use the strconv.Itoa() method to convert int to string
-</span><span class="c1"></span>	<span class="nx">query</span> <span class="p">=</span> <span class="nx">query</span> <span class="o">+</span> <span class="s">`}, &#34;size&#34;: `</span> <span class="o">+</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">size</span><span class="p">)</span> <span class="o">+</span> <span class="s">`}`</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;\nquery:&#34;</span><span class="p">,</span> <span class="nx">query</span><span class="p">)</span>
-
-	<span class="c1">// Check for JSON errors
-</span><span class="c1"></span>	<span class="nx">isValid</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Valid</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">query</span><span class="p">))</span> <span class="c1">// returns bool
-</span><span class="c1"></span>
-	<span class="c1">// Default query is &#34;{}&#34; if JSON is invalid
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">isValid</span> <span class="o">==</span> <span class="kc">false</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;constructQuery() ERROR: query string not valid:&#34;</span><span class="p">,</span> <span class="nx">query</span><span class="p">)</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Using default match_all query&#34;</span><span class="p">)</span>
-		<span class="nx">query</span> <span class="p">=</span> <span class="s">&#34;{}&#34;</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;constructQuery() valid JSON:&#34;</span><span class="p">,</span> <span class="nx">isValid</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="c1">// Build a new string from JSON query
-</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">b</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Builder</span>
-	<span class="nx">b</span><span class="p">.</span><span class="nf">WriteString</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span>
-
-	<span class="c1">// Instantiate a *strings.Reader object from string
-</span><span class="c1"></span>	<span class="nx">read</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-
-	<span class="c1">// Return a *strings.Reader object
-</span><span class="c1"></span>	<span class="k">return</span> <span class="nx">read</span>
-<span class="p">}</span></code></pre></div>
-<p>Finally, there was <a href="https://github.com/elastic/go-elasticsearch/issues/42">this issue</a> on the go elasticsearch client from 2019:</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">constructQuery</span><span class="p">(</span><span class="nx">q</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">size</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">strings</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Build a query string from string passed to function</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">query</span> <span class="p">=</span> <span class="s">`{&#34;query&#34;: {`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Concatenate query string with string passed to method call</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">query</span> <span class="p">=</span> <span class="nx">query</span> <span class="o">+</span> <span class="nx">q</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Use the strconv.Itoa() method to convert int to string</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">query</span> <span class="p">=</span> <span class="nx">query</span> <span class="o">+</span> <span class="s">`}, &#34;size&#34;: `</span> <span class="o">+</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">size</span><span class="p">)</span> <span class="o">+</span> <span class="s">`}`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;\nquery:&#34;</span><span class="p">,</span> <span class="nx">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Check for JSON errors</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">isValid</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Valid</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">query</span><span class="p">))</span> <span class="c1">// returns bool</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Default query is &#34;{}&#34; if JSON is invalid</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">isValid</span> <span class="o">==</span> <span class="kc">false</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;constructQuery() ERROR: query string not valid:&#34;</span><span class="p">,</span> <span class="nx">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Using default match_all query&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">query</span> <span class="p">=</span> <span class="s">&#34;{}&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;constructQuery() valid JSON:&#34;</span><span class="p">,</span> <span class="nx">isValid</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Build a new string from JSON query</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">b</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Builder</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">b</span><span class="p">.</span><span class="nf">WriteString</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Instantiate a *strings.Reader object from string</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">read</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Return a *strings.Reader object</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">read</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Finally, there was <a href="https://github.com/elastic/go-elasticsearch/issues/42">this issue</a> on the go elasticsearch client from 2019:</p>
 <blockquote>
-<p>This package is intentionally a low-level client, while olivere/elastic is a high-level client with extensions for building the requests and deserializing the responses. We are aiming for offering a more high-level API in the future, but — as I&rsquo;ve indicated in other tickets — no sooner than a machine-readable, formal specification of the request and response bodies is available.</p>
-</blockquote>
-
+<p>This package is intentionally a low-level client, while olivere/elastic is a high-level client with extensions for building the requests and deserializing the responses. We are aiming for offering a more high-level API in the future, but — as I&rsquo;ve indicated in other tickets — no sooner than a machine-readable, formal specification of the request and response bodies is available.</p></blockquote>
 <p>Moreover (and awesomely, that comment thread has a gem of a code snippet):</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// BoolQuery Elastic bool query
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">BoolQuery</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Bool</span> <span class="nx">BoolQueryParams</span> <span class="s">`json:&#34;bool&#34;`</span>
-<span class="p">}</span>
-
-<span class="c1">// BoolQueryParams params for an Elastic bool query
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">BoolQueryParams</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Must</span>               <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;must,omitempty&#34;`</span>
-	<span class="nx">Should</span>             <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;should,omitempty&#34;`</span>
-	<span class="nx">Filter</span>             <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;filter,omitempty&#34;`</span>
-	<span class="nx">MinimumShouldMatch</span> <span class="kt">int</span>         <span class="s">`json:&#34;minimum_should_match,omitempty&#34;`</span>
-<span class="p">}</span></code></pre></div>
-<p>that looks very similar to what I&rsquo;ve ended up with (wish I had seen this first, heh) as I tackled this problem.</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="c1">// BoolQuery Elastic bool query</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">BoolQuery</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Bool</span> <span class="nx">BoolQueryParams</span> <span class="s">`json:&#34;bool&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// BoolQueryParams params for an Elastic bool query</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">BoolQueryParams</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Must</span>               <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;must,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Should</span>             <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;should,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Filter</span>             <span class="kd">interface</span><span class="p">{}</span> <span class="s">`json:&#34;filter,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">MinimumShouldMatch</span> <span class="kt">int</span>         <span class="s">`json:&#34;minimum_should_match,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>that looks very similar to what I&rsquo;ve ended up with (wish I had seen this first, heh) as I tackled this problem.</p>
 <p>Regardless the main point is this:</p>
-
 <blockquote>
-<p>Currently there isn&rsquo;t an easy way to define query DSL json strings for use with the elasticsearch go client.</p>
-</blockquote>
-
+<p>Currently there isn&rsquo;t an easy way to define query DSL json strings for use with the elasticsearch go client.</p></blockquote>
 <p>And - for good reason perhaps - the official client looks like it will not support such a feature anytime soon.</p>
-
 <h2 id="package-esquerydsl"><strong><code>package esquerydsl</code></strong></h2>
-
 <p>For all these reasons, I decided to build a simple, dependency less (aside from go stdlib deps) utility that generically defines structs to build queryDSL json strings.</p>
-
 <p>Here&rsquo;s an example (<a href="https://play.golang.org/p/tlSkQH1mUGy">playground</a>)</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;fmt&#34;</span>
-
-	<span class="s">&#34;github.com/mottaquikarim/esquerydsl&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">_</span><span class="p">,</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">esquerydsl</span><span class="p">.</span><span class="nf">GetQueryBlock</span><span class="p">(</span><span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryDoc</span><span class="p">{</span>
-		<span class="nx">Index</span><span class="p">:</span> <span class="s">&#34;some_index&#34;</span><span class="p">,</span>
-		<span class="nx">Sort</span><span class="p">:</span>  <span class="p">[]</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;id&#34;</span><span class="p">:</span> <span class="s">&#34;asc&#34;</span><span class="p">}},</span>
-		<span class="nx">And</span><span class="p">:</span> <span class="p">[]</span><span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryItem</span><span class="p">{</span>
-			<span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryItem</span><span class="p">{</span>
-				<span class="nx">Field</span><span class="p">:</span> <span class="s">&#34;some_index_id&#34;</span><span class="p">,</span>
-				<span class="nx">Value</span><span class="p">:</span> <span class="s">&#34;some-long-key-id-value&#34;</span><span class="p">,</span>
-				<span class="nx">Type</span><span class="p">:</span>  <span class="s">&#34;match&#34;</span><span class="p">,</span>
-			<span class="p">},</span>
-		<span class="p">},</span>
-	<span class="p">})</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
-<span class="p">}</span></code></pre></div>
-<p>The output:</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
-  <span class="nt">&#34;query&#34;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&#34;bool&#34;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&#34;must&#34;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&#34;some_index_id&#34;</span><span class="p">:</span> <span class="s2">&#34;some-long-key-id-value&#34;</span>
-          <span class="p">}</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nt">&#34;sort&#34;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;asc&#34;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span></code></pre></div>
-<p>(Find more examples in tests, including the initial queryDSL example referenced at the top of this post <a href="https://github.com/mottaquikarim/esquerydsl/blob/master/esquerydsl_test.go#L26">here</a>)</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/mottaquikarim/esquerydsl&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span><span class="p">,</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">esquerydsl</span><span class="p">.</span><span class="nf">GetQueryBlock</span><span class="p">(</span><span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryDoc</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Index</span><span class="p">:</span> <span class="s">&#34;some_index&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Sort</span><span class="p">:</span>  <span class="p">[]</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;id&#34;</span><span class="p">:</span> <span class="s">&#34;asc&#34;</span><span class="p">}},</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">And</span><span class="p">:</span> <span class="p">[]</span><span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryItem</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">esquerydsl</span><span class="p">.</span><span class="nx">QueryItem</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">Field</span><span class="p">:</span> <span class="s">&#34;some_index_id&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">Value</span><span class="p">:</span> <span class="s">&#34;some-long-key-id-value&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">Type</span><span class="p">:</span>  <span class="s">&#34;match&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">		<span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The output:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;query&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;bool&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;must&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;match&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;some_index_id&#34;</span><span class="p">:</span> <span class="s2">&#34;some-long-key-id-value&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;sort&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;asc&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>(Find more examples in tests, including the initial queryDSL example referenced at the top of this post <a href="https://github.com/mottaquikarim/esquerydsl/blob/master/esquerydsl_test.go#L26">here</a>)</p>
 <p>PRs welcome! Especially re: unittests such that documentation coverage is increased. If you use this lib and it is useful, do let me know please!</p>
-
 <p>Happy querying, fam 👍</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fsafely-construct-elasticsearch-queries-w%2fgolang%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fsafely-construct-elasticsearch-queries-w%2fgolang%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fsafely-construct-elasticsearch-queries-w%2fgolang%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
 </article>
 
         </main><footer id="footer">
-    Copyright © 2020 Taq Karim
+    Copyright © 2022 Taq Karim
 </footer>
 </body>
 </html>

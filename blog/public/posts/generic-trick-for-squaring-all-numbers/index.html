@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Generic Trick for Squaring All Numbers</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Generic Trick for Squaring All Numbers</h1><time>September 5, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#example-312">Example: <strong>31^2=</strong></a></li>
+    <li><a href="#example-542">Example: <strong>54^2=</strong></a></li>
+    <li><a href="#example-792">Example: <strong>79^2=</strong></a></li>
+    <li><a href="#example-1062">Example: <strong>106^2=</strong></a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#example-312-1">Example: <strong>31^2=</strong></a></li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="tldr-the-trick">TL;DR: The Trick.</h1>
+<p>Let&rsquo;s first grok the trick just by pattern recognition.</p>
+<h2 id="example-312">Example: <strong>31^2=</strong></h2>
+<p>$$
+\begin{aligned}
+3\bold{1}^2 &amp;= (\bold{3} * 10 + \bold{1}) \cr
+\bold{3} * (3\bold{1} + \bold{1}) &amp;= 96\text{\textunderscore} \cr
+1^2 &amp;= \space\space\space\space 1\cr
+\hline
+&amp;= 961
+\end{aligned}
+$$</p>
+<h2 id="example-542">Example: <strong>54^2=</strong></h2>
+<p>$$
+\begin{aligned}
+5\bold{4}^2 &amp;= (\bold{5} * 10 + \bold{4}) \cr
+\bold{5} * (5\bold{4} + \bold{4}) &amp;= 290\text{\textunderscore} \cr
+4^2 &amp;= \space\space\space\space 16\cr
+\hline
+&amp;= 2916
+\end{aligned}
+$$</p>
+<h2 id="example-792">Example: <strong>79^2=</strong></h2>
+<p>$$
+\begin{aligned}
+7\bold{9}^2 &amp;= (\bold{7} * 10 + \bold{9}) \cr
+\bold{7} * (7\bold{9} + \bold{9}) &amp;= 616\text{\textunderscore} \cr
+9^2 &amp;= \space\space\space\space 81\cr
+\hline
+&amp;= 6241
+\end{aligned}
+$$</p>
+<h2 id="example-1062">Example: <strong>106^2=</strong></h2>
+<p>$$
+\begin{aligned}
+10\bold{6}^2 &amp;= (\bold{10} * 10 + \bold{6}) \cr
+\bold{10} * (10\bold{6} + \bold{6}) &amp;= 1120\text{\textunderscore} \cr
+6^2 &amp;= \space\space\space\space\space\space 36\cr
+\hline
+&amp;= 11236
+\end{aligned}
+$$</p>
+<h1 id="proof">Proof.</h1>
+<p>Let&rsquo;s prove this result by using a similar approach that we took in <a href="/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/">&ldquo;Proving the Squaring Numbers Ending in 5 Trick&rdquo;</a>.</p>
+<p>$$
+\begin{aligned}
+\text{Let: } a &amp;= (10 * \bold{t} + \bold{n}) \space \text{where: }\bold{t} \geq 0, \bold{n} \geq 0 \cr
+\text{Then: } a^2 &amp;= (10 * \bold{t} + \bold{n})^2 \cr
+&amp;= (10 * \bold{t} + \bold{n}) (10 * \bold{t} + \bold{n}) \cr
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s expand this, using FOIL. Our objective is to isolate <strong>a=(10t + n)</strong> in our simplification process:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10 * \bold{t} + \bold{n}) (10 * \bold{t} + \bold{n}) \cr
+&amp;= \bold{10} * 10 * t * t + \bold{10} * t * n + \bold{10} * t * n + n^2 \cr
+&amp;= 10 \Bigg[ 10 * \bold{t} * t + \bold{t} * n + \bold{t} * n \Bigg] + n^2 \cr
+&amp;= 10 \Bigg[ t \bigg[ \bold{10 * t + n} + n \bigg] \Bigg] + n^2 \cr
+\text{Substitute: } a &amp;= (10 * \bold{t} + \bold{n}) \cr
+&amp;= 10 \Bigg[ t \bigg[ \bold{a} + n \bigg] \Bigg] + n^2 \cr
+\end{aligned}
+$$</p>
+<p>That last result:</p>
+<p>$$
+a^2 = 10 \Bigg[ t \bigg[ \bold{a} + n \bigg] \Bigg] + n^2
+$$</p>
+<p>Proves our observation.</p>
+<h2 id="example-312-1">Example: <strong>31^2=</strong></h2>
+<p>Let&rsquo;s consider our first example: <strong>31^2</strong> as a gut check &ndash;</p>
+<p>$$
+\begin{aligned}
+a &amp;= 31 \cr
+&amp;= (10 * \bold{3} + \bold{1}) \cr
+\text{Therefore: } \cr
+t &amp;= 3 \cr
+n &amp;= 1 \cr
+\text{Substitute. } \cr
+a^2 &amp;= 10 \Bigg[ t \bigg[ \bold{a} + n \bigg] \Bigg] + n^2 \cr
+&amp;= 10 \Bigg[ \bold{3} \bigg[ \bold{31} + \bold{1} \bigg] \Bigg] + (1)^2 \cr
+&amp;= 10 \Bigg[ \bold{3} \bigg[ \bold{32} \bigg] \Bigg] + (1)^2 \cr
+&amp;= 10 \Bigg[ \bold{96} \Bigg] + (1)^2 \cr
+&amp;= 960 + 1 \cr
+&amp;= 961 \cr
+\end{aligned}
+$$</p>
+<p>Another way to look at this:</p>
+<p>$$
+\begin{aligned}
+3\bold{1}^2 &amp;= (\bold{3} * 10 + \bold{1}) \cr
+t \bigg[ \bold{a} + n \bigg] &amp;= \bold{3} * (3\bold{1} + \bold{1}) = 96\text{\textunderscore} \cr
+n^2 &amp;= 1^2 \space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space = \space\space\space\space 1\cr
+\hline
+&amp;= \space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space 961
+\end{aligned}
+$$</p>
+<h1 id="reflections">Reflections.</h1>
+<p>IMO, this representation of our <strong>a^2</strong> identity:</p>
+<p>$$
+a^2 = 10 \Bigg[ t \bigg[ \bold{a} + n \bigg] \Bigg] + n^2
+$$</p>
+<p>is <strong>very nice to look at</strong> 😍😍.</p>
+<p>Practically speaking, it may not be simple (nor would it be fast) to compute <strong>7 * 88</strong> (to square <strong>79</strong>, for example) mentally. But knowing that the squaring of a number (a 2 digit by 2 digit operation) can be simplified to a simpler computation (a 1 digit by 2 digit operation, where the two factors being multiplied are determined by the actual number itself) is (to me at least) <strong>just super neat</strong>, man.</p>
+<p><strong>NOTE FOR MY FUTURE SELF</strong>:
+I ascertained this result by noticing that:</p>
+<p>$$
+\begin{aligned}
+3^2 &amp;= \space\space\space\space\bold{0}9 \cr
+13^2 &amp;= \space\space\bold{16}9 \cr
+23^2 &amp;= \space\space\bold{52}9 \cr
+33^2 &amp;= \bold{108}9
+\end{aligned}
+$$</p>
+<p>The terms that are <em>not</em> <strong>9</strong>, I realized, were the sum of an arithmetic sequence where <strong>d=20</strong> and the initial value was <strong>16</strong>. In other words:</p>
+<p>$$
+\begin{aligned}
+\text{Let: } d &amp;= 20 \cr
+16 &amp;= 0 + 16 + 0 * d \cr
+52 &amp;= 16 + 16 + 1 * d \cr
+108 &amp;= 52 + 16 + 2 * d \cr
+\end{aligned}
+$$</p>
+<p>Because I knew <strong>d</strong>, the first term (<strong>16</strong>) and how many terms there would be in the sequence (3 terms if squaring <strong>33</strong>, 2 terms if squaring <strong>23</strong>, etc) I realized I could rewrite the numbers above as:</p>
+<p>$$
+\begin{aligned}
+\text{Sum of arithmetic seq: } S &amp;= \dfrac{n}{2}\bigg(a_{0} + a_n \bigg) \cr
+52 &amp;= \dfrac{2}{2}\bigg(a_0 + a_1 \bigg) \cr
+&amp;= \dfrac{2}{2}\bigg(a_0 + \big[ a_0 + 1 * d \big] \bigg) \cr
+&amp;= \dfrac{2}{2}\bigg(16 + \big[ 16 + 1 * d \big] \bigg) \cr
+&amp;= \dfrac{2}{2}\bigg(16 + \big[ 16 + 20 \big] \bigg) \cr
+&amp;= \dfrac{2}{2}\bigg(16 + \big[ 36 \big] \bigg) \cr
+&amp;= \bigg(16 + \big[ 36 \big] \bigg) \cr
+&amp;= 2\bigg( \bold{26} \bigg) \cr
+108 &amp;= \dfrac{3}{2}\bigg(a_0 + a_2 \bigg) \cr
+&amp;= \dfrac{3}{2}\bigg(a_0 + \big[ a_0 + 2 * d \big] \bigg) \cr
+&amp;= \dfrac{3}{2}\bigg(16 + \big[ 16 + 2 * d \big] \bigg) \cr
+&amp;= \dfrac{3}{2}\bigg(16 + \big[ 16 + 2 * \bold{20} \big] \bigg) \cr
+&amp;= \dfrac{3}{2}\bigg(16 + \big[ 16 + 40 \big] \bigg) \cr
+&amp;= \dfrac{3}{2}\bigg(16 + \big[ 56 \big] \bigg) \cr
+&amp;= 3\bigg(8 + \big[ 28 \big] \bigg) \cr
+&amp;= 3\bigg( \bold{36} \bigg) \cr
+&amp;= \bold{108} \cr
+\end{aligned}
+$$</p>
+<p>At this point, I noticed the pattern where:</p>
+<p>$$
+\begin{aligned}
+52 &amp;= 2\bigg( \bold{26} \bigg) \cr
+&amp;= 2(23 + 3) \cr
+108 &amp;= 3\bigg( \bold{36} \bigg) \cr
+&amp;= 3(33 + 3) \cr
+\end{aligned}
+$$</p>
+<p>which strongly hinted that I might be able to isolate this form from expanding out <strong>a^2</strong> where <strong>a=(10t+n)</strong>.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fgeneric-trick-for-squaring-all-numbers%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fgeneric-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgeneric-trick-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Self Grading Quizzes With Airtable</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/teaching/">teaching</a></strong></small>
+        <header id="post-header">
+        <h1>Self Grading Quizzes With Airtable</h1><time>March 16, 2020</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#tldr">TL;DR:</a></li>
+    <li><a href="#airtable-based-solution">Airtable based solution</a>
+      <ul>
+        <li><a href="#formula-columns">Formula Columns</a></li>
+      </ul>
+    </li>
+    <li><a href="#creating-the-quiz">Creating the quiz</a></li>
+    <li><a href="#the-verdict">The Verdict</a></li>
+  </ul>
+</nav>
+</aside>
+
+<p>This semester, I am teaching a course at Baruch University on Big Data Technologies.</p>
+<p>I resolved to administer a small quiz at the start of class to get a feel for how the class is doing overall in terms of comprehension of key materials.</p>
+<p>However, grading quizzes - especially at such a recurring cadence - will definitely be time consuming, even for a small class of say 15 people (my class has 47 students).</p>
+<h2 id="requirements">Requirements</h2>
+<p>I wanted a system that would:</p>
+<ul>
+<li>Make it easy to create multi-question, <em>multiple choice</em> quizzes</li>
+<li>Make grading automatic</li>
+<li>Share individual grades automatically to students via email or some other manner</li>
+<li>Require minimal infrastructure and coding (ie: maybe a lambda function somewhere? ideally no code at all)</li>
+</ul>
+<h2 id="tldr">TL;DR:</h2>
+<p>Using Airtable, there is a way to create multi-choice, self grading quizzes. I&rsquo;ve created a set up that you can <strong>find and replicate</strong> here for your class&rsquo;s usecase:</p>
+<ul>
+<li><strong><a href="https://airtable.com/shriZOQyCUScx3zCc">AIRTABLE BASE</a></strong></li>
+<li><strong><a href="https://airtable.com/shr2hBhcm33iRV5jK">QUIZ FORM</a></strong></li>
+</ul>
+<h2 id="airtable-based-solution">Airtable based solution</h2>
+<p>Leveraging <a href="https://airtable.com/">Airtable</a>, I have come up with an approach that generally has worked for me thus far.</p>
+<p>The key to this solution is to create a table that represents a quiz. Each row will include student name, email, created time, &ldquo;questions&rdquo;, &ldquo;checks&rdquo; and a &ldquo;grade&rdquo;.</p>
+<p>The last two types of rows: &ldquo;checks&rdquo; and &ldquo;grade&rdquo; are both formula types.</p>
+<p>Here&rsquo;s a screenshot:</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/0i10457qg9scp4dj756k.png" alt="Alt Text"></p>
+<p>The columns &ldquo;1&rdquo;&hellip;&ldquo;5&rdquo; represent questions and each are formatted to be &ldquo;single select&rdquo; types with 4 predefined selections.</p>
+<h3 id="formula-columns">Formula Columns</h3>
+<p>To assert correctness, each &ldquo;question&rdquo; column has an accompanying &ldquo;solution&rdquo; column that asserts for correctness.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/8nopme8drybkye5vibnq.png" alt="Alt Text"></p>
+<p>As seen here, &ldquo;Solution 1&rdquo; is a formula <code>{1} = &quot;C&quot;</code> which is ensuring that the selection for column &ldquo;1&rdquo;, if &ldquo;C&rdquo; is correct. This can be repeated with as many questions as necessary.</p>
+<p>To compute grade, we simply find the average:</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/hynfw25jjyci1swotdy5.png" alt="Alt Text"></p>
+<p>The &ldquo;code&rdquo; for this formula:</p>
+<pre tabindex="0"><code>({Solution 1} + {Solution 2} + {Solution 3} + {Solution 4} + {Solution 5})/5
+</code></pre><p>Where the label inside each <code>{}</code> corresponds to the column name <code>Solution 1</code>&hellip;<code>Solution 5</code>.</p>
+<p>That&rsquo;s it! That&rsquo;s the internals of the quiz. Now, per student who completes this quiz, a corresponding row will be created with a &ldquo;creation time&rdquo; (for future filtering if needed) and &ldquo;checks&rdquo; for each question submitted and a &ldquo;grade&rdquo; that computes average.</p>
+<p>If needed that &ldquo;grade&rdquo; column can also be updated to weight individual questions differently as well. 👍</p>
+<h2 id="creating-the-quiz">Creating the quiz</h2>
+<p>For the &ldquo;frontend&rdquo;, we need a form and the actual quiz questions! Airtable supports a concept of a &ldquo;view&rdquo; where it is possible to create a &ldquo;form&rdquo; that will populate the rows in the table.</p>
+<p>Here&rsquo;s an example:</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/mbazzoh4y7bdcja75epp.png" alt="Alt Text"></p>
+<p>Essentially, each column from the table can be added (or removed!) as an input field. Also, it is possible to make certain fields required and to add arbitrary text (in my quiz, I even had a few coding questions).</p>
+<p>Additionally, this form is by default not shared:</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/aqczrffb7hkpr7q3yvfk.png" alt="Alt Text"></p>
+<p>but can be toggled to shareable via a private link at any time (so it is easy to &ldquo;publish&rdquo; and &ldquo;unpublish&rdquo; a quiz)</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/9mwb6oin87i21ol8jcxp.png" alt="Alt Text"></p>
+<h2 id="the-verdict">The Verdict</h2>
+<p>For a non-custom coded system, this works &ldquo;well enough&rdquo;; looking back to the requirements:</p>
+<ul>
+<li>✅Make it easy to create multi-question, <em>multiple choice</em> quizzes</li>
+<li>✅Make grading automatic</li>
+<li>❌Share individual grades automatically to students via email or some other manner</li>
+<li>✅Require minimal infrastructure and coding (ie: maybe a lambda function somewhere? ideally no code at all)</li>
+</ul>
+<p>Some happy additional features:</p>
+<ul>
+<li>✅Tables and views are easy to duplicate, meaning multiple quizzes can be easily supported</li>
+<li>✅Publishing/unpublishing forms are actually super helpful</li>
+<li>✅At the bottom of each column, airtable calculates some metrics such as class average, etc which can be read in real time as students complete quiz</li>
+</ul>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/f7eu9t5borc7108f243x.png" alt="Alt Text"></p>
+<p>There are some definite drawbacks here as well:</p>
+<ul>
+<li>❌lack of fine tuned controls in terms of formatting the questions</li>
+<li>❌adding more than 4-5 questions becomes somewhat unreasonable due to the additional column that much be added</li>
+<li>❌<strong>RATE LIMITS</strong>! If more that ~50 people open the form all at once (or refresh a lot), I&rsquo;ve seen cases where the form is &ldquo;disabled momentarily&rdquo; (a few hours)</li>
+<li>❌no automatic support for emailing grades to students</li>
+</ul>
+<p>For that last item - I have come up with a (similarly codeless) solution! If there is sufficient interest (please let me know in the comments!) I will follow up this post with a tutorial for how I achieved near-real time email notification to students based on quiz submission 👍</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fself-grading-quizzes-with-airtable%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fself-grading-quizzes-with-airtable%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fself-grading-quizzes-with-airtable%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

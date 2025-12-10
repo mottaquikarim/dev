@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>The Semiprime Square Sandwich</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>The Semiprime Square Sandwich</h1><time>December 9, 2025</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#step-1-forcing-the-factor-2">Step 1: forcing the factor \(2\)</a></li>
+    <li><a href="#step-2-forcing-the-factor-3">Step 2: forcing the factor \(3\)</a></li>
+    <li><a href="#summary-of-the-structure">Summary of the structure</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1-the-center-prime-is-always-1-pmod60">1. The center prime is always \(1 \pmod{60}\)</a>
+      <ul>
+        <li><a href="#working-modulo-8-and-hence-modulo-4">Working modulo 8 (and hence modulo 4)</a></li>
+        <li><a href="#working-modulo-3">Working modulo 3</a></li>
+        <li><a href="#working-modulo-5">Working modulo 5</a></li>
+        <li><a href="#putting-the-congruences-together">Putting the congruences together</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-the-top-prime-and-quadratic-residues">2. The top prime and quadratic residues</a>
+      <ul>
+        <li><a href="#quick-definition-quadratic-residue">Quick definition: quadratic residue</a></li>
+        <li><a href="#what-does-this-say-about-b">What does this say about \(b\)?</a></li>
+        <li><a href="#why-this-restriction-matters">Why this restriction matters</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-the-source-prime-lives-in-four-residue-classes">3. The source prime lives in four residue classes</a></li>
+  </ul>
+</nav>
+</aside>
+
+<hr>
+<p><strong>The BLUF:</strong></p>
+<p>Triples of consecutive semiprimes starting with a prime number squared (like \(11^2\) = 121, \(11^2\) + 1 = 122, \(11^2\) + 2 = 123) have been catalogued before, but their internal structure has not. This post proves that every such triple has the form \((r^2, 2p, 3b)\) where the auxiliary primes \(p\) and \(b\) satisfy the linear relation \(3b = 2p + 1\). From this single constraint, everything else follows: \(p \equiv 1 \pmod{60}\), \(b \equiv 1\) or \(17 \pmod{24}\), and \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\). The relation \(3b = 2p + 1\) in this context and the complete structural analysis that follows appear to be novel.</p>
+<hr>
+<h1 id="semiprimes-and-sandwiches-oh-my">Semiprimes and Sandwiches, Oh My!</h1>
+<p>A few years ago, around this time of year coincidentally, I wrote about <a href="/posts/the-semiprime-sandwich/">The Semiprime Sandwich</a> – stretches of three consecutive integers \([n-1, n, n+1]\) that all happen to be <strong>distinct semiprimes</strong>. The first such example occurs at:</p>
+<p>$$
+33,\ 34,\ 35.
+$$</p>
+<p>I have not thought about semiprime sandwiches in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).</p>
+<p>Recently, I stumbled on a special case of the semiprime sandwich where <strong>one of the three numbers is a perfect square</strong> of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic. In this post, I walk through that analysis and land on a neat little theorem that captures every such triple.</p>
+<hr>
+<h1 id="square-centered-semiprime-triples">Square-Centered Semiprime Triples</h1>
+<p>We will focus on triples of consecutive integers</p>
+<p>$$
+(n,\ n+1,\ n+2)
+$$</p>
+<p>where all three numbers are <strong>distinct semiprimes</strong>, and the first number \(n\) is a perfect square.</p>
+<p>Let me be precise about terminology:</p>
+<blockquote>
+<p><strong>semiprime</strong>: a natural number that is the product of exactly two prime numbers (counting multiplicity).</p></blockquote>
+<p>So \(6 = 2\cdot 3\), \(15 = 3\cdot 5\), and \(25 = 5^2\) are all semiprimes.<br>
+A <strong>square semiprime</strong> is one of the form \(r^2\) where \(r\) is prime.</p>
+<p>By <strong>distinct semiprimes</strong>, I mean the three numbers have different prime factorizations. So \((9, 10, 11)\) would not count even if all three were semiprimes, because we want three genuinely different factorization patterns.</p>
+<p>Assume we are in the square case and write</p>
+<p>$$
+n = r^2,
+$$</p>
+<p>so the triple becomes</p>
+<p>$$
+(r^2,\ r^2+1,\ r^2+2).
+$$</p>
+<p>Now we squeeze this configuration using nothing more than parity (even/odd) and divisibility by 3.</p>
+<hr>
+<h2 id="step-1-forcing-the-factor-2">Step 1: forcing the factor \(2\)</h2>
+<p>Among three consecutive integers, exactly one is even. (Refer to my original post for analysis proving this)</p>
+<p>In our triple \((r^2,\ r^2+1,\ r^2+2)\), the middle term \(r^2+1\) is always even (odd square plus 1).</p>
+<p>Because \(r^2+1\) is assumed to be a <strong>distinct semiprime</strong>, it must factor as</p>
+<p>$$
+r^2 + 1 = 2p
+$$</p>
+<p>for some prime \(p\). The 2 is forced by evenness; the primality of \(p\) is forced by the &ldquo;exactly two prime factors (counting multiplicity)&rdquo; requirement. If \(p\) were composite, \(2p\) would have at least three prime factors.</p>
+<p>This already gives a nice symmetric picture:</p>
+<p>$$
+r^2 = 2p - 1,\qquad
+r^2 + 1 = 2p,\qquad
+r^2 + 2 = 2p + 1.
+$$</p>
+<p>So once we know \(p\), the three consecutive numbers are exactly \(2p-1, 2p, 2p+1\), with \(r^2 = 2p-1\) sitting one below the even semiprime \(2p\).</p>
+<hr>
+<h2 id="step-2-forcing-the-factor-3">Step 2: forcing the factor \(3\)</h2>
+<p>Among any three consecutive integers, exactly one is divisible by 3.</p>
+<p>Look again at</p>
+<p>$$
+r^2 = 2p - 1,\quad
+r^2 + 1 = 2p,\quad
+r^2 + 2 = 2p + 1.
+$$</p>
+<p>If \(r\) is a prime different from 3, then \(r\) is \(1\) or \(2\) modulo 3, and in either case \(r^2 \equiv 1 \pmod{3}\). That means \(r^2\) is <strong>not</strong> divisible by 3.</p>
+<p>The middle term \(r^2+1 = 2p\) is divisible by 2, but not by 3 (otherwise both \(r^2\) and \(r^2+1\) would be multiples of 3, which cannot happen with consecutive integers). So the only candidate in the triple that can be divisible by 3 is the top term \(r^2+2\).</p>
+<p>Thus we must have</p>
+<p>$$
+r^2 + 2 = 3b
+$$</p>
+<p>for some integer \(b\). Because \(r^2+2\) is assumed to be a distinct semiprime, \(b\) must be prime: if \(b\) factored further as \(b = cd\), then \(3b = 3cd\) would have at least three prime factors (counting multiplicity).</p>
+<p>Notice that this equation is the same as</p>
+<p>$$
+2p + 1 = 3b,
+$$</p>
+<p>since \(r^2 + 2 = (2p - 1) + 2 = 2p + 1\).</p>
+<p>So \(p\), \(b\), and \(r\) are tied together by the small system</p>
+<p>$$
+r^2 = 2p - 1, \qquad 2p + 1 = 3b.
+$$</p>
+<p>Solving for \(p\) and \(b\) in terms of \(r\) gives</p>
+<p>$$
+p = \frac{r^2 + 1}{2},\qquad b = \frac{r^2 + 2}{3}.
+$$</p>
+<p>There is no freedom here: once you pick \(r\), the potential primes \(p\) and \(b\) are forced.</p>
+<hr>
+<h2 id="summary-of-the-structure">Summary of the structure</h2>
+<p>Every square-centered triple of consecutive semiprimes must look like</p>
+<p>$$
+(r^2,\ r^2+1,\ r^2+2) = (r^2,\ 2p,\ 3b),
+$$</p>
+<p>where \(r\) is a prime and</p>
+<p>$$
+p = \frac{r^2 + 1}{2},\qquad
+b = \frac{r^2 + 2}{3}
+$$</p>
+<p>are also primes.</p>
+<p>Conversely, if you start with a prime \(r\) for which \((r^2+1)/2\) and \((r^2+2)/3\) both happen to be prime, then \(r^2\), \(r^2+1\), and \(r^2+2\) are automatically semiprimes and give you such a triple.</p>
+<p>That is the whole classification, which we can now package into a theorem.</p>
+<hr>
+<h1 id="theorem-square-centered-semiprime-triples">Theorem (Square-Centered Semiprime Triples)</h1>
+<blockquote>
+<p><strong>Theorem.</strong><br>
+A triple of consecutive integers<br>
+$$
+(n,\ n+1,\ n+2)
+$$
+consists entirely of <strong>distinct semiprimes</strong> and has its <strong>first term equal to a perfect square</strong><br>
+if and only if it can be written in the form<br>
+$$
+(r^2,\ r^2+1,\ r^2+2)
+$$
+where \(r\) is prime and
+$$
+r^2 + 1 = 2p,\qquad r^2 + 2 = 3b
+$$
+for some primes \(p\) and \(b\).</p></blockquote>
+<p>Equivalently, every such triple is exactly of the form</p>
+<p>$$
+(r^2,\ 2p,\ 3b)
+$$</p>
+<p>with</p>
+<p>$$
+p = \frac{r^2 + 1}{2},\qquad
+b = \frac{r^2 + 2}{3}.
+$$</p>
+<p>That is the classification. The rest of the post is about what this tells us about the primes \(p\) and \(b\).</p>
+<hr>
+<h1 id="why-small-primes-fail">Why small primes fail</h1>
+<p>Before diving into consequences, it is worth seeing why we have to wait until \(r = 11\) for the first example. The classification says: pick a prime \(r\), compute \((r^2+1)/2\) and \((r^2+2)/3\), and check if both are prime. Most small primes fail this test.</p>
+<p><strong>\(r = 3\):</strong> We get \(r^2 + 1 = 10 = 2 \cdot 5\) and \(r^2 + 2 = 11\). So far so good, but \(r^2 = 9 = 3^2\) means the triple is \((9, 10, 11)\). The problem: 11 is prime, not a semiprime. No good.</p>
+<p><strong>\(r = 5\):</strong> We get \(r^2 + 2 = 27 = 3^3\). That is three prime factors, not two. No good.</p>
+<p><strong>\(r = 7\):</strong> We get \(r^2 + 1 = 50 = 2 \cdot 25 = 2 \cdot 5^2\). That is three prime factors (counting multiplicity). No good.</p>
+<p><strong>\(r = 11\):</strong> Finally, \(r^2 = 121\), \(r^2 + 1 = 122 = 2 \cdot 61\), and \(r^2 + 2 = 123 = 3 \cdot 41\). All three are semiprimes with distinct factorizations. Success!</p>
+<p>So the small primes fail for different reasons—sometimes the middle term has too many factors, sometimes the top term does, sometimes one of them is actually prime. The conditions are stringent enough that valid triples are rare.</p>
+<hr>
+<h1 id="some-interesting-consequences">Some interesting consequences</h1>
+<p>Now that we know every square-centered triple comes from a prime \(r\) via</p>
+<p>$$
+(r^2,\ 2p,\ 3b),\quad
+p = \frac{r^2+1}{2},\quad
+b = \frac{r^2+2}{3},
+$$</p>
+<p>we can ask: <strong>where do these primes actually live in the integers?</strong></p>
+<p>Three simple facts emerge. First, the &ldquo;middle&rdquo; prime \(p\) always leaves remainder 1 when divided by 60. Second, the &ldquo;top&rdquo; prime \(b\) can only leave remainder 1 or 17 when divided by 24. Third, the source prime \(r\) can only leave remainder 1, 11, 19, or 29 when divided by 30.</p>
+<p>Let&rsquo;s walk through each fact in more detail below.</p>
+<hr>
+<h2 id="1-the-center-prime-is-always-1-pmod60">1. The center prime is always \(1 \pmod{60}\)</h2>
+<p>We start from</p>
+<p>$$
+p = \frac{r^2+1}{2},
+$$</p>
+<p>with \(r\) an odd prime not equal to 3 or 5. Our goal is to pin down \(p\) modulo 60. Since \(60 = 4 \times 3 \times 5\), we can work modulo each factor separately and combine the results at the end using the Chinese Remainder Theorem.</p>
+<h3 id="working-modulo-8-and-hence-modulo-4">Working modulo 8 (and hence modulo 4)</h3>
+<p>Any odd integer can be written as \(2k+1\) for some integer \(k\). Squaring gives</p>
+<p>$$
+(2k+1)^2 = 4k^2 + 4k + 1 = 4k(k+1) + 1.
+$$</p>
+<p>Since one of \(k\) or \(k+1\) is even, \(k(k+1)\) is always even, so \(4k(k+1)\) is divisible by 8. Therefore</p>
+<p>$$
+r^2 \equiv 1 \pmod{8}
+$$</p>
+<p>for any odd \(r\).</p>
+<p>This means</p>
+<p>$$
+r^2 + 1 \equiv 2 \pmod{8},
+$$</p>
+<p>and dividing by 2 gives</p>
+<p>$$
+p = \frac{r^2+1}{2} \equiv 1 \pmod{4}.
+$$</p>
+<h3 id="working-modulo-3">Working modulo 3</h3>
+<p>For a prime \(r \neq 3\), we have</p>
+<p>$$
+r \equiv 1 \text{ or } 2 \pmod{3}.
+$$</p>
+<p>Squaring either case:</p>
+<ul>
+<li>if \(r \equiv 1\), then \(r^2 \equiv 1\);</li>
+<li>if \(r \equiv 2\), then \(r^2 \equiv 4 \equiv 1 \pmod{3}\).</li>
+</ul>
+<p>So always</p>
+<p>$$
+r^2 \equiv 1 \pmod{3}.
+$$</p>
+<p>Then</p>
+<p>$$
+r^2 + 1 \equiv 1 + 1 \equiv 2 \pmod{3}.
+$$</p>
+<p>Now 2 has an inverse modulo 3, namely 2 again, because \(2\cdot 2 = 4 \equiv 1 \pmod{3}\). So we can &ldquo;divide by 2&rdquo; by multiplying by 2:</p>
+<p>$$
+p = \frac{r^2+1}{2} \equiv 2 \cdot 2 \equiv 4 \equiv 1 \pmod{3}.
+$$</p>
+<p>So \(p\) leaves remainder 1 when divided by 3.</p>
+<h3 id="working-modulo-5">Working modulo 5</h3>
+<p>For a prime \(r \neq 5\), the possibilities modulo 5 are</p>
+<p>$$
+r \equiv 1,2,3,\text{ or }4 \pmod{5}.
+$$</p>
+<p>Squaring each: \(1^2 \equiv 1\), and \(4^2 = 16 \equiv 1\), and \(2^2 = 4\), and \(3^2 = 9 \equiv 4 \pmod{5}\).</p>
+<p>So \(r^2\) is either \(1\) or \(4\) modulo 5.</p>
+<p><strong>Case 1: \(r^2 \equiv 1 \pmod{5}\).</strong><br>
+Then</p>
+<p>$$
+r^2 + 1 \equiv 2 \pmod{5}.
+$$</p>
+<p>The inverse of 2 modulo 5 is 3, because \(2\cdot 3 = 6 \equiv 1 \pmod{5}\). So</p>
+<p>$$
+p = \frac{r^2+1}{2} \equiv 2\cdot 3 \equiv 6 \equiv 1 \pmod{5}.
+$$</p>
+<p><strong>Case 2: \(r^2 \equiv 4 \pmod{5}\).</strong><br>
+Then</p>
+<p>$$
+r^2 + 1 \equiv 4 + 1 \equiv 5 \equiv 0 \pmod{5}.
+$$</p>
+<p>So \(p = (r^2+1)/2\) would be divisible by 5. The only way a prime is divisible by 5 is if it equals 5 itself. That would give</p>
+<p>$$
+p = 5 = \frac{r^2+1}{2} \Rightarrow r^2 = 9 \Rightarrow r = 3,
+$$</p>
+<p>but \(r = 3\) fails to produce a valid triple (as we saw above: 11 is prime, not a semiprime).</p>
+<p>So in all valid cases we must actually be in Case 1, and therefore</p>
+<p>$$
+p \equiv 1 \pmod{5}.
+$$</p>
+<h3 id="putting-the-congruences-together">Putting the congruences together</h3>
+<p>We now know</p>
+<p>$$
+p \equiv 1 \pmod{4},\qquad
+p \equiv 1 \pmod{3},\qquad
+p \equiv 1 \pmod{5}.
+$$</p>
+<p>The least common multiple of 4, 3, and 5 is 60, and the only residue class modulo 60 that is 1 modulo all three is \(1\) itself. So</p>
+<p>$$
+p \equiv 1 \pmod{60}.
+$$</p>
+<p>Check against the actual examples. For \(r = 11\), we get \(p = (121+1)/2 = 61\), and indeed \(61 = 60\cdot 1 + 1\). For \(r = 29\), we get \(p = (841+1)/2 = 421\), and \(421 = 60\cdot 7 + 1\).</p>
+<p>So the middle primes always sit in the &ldquo;\(60k+1\)&rdquo; lane of the number line.</p>
+<hr>
+<h2 id="2-the-top-prime-and-quadratic-residues">2. The top prime and quadratic residues</h2>
+<p>Now look at the top semiprime:</p>
+<p>$$
+r^2 + 2 = 3b.
+$$</p>
+<p>Rewriting this as a congruence modulo \(b\) gives</p>
+<p>$$
+r^2 \equiv -2 \pmod{b}.
+$$</p>
+<p>This has a standard interpretation in number theory, and it connects our little puzzle to a classical result.</p>
+<h3 id="quick-definition-quadratic-residue">Quick definition: quadratic residue</h3>
+<p>Fix a positive integer \(m\).<br>
+An integer \(a\) is called a <strong>quadratic residue modulo \(m\)</strong> if there exists some integer \(x\) such that</p>
+<p>$$
+x^2 \equiv a \pmod{m}.
+$$</p>
+<p>You can think of this as: &ldquo;\(a\) is a perfect square when you do arithmetic mod \(m\).&rdquo;</p>
+<p>If no such \(x\) exists, then \(a\) is called a <strong>quadratic non-residue modulo \(m\)</strong>.</p>
+<p><strong>A concrete example.</strong> Let us work modulo 7. I want to know: which numbers are &ldquo;squares&rdquo; in mod 7 arithmetic?</p>
+<p>To find out, I just try squaring everything. There are only six nonzero residue classes to check: \(1^2 = 1\), and \(2^2 = 4\), and \(3^2 = 9 \equiv 2\), and \(4^2 = 16 \equiv 2\), and \(5^2 = 25 \equiv 4\), and \(6^2 = 36 \equiv 1\).</p>
+<p>So the only outputs we ever see are 1, 2, and 4. These are the quadratic residues modulo 7. The numbers 3, 5, and 6 never appear as outputs—no matter what integer you square, the result will never be congruent to 3, 5, or 6 modulo 7. These are the quadratic non-residues.</p>
+<p>Now suppose I ask: is \(-1\) a quadratic residue mod 7? That is, does \(x^2 \equiv -1 \pmod 7\) have a solution? Since \(-1 \equiv 6 \pmod 7\), I am really asking if 6 is a quadratic residue. We just saw it is not—6 never shows up when we square things mod 7. So \(-1\) is a quadratic non-residue modulo 7.</p>
+<p><strong>Back to our problem.</strong> Recall that the top semiprime in our triple satisfies \(r^2 + 2 = 3b\). Rearranging, we get \(r^2 = 3b - 2\). Now reduce both sides modulo \(b\): the right side becomes \(3b - 2 \equiv -2 \pmod b\), so we have</p>
+<p>$$
+r^2 \equiv -2 \pmod{b}.
+$$</p>
+<p>This equation says: when we square \(r\) and divide by \(b\), the remainder is \(b - 2\). In other words, \(-2\) is a quadratic residue modulo \(b\), and \(r\) is the witness that proves it.</p>
+<p>Let us verify with our first example. For \(r = 11\), we computed \(b = 41\). Is \(-2\) a quadratic residue mod 41? We need to check if some integer squared gives remainder \(41 - 2 = 39\) when divided by 41. And indeed: \(11^2 = 121\), and \(121 = 2 \times 41 + 39\), so the remainder is 39. That means \(11^2 \equiv 39 \equiv -2 \pmod{41}\). The prime \(r = 11\) is itself the witness.</p>
+<p>This flips our perspective. We started by asking &ldquo;which primes \(r\) produce valid triples?&rdquo; But now we can also ask &ldquo;which primes \(b\) can appear at the top of a valid triple?&rdquo; The answer: exactly those primes \(b\) for which \(-2\) happens to be a quadratic residue.</p>
+<h3 id="what-does-this-say-about-b">What does this say about \(b\)?</h3>
+<p>Here is where classical number theory hands us a gift. There is a result from quadratic reciprocity that tells us exactly which primes have the property that \(-2\) is a quadratic residue:</p>
+<blockquote>
+<p>For an odd prime \(q\), the number \(-2\) is a quadratic residue modulo \(q\) if and only if
+$$
+q \equiv 1 \text{ or } 3 \pmod{8}.
+$$</p></blockquote>
+<p>So any \(b\) that appears here must satisfy</p>
+<p>$$
+b \equiv 1 \text{ or } 3 \pmod{8}.
+$$</p>
+<p>We also know some extra things about \(b\) from the basic structure. First, \(b\) is not divisible by 3. Why? Because \(b\) is prime, and \(b \neq 3\). (If \(b = 3\), then \(3b = 9 = r^2 + 2\), which would require \(r^2 = 7\)—but 7 is not a perfect square.)</p>
+<p>We can also pin down \(b\) modulo 8. In section 1, we showed that any odd number squared is congruent to 1 modulo 8. Since \(r\) is an odd prime, \(r^2 \equiv 1 \pmod{8}\), so \(r^2 + 2 \equiv 3 \pmod{8}\). This means \(3b \equiv 3 \pmod 8\). What value of \(b\) makes this true? We need \(3b\) to leave remainder 3 when divided by 8. Testing: \(3 \times 1 = 3\), so \(b \equiv 1 \pmod 8\) works.</p>
+<p>Now we combine our two facts about \(b\): it leaves remainder 1 when divided by 8, and it is not divisible by 3. To capture both constraints at once, we work modulo 24 (since \(24 = 8 \times 3\)).</p>
+<p>Within each cycle of 24 integers, which ones are congruent to 1 modulo 8? Those are 1, 9, and 17. Of these three, 9 is divisible by 3, so we exclude it. That leaves just 1 and 17. So \(b\) must satisfy</p>
+<p>$$
+b \equiv 1 \text{ or } 17 \pmod{24}.
+$$</p>
+<h3 id="why-this-restriction-matters">Why this restriction matters</h3>
+<p>This is a pretty sharp filter. Out of every 24 consecutive integers, only those in two residue classes—1 and 17—can even be candidates for \(b\). That is 2 out of 24, or about 8% of integers. And of course, \(b\) also has to be prime on top of that.</p>
+<p>For our theorem, this gives us a necessary condition: if you hand me a supposed square-centered semiprime triple and claim the top term is \(3b\), I can immediately check whether \(b \equiv 1\) or \(17 \pmod{24}\). If not, the triple is impossible.</p>
+<p>Combined with the constraint on \(p\) (that \(p \equiv 1 \pmod{60}\)), we now have a fairly complete picture of what valid triples look like. The bottom is \(r^2\) for some prime \(r\). The middle is \(2p\) where \(p\) lives in the \(60k + 1\) lane. The top is \(3b\) where \(b\) lives in one of the two lanes \(24k + 1\) or \(24k + 17\). These constraints are all necessary, and together with the primality requirements, they are sufficient.</p>
+<p>So far, all the data points hit the \(17 \pmod{24}\) lane.</p>
+<hr>
+<h2 id="3-the-source-prime-lives-in-four-residue-classes">3. The source prime lives in four residue classes</h2>
+<p>We have derived constraints on the auxiliary primes \(p\) and \(b\). But what about the source prime \(r\) itself? It turns out the constraints on \(p\) propagate back to \(r\).</p>
+<p>We know \(p\) leaves remainder 1 when divided by 60. Since \(p = (r^2 + 1)/2\), this tells us something about \(r^2\). Rearranging: \(r^2 + 1 = 2p\). If \(p\) leaves remainder 1 when divided by 60, then \(2p\) leaves remainder 2 when divided by 120. So \(r^2 + 1\) leaves remainder 2 when divided by 120, which means \(r^2\) leaves remainder 1 when divided by 120.</p>
+<p>What does this tell us about \(r\)? Let&rsquo;s break it down. Since \(120 = 8 \times 3 \times 5\), we can check each factor separately.</p>
+<p><strong>Modulo 8:</strong> In section 1, we showed that any odd number squared leaves remainder 1 when divided by 8. Every prime except 2 is odd, so this is automatically satisfied.</p>
+<p><strong>Modulo 3:</strong> If \(r\) is not divisible by 3, then \(r\) leaves remainder 1 or 2 when divided by 3. Either way, \(r^2\) leaves remainder 1. (Check: \(1^2 = 1\) and \(2^2 = 4 \equiv 1 \pmod 3\).) Every prime except 3 satisfies this, so this is also automatic.</p>
+<p><strong>Modulo 5:</strong> We need \(r^2\) to leave remainder 1 when divided by 5. Let&rsquo;s check each possibility. If \(r\) leaves remainder 1, then \(r^2\) leaves remainder 1. If \(r\) leaves remainder 2, then \(r^2 = 4\). If \(r\) leaves remainder 3, then \(r^2 = 9 \equiv 4\). If \(r\) leaves remainder 4, then \(r^2 = 16 \equiv 1\). So \(r^2 \equiv 1 \pmod 5\) only when \(r \equiv 1\) or \(4 \pmod 5\).</p>
+<p>The first two constraints are automatic for any prime greater than 3. The modulo 5 constraint is the only real filter: \(r\) must leave remainder 1 or 4 when divided by 5.</p>
+<p>To see which primes pass this filter, we work modulo 30. Here&rsquo;s why.</p>
+<p>Any prime greater than 5 has three properties: it&rsquo;s odd (not divisible by 2), not divisible by 3, and not divisible by 5. So if we list the numbers from 1 to 30 and cross out the ones that are even, divisible by 3, or divisible by 5, we get the only possible remainders a prime can leave when divided by 30:</p>
+<p>1, 7, 11, 13, 17, 19, 23, 29.</p>
+<p>That&rsquo;s eight possibilities. Now we check which of these eight satisfy our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
+<p>Now we check each of these eight classes against our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
+<p>$$
+\begin{aligned}
+1 &amp;\equiv 1 \pmod 5 \quad \checkmark \\
+7 &amp;\equiv 2 \pmod 5 \quad \times \\
+11 &amp;\equiv 1 \pmod 5 \quad \checkmark \\
+13 &amp;\equiv 3 \pmod 5 \quad \times \\
+17 &amp;\equiv 2 \pmod 5 \quad \times \\
+19 &amp;\equiv 4 \pmod 5 \quad \checkmark \\
+23 &amp;\equiv 3 \pmod 5 \quad \times \\
+29 &amp;\equiv 4 \pmod 5 \quad \checkmark
+\end{aligned}
+$$</p>
+<p>Four pass, four fail. So <strong>only primes \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\)</strong> can produce valid triples.</p>
+<p>Let us verify against our examples. We have \(r = 11 \equiv 11 \pmod{30}\) and \(r = 29 \equiv 29 \pmod{30}\). Both land in the valid set.</p>
+<p>This constraint is quite restrictive. Among the first several primes greater than 5, we have: 7 (out), 11 (in), 13 (out), 17 (out), 19 (in), 23 (out), 29 (in), 31 (in), 37 (out), 41 (in), 43 (out), 47 (out), 53 (out), 59 (in), 61 (in)&hellip; Only about half the primes even have a chance of being \(r\), and then the primality conditions on \(p\) and \(b\) filter further.</p>
+<hr>
+<h1 id="examples">Examples</h1>
+<p>It is worth looking at the first few concrete triples to see the structure in action.</p>
+<p>Take \(r = 11\). Then</p>
+<p>$$
+r^2 = 121,\quad
+p = \frac{121+1}{2} = 61,\quad
+b = \frac{121+2}{3} = 41.
+$$</p>
+<p>All three numbers \(r, p, b\) are prime, and the triple is</p>
+<p>$$
+(121,\ 122,\ 123) = (11^2,\ 2\cdot 61,\ 3\cdot 41).
+$$</p>
+<p>Now take \(r = 29\). Then</p>
+<p>$$
+r^2 = 841,\quad
+p = \frac{841+1}{2} = 421,\quad
+b = \frac{841+2}{3} = 281,
+$$</p>
+<p>again all prime, giving the triple</p>
+<p>$$
+(841,\ 842,\ 843) = (29^2,\ 2\cdot 421,\ 3\cdot 281).
+$$</p>
+<p>In both cases, you can see: the bottom is a square of a prime, the middle is \(2p\) with \(p \equiv 1 \pmod{60}\), and the top is \(3b\) with \(b \equiv 1\) or \(17 \pmod{24}\).</p>
+<hr>
+<h1 id="final-thoughts">Final thoughts</h1>
+<p>This result sits in an interesting middle ground. The basic phenomenon—that there exist triples of consecutive semiprimes starting with a prime square—is already catalogued in the OEIS as sequence <a href="https://oeis.org/A179502">A179502</a>, and a comment on <a href="https://oeis.org/A039833">A039833</a> notes the 2p-1, 2p, 2p+1 structure for general semiprime sandwiches.</p>
+<p><strong>What appears to be new is the complete structure that emerges when you restrict to the square-centered case.</strong> The key insight is the relation</p>
+<p>$$
+3b = 2p + 1,
+$$</p>
+<p>which ties the two auxiliary primes together. This relation is forced by the square constraint: for any prime \(r \neq 3\), we have \(r^2 \equiv 1 \pmod 3\), so \(r^2 + 2 \equiv 0 \pmod 3\). The semiprime requirement then demands \(r^2 + 2 = 3b\) for some prime \(b\). Since \(r^2 + 2 = 2p + 1\), we get the relation.</p>
+<p>This does not appear in the general semiprime sandwich literature because the third term of a general sandwich need not be divisible by 3. For instance, the first sandwich (33, 34, 35) = (3·11, 2·17, 5·7) has third term 5·7, not 3·(prime).</p>
+<p>From \(3b = 2p + 1\) everything else follows: the constraint \(p \equiv 1 \pmod{60}\), the constraint \(b \equiv 1\) or \(17 \pmod{24}\), and the constraint \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\). All three are derived in detail above.</p>
+<p>The relation also gives an alternative way to search for these triples. Instead of iterating over primes \(r\) and checking two conditions, you can iterate over primes \(p \equiv 1 \pmod{60}\) and check: (1) is \(2p - 1\) a perfect square of a prime? (2) is \((2p+1)/3\) prime? If both, you have found a triple.</p>
+<p><strong>Is this important?</strong> Not in the sense of unlocking new theorems or settling old conjectures. But it is genuinely non-trivial—the argument uses real ideas (parity, divisibility, quadratic reciprocity) and lands on constraints that are not at all obvious from staring at examples. The tight linear coupling \(3b = 2p + 1\) is the kind of structure that feels like it should have been noticed before, and yet I cannot find it anywhere.</p>
+<p>One question I cannot answer: <strong>are there infinitely many such triples?</strong> The classification reduces this to asking whether there are infinitely many primes \(r \equiv 1, 11, 19, 29 \pmod{30}\) such that both \((r^2+1)/2\) and \((r^2+2)/3\) are also prime. This connects to notoriously hard problems about the simultaneous distribution of primes in polynomial sequences. I do not know the answer, and I suspect nobody does.</p>
+<p>If someone points me at prior work that already established the \(3b = 2p + 1\) relation or its consequences, I will update this post accordingly.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-semiprime-square-sandwich%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-semiprime-square-sandwich%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-semiprime-square-sandwich%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

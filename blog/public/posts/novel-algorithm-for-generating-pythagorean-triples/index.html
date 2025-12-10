@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Novel Algorithm(?) for Generating Pythagorean Triples</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Novel Algorithm(?) for Generating Pythagorean Triples</h1><time>November 28, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-is-even">\(a\) is <strong>even</strong></a></li>
+    <li><a href="#a-is-odd">\(a\) is <strong>odd</strong></a>
+      <ul>
+        <li><a href="#implication">Implication</a></li>
+      </ul>
+    </li>
+    <li><a href="#finding-more-possible-solutions">Finding more possible solutions</a>
+      <ul>
+        <li><a href="#testing">Testing</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="background">Background</h1>
+<p>The pythagorean theorem states that given any right triangle with legs \(a \), \(b\) and hypotenuse \(c\):</p>
+<p>$$
+a^2 + b^2 = c^2
+$$</p>
+<p>(For those who are curious to learn more, <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">please check out wikipedia</a>)</p>
+<p>A pythagorean triple is a set of three natural numbers (\(a,b,c\)) such that \( a^2 + b^2 = c^2 \). We express such a triple as \( \big( a,b,c \big) \) with the understanding that \( c \) is the hypotenuse. Because we are only interested in natural number solutions, the equation \( a^2 + b^2 = c^2 \) is an example of a <a href="https://en.wikipedia.org/wiki/Diophantine_equation">nonlinear diophantine equation</a>.</p>
+<p>FWIW, I have been fascinated by diophantine equations lately, primarily thanks to my recent re-learning of the <a href="https://en.wikipedia.org/wiki/Taxicab_number">taxicab number</a>, fabled to have been derived from a conversation between Hardy and Ramanujan himself:</p>
+<blockquote>
+<p>I remember once going to see him [Ramanujan] when he was lying ill at Putney. I had ridden in taxi-cab No. 1729, and remarked that the number seemed to be rather a dull one, and that I hoped it was not an unfavourable omen. &ldquo;No,&rdquo; he replied, &ldquo;it is a very interesting number; it is the smallest number expressible as the sum of two [positive] cubes in two different ways.</p></blockquote>
+<p>(^ excerpt from wikipedia).</p>
+<p>It is worth noting that generating pythagorean triples appears to be a solved problem. Here&rsquo;s a whole list of algorithms for <a href="https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples#Euclid's,_Pythagoras',_and_Plato's_formulas">generating pythagorean triples</a>.</p>
+<blockquote>
+<p>In this post, I will put forth what I <em>believe</em> may possibly be an original approach to generating pythagorean triples (eg: my method is at least not explicitly described in the <a href="https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples">&ldquo;Formulas for generating Pythagorean triples&rdquo;</a> wikipedia page I referenced).</p></blockquote>
+<h1 id="my-algorithm">My Algorithm</h1>
+<p>Let&rsquo;s begin with a quick observation. Here are some initial/obvious pythagorean triples:</p>
+<ul>
+<li>\( 3, 4, 5 \)</li>
+<li>\( 5, 12, 13 \)</li>
+<li>\( 7, 24, 25 \)</li>
+<li>\( 9, 40, 41 \)</li>
+</ul>
+<p>A very curious observation here is that the \( a \) values are all odd and crucially, the \( b \) and \( c \) values are <strong>consecutive</strong>. A second observation here is that the <strong>sum</strong> of \(b + c \) is equal to \( a^2 \).</p>
+<p>For instance:</p>
+<ul>
+<li>\( 3^2 = 9 \) and \( 4 + 5 = 9 \)</li>
+<li>\( 5^2 = 25 \) and \( 12 + 13 = 25 \)</li>
+<li>\( 7^2 = 49 \) and \( 24 + 25 = 49 \)</li>
+<li>\( 9^2 = 81 \) and \( 40 + 41 = 81 \)</li>
+</ul>
+<p>Another way to look at this is like so:</p>
+<p>$$
+\begin{aligned}
+a^2 + b^2 &amp;= c^2 \cr
+a^2 &amp;= c^2 - b^2 \cr
+\end{aligned}
+$$</p>
+<p>Now remember, we can express the square of any number \( n \) as the sum of the square of the previous number (\( n - 1 \), let&rsquo;s call it \(k\)) and \(n + k \). In other words:</p>
+<p>$$
+\begin{aligned}
+n^2 &amp;= k^2 + n + k \cr
+\bold{\text{Let: }} k &amp;= n - 1 \cr
+n^2 &amp;= (n-1)^2 + n + n-1 \cr
+n^2 &amp;= n^2 - 2n + 1 + n + n-1 \cr
+n^2 &amp;= n^2 - 2n + 1 + 2n -1 \cr
+n^2 &amp;= n^2 \cr
+\end{aligned}
+$$</p>
+<p>^ This looks dumb but minimally shows that:</p>
+<blockquote>
+<p>the square of any number \(n\) can be expressed as the square of the <em>previous</em> number plus \(n\) plus the <em>previous</em> number.
+Or:
+\( n^2 = (n-1)^2 + n + (n-1) \)</p></blockquote>
+<p>Another way to look at this is:</p>
+<blockquote>
+<p>The difference between some number \(n^2\) and \((n-1)^2\) is just the sum of those two numbers. Or:
+<br/>\( n^2 - (n-1)^2 = n + (n-1) \)</p></blockquote>
+<p>Ok going back to our diophantine equation:</p>
+<p>$$
+\begin{aligned}
+a^2 + b^2 &amp;= c^2 \cr
+a^2 &amp;= c^2 - b^2 \cr
+\end{aligned}
+$$</p>
+<blockquote>
+<p>If we could find some numbers \(b\) and \(c\) such that \(b+c = a^2 \) for each \(a\), we have found a set of valid solutions to this equation.</p></blockquote>
+<p>For simplicity, let&rsquo;s start with the case that we observed above: \(b\) and \(c\) are consecutive. Let&rsquo;s let \(c = b+1 \).</p>
+<p>There are two cases to consider:</p>
+<ul>
+<li>\(a\) is <strong>even</strong></li>
+<li>\(a\) is <strong>odd</strong></li>
+</ul>
+<h2 id="a-is-even">\(a\) is <strong>even</strong></h2>
+<p>If \(a\) is <strong>even</strong>, then \(a^2\) must also be even. (<strong>WHY?</strong>: An even times an even number is always even).</p>
+<p>So, we want to find \(a^2 = b + c \) where \(c = b + 1 \).</p>
+<p>So:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+&amp;= (b + 1) + b \cr
+&amp;= 2b + 1 \cr
+\end{aligned}
+$$</p>
+<p>Since we are considering only <strong>even</strong> values of \(a\) here, \(a^2\) is <strong>even</strong> and so:</p>
+<p>$$
+\begin{aligned}
+2b + 1 &amp;= a^2 \cr
+2b 	   &amp;= a^2 - 1 \cr
+\end{aligned}
+$$</p>
+<blockquote>
+<p>Since \(a^2\) is even, \(a^2-1\) <strong>must</strong> be odd. Thus, there are no solutions for <strong>even</strong> values of \(a\) where we have a consecutive values \(b,c\) that add up to \(a^2\)</p></blockquote>
+<p>(FWIW: this doesn&rsquo;t mean there are no pythagorean triples with even legs (obviously since we noted a few examples to start off with here), it just means that with this approach as it stands so far we cannot find any even \(a\) such that \(b\) and \(c\) are consecutive.)</p>
+<h2 id="a-is-odd">\(a\) is <strong>odd</strong></h2>
+<p>If \(a\) is <strong>odd</strong>, then \(a^2\) must also be odd. (<strong>WHY?</strong>: An odd times an odd number is always odd). Revisiting our equation:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= b + b + 1 \cr
+&amp;= 2b + 1 \cr
+a^2 - 1 &amp;= 2b \cr
+\end{aligned}
+$$</p>
+<blockquote>
+<p>Because we know \(a^2\) is odd, \(a^2-1\) <strong>must</strong> be even. And since \(a^2-1\) is even, \(\frac{a^2-1}{2}\) <strong>must also</strong> be even. Therefore there is <em>always</em> some number \(b\) (and \(c = b+1\)) such that \(a^2 = b + c \).</p></blockquote>
+<p>Put another way:</p>
+<blockquote>
+<p>For all odd values of \(a\) in the pythagorean triple \(a,b,c\) we are guaranteed natural numbers \(b\) and \(c\) such that \(a^2+b^2 = c^2\).</p></blockquote>
+<h3 id="implication">Implication</h3>
+<p>Ok let&rsquo;s put this to the test. Say \(a = 13 \). Then we know that:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= b + b + 1 \cr
+&amp;= 2b + 1 \cr
+13^2 - 1 &amp;= 2b \cr
+169 - 1 &amp;= 2b \cr
+168 &amp;= 2b \cr
+84 &amp;= \bold{b} \cr
+85 &amp;= b + 1 \cr
+85 &amp;= \bold{c} \cr
+\end{aligned}
+$$</p>
+<p>And so, \(13,84,85\) is a pythagorean triple.</p>
+<blockquote>
+<p>Heads up: with this approach, we also arrive at exclusively primitive pythagorean triples (eg: \(a,b,c\) are coprime - they have no common divisor larger than 1). I don&rsquo;t know how to prove this yet so I&rsquo;ll leave it as just an observation.</p></blockquote>
+<p>We can do this all day, actually.</p>
+<blockquote>
+<p>Using the \(a^2 = 2b+1\) formula, we can generate at least one pythagorean triple solution for <strong>all odd numbers</strong>.</p></blockquote>
+<h2 id="finding-more-possible-solutions">Finding more possible solutions</h2>
+<p>This was fun! But we can do better. Let&rsquo;s revisit our slightly modified version of the equation:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+\end{aligned}
+$$</p>
+<p>We have considered the cause where \(c = b + 1 \). However, this is but one possible condition; for instance it is possible to have an \(a\) such that \(a^2 = b+c \) where \(c = b +2 \) or \(c = b + 3\), etc. To explore this usecase, let&rsquo;s slightly modify our equation again:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+&amp;= (c+b)(c-b) \cr
+\end{aligned}
+$$</p>
+<p>If \(c = b + 1 \), then:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+&amp;= (c+b)(c-b) \cr
+\text{Let: } c &amp;= b + 1 \cr
+&amp;= ((b+1)+b)((b+1)-b) \cr
+&amp;= (2b+1)(1) \cr
+&amp;= (2b+1) \cr
+\end{aligned}
+$$</p>
+<p>^ This of course brings us back to the formula derived in the previous section. <strong>BUT</strong>: this approach is easier to grok (and minimally easier to type!), allowing us to extend our reach, like so:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+&amp;= (c+b)(c-b) \cr
+\text{Let: } c &amp;= b + \bold{2} \cr
+&amp;= ((b+\bold{2})+b)((b+\bold{2})-b) \cr
+&amp;= (2b+2)(2) \cr
+&amp;= (4b+4) \cr
+\end{aligned}
+$$</p>
+<p>or:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= c^2 - b^2 \cr
+&amp;= (c+b)(c-b) \cr
+\text{Let: } c &amp;= b + \bold{3} \cr
+&amp;= ((b+\bold{3})+b)((b+\bold{3})-b) \cr
+&amp;= (2b+3)(3) \cr
+&amp;= (6b+9) \cr
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s get this in tabular form:</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+      </tr>
+      <tr>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+      </tr>
+      <tr>
+          <td>\( b+n \)</td>
+          <td>\(2nb+n^2\)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Also worth observing that run out of possible solutions when \(n^2 &gt;= a^2\). (For example, when \(a = 13 \), the largest \(n\) that may provide us with a solution is \(n = 12 \))</p>
+<h3 id="testing">Testing</h3>
+<p>Let&rsquo;s test this by looking for triples from \(a = 3 \) to \(a = 9 \). It looks like we expect only the following triples (source (don&rsquo;t judge me) <a href="https://www.avc.edu/sites/default/files/studentservices/lc/math/pythagorean_triples.pdf">here</a>):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Row</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>\(3,4,5\)</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>\(5, 12, 13\)</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>\(6,8,10\)</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>\(7,24,25\)</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>\(8,15,17\)</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>\(9,12,15\)</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>\(9,40,41\)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Ok, as per our formula, we can start with \(a = 3\) and continue until \(n^2 &gt;= a^2\). For each iteration, as we find triples in the table above, we will denote with &ldquo;<strong>FOUND(Row)?</strong>:&rdquo;</p>
+<p>So for instance, if we find rows 6 and 7 in one of our iterations, we will note it as: &ldquo;<strong>FOUND(Row)?</strong>: 6,7&rdquo;</p>
+<h4 id="a--3-">\(a = 3 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 9\)</td>
+          <td>\(3,4,5\)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 9\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(n^2 &gt;= 9\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1</p>
+<h4 id="a--4-">\(a = 4 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 16\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 16\)</td>
+          <td>\(3,4,5\)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 16\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(n^2 &gt;= 16\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 1 (AGAIN)</p>
+<h4 id="a--5-">\(a = 5 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 25\)</td>
+          <td>\(5,12,13\)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 25\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 25\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(8b+16 = 25\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+          <td>\(n^2 &gt;= 25\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 2</p>
+<h4 id="a--6-">\(a = 6 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 36\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 36\)</td>
+          <td>\(6,8,10\)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 36\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(8b+16 = 36\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+          <td>\(10b+25 = 36\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+6 \)</td>
+          <td>\(12b+36\)</td>
+          <td>\(n^2 &gt;= 36\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 2, 3</p>
+<h4 id="a--7-">\(a = 7 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 49\)</td>
+          <td>\(7,24,25\)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 49\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 49\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(8b+16 = 49\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+          <td>\(10b+25 = 49\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+6 \)</td>
+          <td>\(12b+36\)</td>
+          <td>\(12b+36 = 49\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+7 \)</td>
+          <td>\(14b+49\)</td>
+          <td>\(n^2 &gt;= 49\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 2, 3, 4</p>
+<h4 id="a--8-">\(a = 8 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 64\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 64\)</td>
+          <td>\(8, 15, 17\)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 64\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(8b+16 = 64\)</td>
+          <td>\(6,8,10\)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+          <td>\(10b+25 = 64\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+6 \)</td>
+          <td>\(12b+36\)</td>
+          <td>\(12b+36 = 64\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+7 \)</td>
+          <td>\(14b+49\)</td>
+          <td>\(14b+49 = 64\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+8 \)</td>
+          <td>\(16b+64\)</td>
+          <td>\(n^2 &gt;= 64\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 2, 3, 4, 5, 3 (AGAIN)</p>
+<h4 id="a--9-">\(a = 9 \)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>\(c = \)</th>
+          <th>\(a^2 = \)</th>
+          <th>Compute</th>
+          <th>Triple</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( b+1 \)</td>
+          <td>\(2b+1\)</td>
+          <td>\(2b+1 = 81\)</td>
+          <td>\(9,40,41\)</td>
+      </tr>
+      <tr>
+          <td>\( b+2 \)</td>
+          <td>\(4b+4\)</td>
+          <td>\(4b+4 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+3 \)</td>
+          <td>\(6b+9\)</td>
+          <td>\(6b+9 = 81\)</td>
+          <td>\(9, 12, 15\)</td>
+      </tr>
+      <tr>
+          <td>\( b+4 \)</td>
+          <td>\(8b+16\)</td>
+          <td>\(8b+16 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+5 \)</td>
+          <td>\(10b+25\)</td>
+          <td>\(10b+25 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+6 \)</td>
+          <td>\(12b+36\)</td>
+          <td>\(12b+36 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+7 \)</td>
+          <td>\(14b+49\)</td>
+          <td>\(14b+49 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+8 \)</td>
+          <td>\(16b+64\)</td>
+          <td>\(16b+64 = 81\)</td>
+          <td>(none)</td>
+      </tr>
+      <tr>
+          <td>\( b+9 \)</td>
+          <td>\(18b+81\)</td>
+          <td>\(n^2 &gt;= 81\)</td>
+          <td>STOP</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>FOUND(Row)?</strong>: 1, 2, 3, 4, 5, 7, 6</p>
+<p>^ That&rsquo;s all of them!</p>
+<h4 id="results">Results</h4>
+<p>It looks like the algorithm worked! By walking down from \(a = 3 \) to \(a = 9 \), we were able to identify <em>all</em> pythagorean triples (primitive or not). Also, we seem to have stumbled on the same triple a few times along the way.</p>
+<p>For what it&rsquo;s worth, we can always filter out the non primitive triples from this approach by analyzing \(c\), which in a primitive triple will always be odd (Shanks, 1993, p. 141 - reference <a href="https://mathworld.wolfram.com/PythagoreanTriple.html#:~:text=Shanks">here</a>)</p>
+<h1 id="commentary">Commentary</h1>
+<p>This is really cool! I appreciate the simplicity of this approach in that we can find all possible triples just by incrementing \(a\) starting at \(a = 3\). Moreover, it appears that my approach solves an issue with <strong>Euclid&rsquo;s formula</strong>:</p>
+<blockquote>
+<p>Despite generating all primitive triples, Euclid&rsquo;s formula does not produce all triples—for example, (9, 12, 15) cannot be generated using integer m and n.</p></blockquote>
+<p>(^ wiki, <a href="https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple">here</a>)</p>
+<p>While there are solutions put forth to remedy this, the approach listed here does not need any additional tweaks to render all triples.</p>
+<p>At some point, I&rsquo;d like to implement this algorithm in code to generate the first 100 or 1000 primes and also, I&rsquo;d like to explore any possible optimizations here, if plausible. (For instance, I have a gut feeling that stopping when \(n^2 &gt;= a\) might be sufficient instead of going all the way out to \(n^2 &gt;= a^2\) but I have no way to really tell without further exploration.)</p>
+<h1 id="references">References</h1>
+<p>(I tried to link within the body of the post itself but will add here too for those who are interested)</p>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple">Pythagorean triple</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Diophantine_equation">Diophantine equation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Taxicab_number">Taxicab number</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples">Formulas for generating Pythagorean triples</a></li>
+<li><a href="https://mathworld.wolfram.com/PythagoreanTriple.html#:~:text=Shanks">Pythagorean Triple (Wolfram)</a></li>
+<li><a href="https://www.avc.edu/sites/default/files/studentservices/lc/math/pythagorean_triples.pdf">Pythagorean triples</a></li>
+</ol>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fnovel-algorithm-for-generating-pythagorean-triples%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fnovel-algorithm-for-generating-pythagorean-triples%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fnovel-algorithm-for-generating-pythagorean-triples%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

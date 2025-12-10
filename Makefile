@@ -45,11 +45,12 @@ build:
 
 develop:
 	docker run \
-		--rm -it -d \
-		-v ${SITEPATH}:/src \
-		-p ${PORT}:1313 \
-		-u hugo \
-		jguyomard/hugo-builder hugo server -w --bind=0.0.0.0
+	  --rm -it -d \
+	  -v /Users/taq.karim/taq/dev/blog:/src \
+	  -p 1313:1313 \
+	  -u root \
+	  hugomods/hugo:latest \
+	  server -w --bind=0.0.0.0 --baseURL=http://localhost:1313
 
 # Usage
 # 	make import-medium medium_url_path=[PATH/TO/MEDIUM] post_slug=[POST_TITLE_SLUG]

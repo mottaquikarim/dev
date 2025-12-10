@@ -1,14 +1,86 @@
 <!DOCTYPE html>
-<html><head>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
     
-    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
-    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
 
     <style>
 #post-header {
     text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
 }
     </style>
 
@@ -16,6 +88,9 @@
     <link rel="stylesheet" href="/css/style.min.css">
 
     <title>Generate Lambda Layer Artifacts w/Docker</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
 </head>
 <body><header id="banner">
     
@@ -36,76 +111,68 @@
                 <a href="/" title="home">home</a>
             </li><li>
                 <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
             </li>
         </ul>
     </nav>
 </header>
 <main id="content">
 <article>
-    <header id="post-header">
-        <h1>Generate Lambda Layer Artifacts w/Docker</h1><time>December 22, 2020</time></header>
-
-<p><aside id="toc">
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/serverless/">serverless</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/docker/">docker</a></strong></small>
+        <header id="post-header">
+        <h1>Generate Lambda Layer Artifacts w/Docker</h1><time>December 22, 2020</time></header><p><aside id="toc">
     <h4>Table of Contents</h4>
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#the-backstory"><strong>The Backstory</strong></a></li>
-<li><a href="#the-problem"><strong>The Problem</strong></a></li>
-<li><a href="#lambda-layers-and-docker"><strong>Lambda Layers and Docker</strong></a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#the-backstory"><strong>The Backstory</strong></a></li>
+    <li><a href="#the-problem"><strong>The Problem</strong></a></li>
+    <li><a href="#lambda-layers-and-docker"><strong>Lambda Layers and Docker</strong></a></li>
+  </ul>
 </nav>
 </aside>
 
 This post (and accompanying code) was inspired by <a href="https://towardsdatascience.com/how-to-install-python-packages-for-aws-lambda-layer-74e193c76a91">this</a> tutorial and a need to easily generate lambda layer artifacts for a grad course I teach at Baruch University.</p>
-
 <p><strong><a href="https://github.com/mottaquikarim/pkglambdalayer">Github</a></strong></p>
-
 <p><strong>TL;DR</strong>: Generate a lambda layer artifact for python using this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  cat &gt;&gt; requirements.txt
-<span class="nv">requests</span><span class="o">==</span><span class="m">2</span>.24.0
-➜  docker run -v <span class="nv">$PWD</span>:/data mottaquikarim/pkglambdalayer:latest</code></pre></div>
-<p>On completion, expect the following:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➜  ls -ahl
-total <span class="m">1792</span>
-drwxr-xr-x   <span class="m">5</span> tkarim  staff   160B Dec <span class="m">21</span> <span class="m">08</span>:36 .
-drwxr-xr-x  <span class="m">23</span> tkarim  staff   736B Dec <span class="m">21</span> <span class="m">08</span>:31 ..
-drwxr-xr-x  <span class="m">13</span> tkarim  staff   416B Dec <span class="m">21</span> <span class="m">08</span>:36 pkg
--rw-r--r--   <span class="m">1</span> tkarim  staff   879K Dec <span class="m">21</span> <span class="m">08</span>:36 pkg.zip
--rw-r--r--   <span class="m">1</span> tkarim  staff    17B Dec <span class="m">21</span> <span class="m">08</span>:36 requirements.txt</code></pre></div>
-<p><strong>pkg.zip</strong> can be uploaded into your own Lambda Layer using the AWS Console 👍👍</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  cat &gt;&gt; requirements.txt
+</span></span><span class="line"><span class="cl"><span class="nv">requests</span><span class="o">==</span>2.24.0
+</span></span><span class="line"><span class="cl">➜  docker run -v <span class="nv">$PWD</span>:/data mottaquikarim/pkglambdalayer:latest
+</span></span></code></pre></div><p>On completion, expect the following:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ls -ahl
+</span></span><span class="line"><span class="cl">total <span class="m">1792</span>
+</span></span><span class="line"><span class="cl">drwxr-xr-x   <span class="m">5</span> tkarim  staff   160B Dec <span class="m">21</span> 08:36 .
+</span></span><span class="line"><span class="cl">drwxr-xr-x  <span class="m">23</span> tkarim  staff   736B Dec <span class="m">21</span> 08:31 ..
+</span></span><span class="line"><span class="cl">drwxr-xr-x  <span class="m">13</span> tkarim  staff   416B Dec <span class="m">21</span> 08:36 pkg
+</span></span><span class="line"><span class="cl">-rw-r--r--   <span class="m">1</span> tkarim  staff   879K Dec <span class="m">21</span> 08:36 pkg.zip
+</span></span><span class="line"><span class="cl">-rw-r--r--   <span class="m">1</span> tkarim  staff    17B Dec <span class="m">21</span> 08:36 requirements.txt
+</span></span></code></pre></div><p><strong>pkg.zip</strong> can be uploaded into your own Lambda Layer using the AWS Console 👍👍</p>
 <h2 id="the-backstory"><strong>The Backstory</strong></h2>
-
 <p>I teach a course at Baruch University where I introduce folks to various AWS technologies in the context of &ldquo;Big Data&rdquo; processing.</p>
-
 <p>So of course, Lambdas are a topic I cover. In order to keep the course load from being <em>too</em> technical, I try to lean hard on AWS console whenever possible vs going too deeply into the infra-as-code  approach.</p>
-
 <p>As such, most of our explorations in Lambda-land are done through the AWS Lambda UI.</p>
-
 <h2 id="the-problem"><strong>The Problem</strong></h2>
-
 <blockquote>
-<p>You can&rsquo;t <em>actually</em> load in dependencies into the AWS Lambda UI!</p>
-</blockquote>
-
+<p>You can&rsquo;t <em>actually</em> load in dependencies into the AWS Lambda UI!</p></blockquote>
 <p>While I totally understand perhaps <em>why</em> this is so, it definitely throws a bit of a curveball in my class as I want folks to write useful lambda funcs but without having to delve too deeply into the packaging process.</p>
-
 <h2 id="lambda-layers-and-docker"><strong>Lambda Layers and Docker</strong></h2>
-
 <p>I found Lambda Layers to be an acceptable compromise - last semester I just generated a single artifact similar to above which I shared via Google Drive and had folks go through the motions of uploading and leveraging the dependencies.</p>
-
 <p>This process seemed to be a good candidate for automation so as a first step, I packaged it into a docker image. Folks in my class have basic working knowledge of pulling / running docker images so next semester I hope to leverage this without having to pre-gen a single build artifact on my own.</p>
-
 <p>Plus, this will empower folks in class to perhaps do more with lambda if it is easier to create various combinations of dependencies in thier layers.</p>
-
 <p>I figured maybe this would be interesting/useful to others so I wrapped into a <a href="https://github.com/mottaquikarim/pkglambdalayer">Github repo</a> and am publishing/sharing.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fgenerate-lambda-layer-artifacts-w%2fdocker%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fgenerate-lambda-layer-artifacts-w%2fdocker%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgenerate-lambda-layer-artifacts-w%2fdocker%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
 </article>
 
         </main><footer id="footer">
-    Copyright © 2020 Taq Karim
+    Copyright © 2022 Taq Karim
 </footer>
 </body>
 </html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>🍞 The K-Prime 🍞</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>🍞 The K-Prime 🍞</h1><time>December 3, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#-semiprime----1000-">🍞 semiprime 🍞 \( &lt; 1000 \)</a></li>
+    <li><a href="#-3-prime----5000-">🍞 3-prime 🍞 \( &lt; 5000 \)</a></li>
+    <li><a href="#-4-prime----500000-">🍞 4-prime 🍞 \( &lt; 500000 \)</a></li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="hol-up">Hol up.</h1>
+<p>Remember this? 🍞 <a href="/posts/the-semiprime-sandwich/">The Semiprime</a> 🍞</p>
+<p>Towards the bottom, I made a bold claim!</p>
+<blockquote>
+<p>I don&rsquo;t know how to prove this yet (and I could be very wrong here!) but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \([2,3]\) since primes can be thought of as k-prime numbers where k=1. For semiprimes, eg: k-primes where \(k==2\), the longest consecutive sequence possible is 3, as shown here, etc.</p></blockquote>
+<p>Let me expound. Suppose instead of considering semiprimes (or 2-primes), we considered 3-prime numbers. My conjecture was that we would expect to find some sequence of consecutive numbers of <strong>max length</strong> \(4\) (\(k = 3, k+1 = 4\)).</p>
+<p>And more generally speaking, for a k-prime number, we could expect to find some sequence of consecutive numbers of <strong>max len</strong> \(k+1\).</p>
+<p>Fam, I&rsquo;m here today to tell you that I was very right in surmising that &ldquo;I could be very wrong here!&rdquo;&hellip;because I was! In this post, I&rsquo;ll show that:</p>
+<blockquote>
+<p>Given any class of k-prime numbers, the <strong>longest length</strong> sequence of consecutive numbers that are k-prime is <strong>three</strong>. We will call this the k-prime sandwich.</p></blockquote>
+<p><em>(Let&rsquo;s note this as <strong>Observation 1</strong>)</em></p>
+<p>Then, I&rsquo;ll show that:</p>
+<blockquote>
+<p>Given any k-prime sandwich, one of the &ldquo;bread slices&rdquo; <strong>must</strong> be divisible by <strong>three</strong>.</p></blockquote>
+<p><em>(Let&rsquo;s note this as <strong>Observation 2</strong>)</em></p>
+<h1 id="k-prime-sandwiches-have-a-max-length--3">k-prime sandwiches have a max length \(= 3\)</h1>
+<p>We will begin by assuming there is some class of k-prime numbers such that the longest possible chain of consecutive occurances of k-prime numbers is \(&gt; 3\). (&hellip;.so&hellip;\(4\))</p>
+<p>Also, we know that because two consecutive numbers must consist of one even and one odd member. So, let&rsquo;s let \(p\) represent the odd k-prime and \(q\) represent the even k-prime (basically \(q = p + 1\)).</p>
+<blockquote>
+<p>\(q\) therefore must decompose to: \(q = 2 * f_1 *  &hellip; * f_{k-1}\) where \(f_{n}\) represents the k prime factors of \(q\). <br/><br/>\(2\) must be a factor here since we can <em>only</em> have an even k-prime if \(2\) is a prime factor of that k-prime.</p></blockquote>
+<p><em>(<strong>Why?</strong> Because all primes are odd except for \(2\) and an even number <strong>must</strong> be the product of either all even factors or all odd factors and at least one even factor)</em></p>
+<p>Ok so with this in mind, let&rsquo;s consider some numbers \(p, q, r, s\) that are consecutive k-primes:</p>
+<p>$$
+\begin{aligned}
+\text{let: } p &amp;= a_1 *  &hellip; * a_{k} \cr
+\text{let: } q &amp;= p + 1 \cr
+&amp;= 2 * f_1 *  &hellip; * f_{k-1} \cr
+\text{let: } r &amp;= p + 2 \cr
+\text{let: } s &amp;= p + 3 \cr
+&amp;= q + 2 \cr
+\end{aligned}
+$$</p>
+<p>We know that \(q\) must have \(2\) as at most one prime factor (because like the previous post on semiprime sandwiches, we are considering <em>distinct</em> k-primes only). Let&rsquo;s express \(s\) in terms of \(q\):</p>
+<p>$$
+\begin{aligned}
+q &amp;= p + 1 \cr
+&amp;= 2 * f_1 *  &hellip; * f_{k-1} \cr
+s &amp;= q + 2 \cr
+&amp;= 2 * f_1 *  &hellip; * f_{k-1} + 2 \cr
+&amp;= 2\bigg(f_1 *  &hellip; * f_{k-1} + 1 \bigg) \cr
+\end{aligned}
+$$</p>
+<p>Now the key part to consider is this: \( s = q + 2 = 2\bigg(f_1 *  &hellip; * f_{k-1} + 1 \bigg) \). Because \(f_1, &hellip; ,f_{k-1}\) are all prime, they must be <strong>odd</strong>. Therefore, the product of these factors: \(f_1 * &hellip; * f_{k-1}\) must <em>also</em> be <strong>odd</strong>. And thus, adding <strong>one</strong> to this product, \(f_1 * &hellip; * f_{k-1} + 1 \) gives us an <strong>even</strong> number. Because \(2\) is the only even prime number, this means our sum:  \(f_1 * &hellip; * f_{k-1} + 1 \) cannot be prime and therefore \(s = q + 2 \) <strong>cannot be k-prime</strong>.</p>
+<blockquote>
+<p>Therefore, we <em>cannot</em> have any sequence of consecutive k-primes that have <strong>more than 1</strong> even k-prime member. The only possible set of consecutive numbers that have exactly <strong>one</strong> even <strong>k-prime</strong> is a sequence of <strong>three</strong> numbers \(\big[p,q,r\big]\) where \(q\) and only \(q\) is even and \(q = p + 1 \), \(r = p + 2\).</p></blockquote>
+<p>This demonstrates <strong>Observation 1</strong> and shows us that the 🍞 k-prime 🍞 has max length \( = 3\).</p>
+<h1 id="in-a--k-prime--either-p-or-r-is-a-multiple-of-3">In a 🍞 k-prime 🍞, either \(p\) or \(r\) is a multiple of 3.</h1>
+<p>This observation (<strong>Observation 2</strong>) comes from the understanding that our longest possible set of consecutive k-primes is 3. Suppose we have some set of numbers: \(\big[p,q,r\big]\). We know that \(q\) must be <strong>even</strong>.</p>
+<p>As we also know, sometimes a multiple of \(3\) can be even. Therefore, it is possible that:</p>
+<p>$$
+\begin{aligned}
+q &amp;= 3n \cr
+\text{OR } q &amp;= 3n + 2 \cr
+\text{OR } q &amp;= 3n + 4 \cr
+\text{OR } q &amp;= 3n + 6 \cr
+\end{aligned}
+$$</p>
+<p>We stop at \(q = 3n + 6\) because:</p>
+<p>$$
+\begin{aligned}
+q &amp;= 3n \cr
+q &amp;= 3n + 6 \cr
+&amp;= 3(n+2) \cr
+\end{aligned}
+$$</p>
+<p>^ this is basically the next possible case where q is even and a multiple of 3.</p>
+<p>For each of the cases above, let&rsquo;s rewrite our consecutive sequence \(\big[p,q,r\big]\) as:</p>
+<table>
+  <thead>
+      <tr>
+          <th>p</th>
+          <th>q</th>
+          <th>r</th>
+          <th>multiple of 3 present?</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\( 3n - 1 \)</td>
+          <td>\( 3n \)</td>
+          <td>\( 3n + 1 \)</td>
+          <td>yes, \(q\)</td>
+      </tr>
+      <tr>
+          <td>\( 3n + 1 \)</td>
+          <td>\( 3n + 2 \)</td>
+          <td>\( 3n + 3 \)</td>
+          <td>yes, \(r\)</td>
+      </tr>
+      <tr>
+          <td>\( 3n + 3 \)</td>
+          <td>\( 3n + 4 \)</td>
+          <td>\( 3n + 5 \)</td>
+          <td>yes, \(p\)</td>
+      </tr>
+      <tr>
+          <td>\( 3n + 5 \)</td>
+          <td>\( 3n + 6 \)</td>
+          <td>\( 3n + 7 \)</td>
+          <td>yes, \(q\)</td>
+      </tr>
+  </tbody>
+</table>
+<p>As we can see from the table:</p>
+<blockquote>
+<p>For each possible combination of \(\big[p,q,r\big]\), we always have one element in the set that is divisible by 3.</p></blockquote>
+<p>Moreover, observe that:</p>
+<blockquote>
+<p>Since the only possible semiprime with 2 <em>and</em> 3 as factors is <strong>6</strong>, for semiprime sandwiches only: there is exactly one element that is divisible by 2 and there is exactly one element that is divisible by 3.</p></blockquote>
+<h1 id="generating-k-primes">Generating k-primes</h1>
+<p>I noticed that there wasn&rsquo;t any resources (that I could easily find) listing k-primes. For this reason, I put together (a pretty inefficient) script to do exactly this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">generate_factorization</span><span class="p">(</span><span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">kprime</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">  Generate prime factorization for all numbers from 2 -&gt; end
+</span></span></span><span class="line"><span class="cl"><span class="s2">  kprime is used to determine if the number is a kth-prime
+</span></span></span><span class="line"><span class="cl"><span class="s2">  based on the prime factors calculated
+</span></span></span><span class="line"><span class="cl"><span class="s2">  &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># store nums and factor pairs in a dict for future access</span>
+</span></span><span class="line"><span class="cl">  <span class="n">nums</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ok</span> <span class="o">=</span> <span class="n">k</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="n">factors</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="n">k</span> <span class="o">%</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">factors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">factors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nums</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;factors&#34;</span><span class="p">:</span> <span class="n">factors</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="c1"># we only care about distinct k-primes, so we want to ensure that</span>
+</span></span><span class="line"><span class="cl">      <span class="c1"># the only factors AND only distinct factors are kprime</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;distinctk&#34;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">factors</span><span class="p">))</span> <span class="o">==</span> <span class="n">kprime</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">factors</span><span class="p">)</span> <span class="o">==</span> <span class="n">kprime</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">nums</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">find_streaks</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">streak_num</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">  Given a list of numbers, find a streak of len streak_num
+</span></span></span><span class="line"><span class="cl"><span class="s2">  eg: [2,3,4,7,8,9], streak_num = 3
+</span></span></span><span class="line"><span class="cl"><span class="s2">    =&gt; [[2,3,4], [7,8,9]]
+</span></span></span><span class="line"><span class="cl"><span class="s2">  &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">streaks</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="n">curr_streak</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">curr_streak</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">curr_streak</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">curr_streak</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">curr_streak</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">curr_streak</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">curr_streak</span><span class="p">)</span> <span class="o">==</span> <span class="n">streak_num</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">streaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_streak</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">curr_streak</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">streaks</span>
+</span></span></code></pre></div><p>(<a href="https://replit.com/@mottaquikarim/LovingSteelProgramminglanguages#main.py">REPL</a>)</p>
+<h2 id="-semiprime----1000-">🍞 semiprime 🍞 \( &lt; 1000 \)</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">ks</span> <span class="o">=</span> <span class="n">generate_factorization</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ks_</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ks</span> <span class="k">if</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&#34;distinctk&#34;</span><span class="p">]}</span>
+</span></span><span class="line"><span class="cl"><span class="n">streaks</span> <span class="o">=</span> <span class="n">find_streaks</span><span class="p">(</span><span class="n">ks_</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">streak</span> <span class="ow">in</span> <span class="n">streaks</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">streak</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">ks</span><span class="p">[</span><span class="n">it</span><span class="p">][</span><span class="s2">&#34;factors&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">33 [3, 11]
+</span></span><span class="line"><span class="cl">34 [2, 17]
+</span></span><span class="line"><span class="cl">35 [5, 7]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">85 [5, 17]
+</span></span><span class="line"><span class="cl">86 [2, 43]
+</span></span><span class="line"><span class="cl">87 [3, 29]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">93 [3, 31]
+</span></span><span class="line"><span class="cl">94 [2, 47]
+</span></span><span class="line"><span class="cl">95 [5, 19]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">141 [3, 47]
+</span></span><span class="line"><span class="cl">142 [2, 71]
+</span></span><span class="line"><span class="cl">143 [11, 13]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">201 [3, 67]
+</span></span><span class="line"><span class="cl">202 [2, 101]
+</span></span><span class="line"><span class="cl">203 [7, 29]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">213 [3, 71]
+</span></span><span class="line"><span class="cl">214 [2, 107]
+</span></span><span class="line"><span class="cl">215 [5, 43]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">217 [7, 31]
+</span></span><span class="line"><span class="cl">218 [2, 109]
+</span></span><span class="line"><span class="cl">219 [3, 73]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">301 [7, 43]
+</span></span><span class="line"><span class="cl">302 [2, 151]
+</span></span><span class="line"><span class="cl">303 [3, 101]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">393 [3, 131]
+</span></span><span class="line"><span class="cl">394 [2, 197]
+</span></span><span class="line"><span class="cl">395 [5, 79]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">445 [5, 89]
+</span></span><span class="line"><span class="cl">446 [2, 223]
+</span></span><span class="line"><span class="cl">447 [3, 149]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">633 [3, 211]
+</span></span><span class="line"><span class="cl">634 [2, 317]
+</span></span><span class="line"><span class="cl">635 [5, 127]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">697 [17, 41]
+</span></span><span class="line"><span class="cl">698 [2, 349]
+</span></span><span class="line"><span class="cl">699 [3, 233]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">921 [3, 307]
+</span></span><span class="line"><span class="cl">922 [2, 461]
+</span></span><span class="line"><span class="cl">923 [13, 71]
+</span></span><span class="line"><span class="cl">-------
+</span></span></code></pre></div><h2 id="-3-prime----5000-">🍞 3-prime 🍞 \( &lt; 5000 \)</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">ks</span> <span class="o">=</span> <span class="n">generate_factorization</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ks_</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ks</span> <span class="k">if</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&#34;distinctk&#34;</span><span class="p">]}</span>
+</span></span><span class="line"><span class="cl"><span class="n">streaks</span> <span class="o">=</span> <span class="n">find_streaks</span><span class="p">(</span><span class="n">ks_</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">streak</span> <span class="ow">in</span> <span class="n">streaks</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">streak</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">ks</span><span class="p">[</span><span class="n">it</span><span class="p">][</span><span class="s2">&#34;factors&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">1309 [7, 11, 17]
+</span></span><span class="line"><span class="cl">1310 [2, 5, 131]
+</span></span><span class="line"><span class="cl">1311 [3, 19, 23]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">1885 [5, 13, 29]
+</span></span><span class="line"><span class="cl">1886 [2, 23, 41]
+</span></span><span class="line"><span class="cl">1887 [3, 17, 37]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">2013 [3, 11, 61]
+</span></span><span class="line"><span class="cl">2014 [2, 19, 53]
+</span></span><span class="line"><span class="cl">2015 [5, 13, 31]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">2665 [5, 13, 41]
+</span></span><span class="line"><span class="cl">2666 [2, 31, 43]
+</span></span><span class="line"><span class="cl">2667 [3, 7, 127]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">3729 [3, 11, 113]
+</span></span><span class="line"><span class="cl">3730 [2, 5, 373]
+</span></span><span class="line"><span class="cl">3731 [7, 13, 41]
+</span></span><span class="line"><span class="cl">-------
+</span></span></code></pre></div><h2 id="-4-prime----500000-">🍞 4-prime 🍞 \( &lt; 500000 \)</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">ks</span> <span class="o">=</span> <span class="n">generate_factorization</span><span class="p">(</span><span class="mi">500001</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ks_</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ks</span> <span class="k">if</span> <span class="n">ks</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&#34;distinctk&#34;</span><span class="p">]}</span>
+</span></span><span class="line"><span class="cl"><span class="n">streaks</span> <span class="o">=</span> <span class="n">find_streaks</span><span class="p">(</span><span class="n">ks_</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">streak</span> <span class="ow">in</span> <span class="n">streaks</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">streak</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">ks</span><span class="p">[</span><span class="n">it</span><span class="p">][</span><span class="s2">&#34;factors&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">203433 [3, 19, 43, 83]
+</span></span><span class="line"><span class="cl">203434 [2, 7, 11, 1321]
+</span></span><span class="line"><span class="cl">203435 [5, 23, 29, 61]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">214489 [11, 17, 31, 37]
+</span></span><span class="line"><span class="cl">214490 [2, 5, 89, 241]
+</span></span><span class="line"><span class="cl">214491 [3, 19, 53, 71]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">225069 [3, 13, 29, 199]
+</span></span><span class="line"><span class="cl">225070 [2, 5, 71, 317]
+</span></span><span class="line"><span class="cl">225071 [7, 11, 37, 79]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">258013 [7, 29, 31, 41]
+</span></span><span class="line"><span class="cl">258014 [2, 23, 71, 79]
+</span></span><span class="line"><span class="cl">258015 [3, 5, 103, 167]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">294593 [13, 17, 31, 43]
+</span></span><span class="line"><span class="cl">294594 [2, 3, 37, 1327]
+</span></span><span class="line"><span class="cl">294595 [5, 7, 19, 443]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">313053 [3, 13, 23, 349]
+</span></span><span class="line"><span class="cl">313054 [2, 7, 59, 379]
+</span></span><span class="line"><span class="cl">313055 [5, 17, 29, 127]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">315721 [7, 23, 37, 53]
+</span></span><span class="line"><span class="cl">315722 [2, 11, 113, 127]
+</span></span><span class="line"><span class="cl">315723 [3, 19, 29, 191]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">352885 [5, 13, 61, 89]
+</span></span><span class="line"><span class="cl">352886 [2, 17, 97, 107]
+</span></span><span class="line"><span class="cl">352887 [3, 19, 41, 151]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">389389 [7, 11, 13, 389]
+</span></span><span class="line"><span class="cl">389390 [2, 5, 23, 1693]
+</span></span><span class="line"><span class="cl">389391 [3, 31, 53, 79]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">409353 [3, 7, 101, 193]
+</span></span><span class="line"><span class="cl">409354 [2, 11, 23, 809]
+</span></span><span class="line"><span class="cl">409355 [5, 19, 31, 139]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">418845 [3, 5, 7, 3989]
+</span></span><span class="line"><span class="cl">418846 [2, 17, 97, 127]
+</span></span><span class="line"><span class="cl">418847 [11, 13, 29, 101]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">421629 [3, 13, 19, 569]
+</span></span><span class="line"><span class="cl">421630 [2, 5, 11, 3833]
+</span></span><span class="line"><span class="cl">421631 [7, 29, 31, 67]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">452353 [11, 17, 41, 59]
+</span></span><span class="line"><span class="cl">452354 [2, 7, 79, 409]
+</span></span><span class="line"><span class="cl">452355 [3, 5, 53, 569]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">464385 [3, 5, 83, 373]
+</span></span><span class="line"><span class="cl">464386 [2, 13, 53, 337]
+</span></span><span class="line"><span class="cl">464387 [7, 11, 37, 163]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">478905 [3, 5, 7, 4561]
+</span></span><span class="line"><span class="cl">478906 [2, 23, 29, 359]
+</span></span><span class="line"><span class="cl">478907 [11, 13, 17, 197]
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">485133 [3, 11, 61, 241]
+</span></span><span class="line"><span class="cl">485134 [2, 13, 47, 397]
+</span></span><span class="line"><span class="cl">485135 [5, 7, 83, 167]
+</span></span><span class="line"><span class="cl">-------
+</span></span></code></pre></div>
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-k-prime%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-k-prime%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fthe-k-prime%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

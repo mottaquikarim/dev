@@ -1,57 +1,157 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
-    <loc>http://taqkarim.dev/about/</loc>
-    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/</loc>
-    <lastmod>2021-01-03T18:25:11+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/custom-args-in-makefile/</loc>
+    <loc>http://localhost:1313/tags/just-for-fun/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/math/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/the-semiprime-square-sandwich/</loc>
+    <lastmod>2025-12-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/the-twin-prime-generator/</loc>
+    <lastmod>2022-12-08T10:24:40+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/the-k-prime/</loc>
+    <lastmod>2022-12-03T05:27:51+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/novel-algorithm-for-generating-pythagorean-triples/</loc>
+    <lastmod>2022-11-28T07:18:09+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/fifth-generic-trick-for-squaring-all-numbers/</loc>
+    <lastmod>2022-11-28T06:52:49+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/fourth-generic-trick-for-squaring-all-numbers/</loc>
+    <lastmod>2022-11-28T06:22:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/third-generic-trick-for-squaring-all-numbers/</loc>
+    <lastmod>2022-11-28T05:35:45+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/trick-for-squaring-40s-and-50s/</loc>
+    <lastmod>2022-11-20T22:36:58+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/the-semiprime-sandwich/</loc>
+    <lastmod>2022-11-20T21:29:05+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/second-generic-identity-for-squaring-all-numbers/</loc>
+    <lastmod>2022-09-12T00:48:23+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/generic-trick-for-squaring-all-numbers/</loc>
+    <lastmod>2022-09-05T04:28:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/demonstrating-a-trick-for-squaring-numbers-ending-in-6/</loc>
+    <lastmod>2022-09-04T11:13:37+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/proving-the-squaring-numbers-ending-in-5-trick/</loc>
+    <lastmod>2022-09-04T00:46:49+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/a-hack-for-transferring-cross-domain-localstorage-data/</loc>
+    <lastmod>2022-02-02T08:24:42+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/chrome-dev-tools/</loc>
+    <lastmod>2022-02-02T08:24:42+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/javascript/</loc>
+    <lastmod>2022-02-02T08:24:42+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/featured/</loc>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/reverse-engineering-wordle/</loc>
+    <lastmod>2022-01-24T12:24:16+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</loc>
+    <lastmod>2022-01-22T12:39:04+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/hacking-python-with-spells-from-harry-potter/</loc>
+    <lastmod>2021-03-20T18:19:39+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/python/</loc>
+    <lastmod>2021-03-20T18:19:39+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/extending-pythons-builtin-c-modules/</loc>
+    <lastmod>2021-03-17T20:58:20+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/grokking-builtin.all-in-python/</loc>
+    <lastmod>2021-03-16T22:26:46+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/hacking-the-covid-appointment-queue/</loc>
+    <lastmod>2021-02-27T19:45:28+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/hello-wrold-from-colab/</loc>
+    <lastmod>2021-01-28T04:01:51+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/meta/</loc>
+    <lastmod>2021-01-28T04:01:51+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/esoteric-bug/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/handling-parquet-schema-mismatch-based-on-data/</loc>
+    <lastmod>2021-01-24T05:38:50+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/golang/</loc>
+    <lastmod>2021-01-24T04:01:51+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</loc>
+    <lastmod>2021-01-24T04:01:51+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/is-json.decoder-broken-in-golang/</loc>
+    <lastmod>2021-01-14T01:26:01+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
+    <lastmod>2021-01-09T06:35:04+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/makefile/</loc>
+    <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/using-makefile--docker-for-golang-dev/</loc>
+    <lastmod>2021-01-08T02:29:26+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/custom-args-in-makefile/</loc>
     <lastmod>2021-01-03T00:59:04+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/</loc>
-    <lastmod>2021-01-03T00:59:04+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/integrating-code-climate-w/go-pkgs/</loc>
+  </url><url>
+    <loc>http://localhost:1313/posts/integrating-code-climate-w/go-pkgs/</loc>
     <lastmod>2021-01-01T14:28:32+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/generate-lambda-layer-artifacts-w/docker/</loc>
+  </url><url>
+    <loc>http://localhost:1313/tags/docker/</loc>
     <lastmod>2020-12-22T16:41:25+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
+  </url><url>
+    <loc>http://localhost:1313/posts/generate-lambda-layer-artifacts-w/docker/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/serverless/</loc>
+    <lastmod>2020-12-22T16:41:25+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/safely-construct-elasticsearch-queries-w/golang/</loc>
     <lastmod>2020-12-16T14:28:28+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/posts/gotcha-w/comparing-base64-encoded-strs/</loc>
+  </url><url>
+    <loc>http://localhost:1313/tags/elasticsearch/</loc>
     <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/gotcha-w/comparing-base64-encoded-strs/</loc>
+    <lastmod>2020-12-13T09:29:57+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/connecting-to-elasticsearch-configured-via-docker/</loc>
+    <lastmod>2020-03-16T06:37:08+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/self-grading-quizzes-with-airtable/</loc>
+    <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/teaching/</loc>
+    <lastmod>2020-03-16T06:31:03+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/</loc>
   </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://taqkarim.dev/tags/</loc>
-    <priority>0</priority>
-  </url>
-  
 </urlset>

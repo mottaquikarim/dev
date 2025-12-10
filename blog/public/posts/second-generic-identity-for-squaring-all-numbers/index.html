@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Second Generic Identity for Squaring All Numbers</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Second Generic Identity for Squaring All Numbers</h1><time>September 12, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#example-312">Example: <strong>31^2=</strong></a></li>
+    <li><a href="#example-392">Example: <strong>39^2=</strong></a></li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="part-1-the-basic-trick">Part 1: the Basic Trick</h1>
+<p>Let&rsquo;s begin with a very simplistic version of this trick.</p>
+<p>Consider:</p>
+<p>$$
+\begin{aligned}
+11 ^ 2 &amp;= ? \cr
+&amp;= 10 * 10 + 11 + 10 \cr
+&amp;= 100 + 21 \cr
+&amp;= 121
+\end{aligned}
+$$</p>
+<p>In words:</p>
+<blockquote>
+<p>Suppose we have a number <strong>N</strong> to square. If we know the square of <strong>N-1</strong>, the square of <strong>N</strong> is simply <strong>(N-1)(N-1)</strong> <em>plus</em> <strong>N</strong> <em>plus</em> <strong>N-1</strong>.</p></blockquote>
+<p>How neat is that!</p>
+<p>Let&rsquo;s prove it:</p>
+<p>$$
+\begin{aligned}
+N^2 &amp;= N * N \cr
+&amp;= \big([N-1]+1\big)\big([N-1]+1\big) \cr
+&amp;= [N-1]^2 + \big([N-1]+1\big) + \big([N-1]+1\big) + 1 \cr
+&amp;= [N-1]^2 + \big(N\big) + \big([N-1]+1\big) + 1 \cr
+&amp;= [N-1]^2 + \big(N\big) + \big(N\big) + 1 \cr
+&amp;= [N-1]^2 + \bold{\big(N\big)} + \bold{\big(N + 1\big)} \cr
+\end{aligned}
+$$</p>
+<p>Ta da!</p>
+<p>While this is a great insight, the utilitiy of this approach breaks down if we want to know the square of some number <strong>N</strong> but we do not know the square of <strong>N-1</strong>.</p>
+<p>For instance, what if we wanted to compute <strong>14^2</strong> but did not know <strong>13^2</strong>? The question to ask now is:</p>
+<blockquote>
+<p>Can this be generalized further such that we can compute the square of <em>any</em> number <strong>N = 10t * n</strong> (where <strong>t</strong> and <strong>n</strong> is a decomposed representation of the number, for instance if <strong>N=15</strong>, <strong>t</strong> is <strong>1</strong> and n is <strong>5</strong>) provided we know the square of <strong>10t</strong> (in this case, since <strong>t=1</strong>, <strong>10t</strong> would just be <strong>10</strong>)?</p></blockquote>
+<h1 id="part-2-the-second-trick">Part 2: the Second Trick</h1>
+<p>Suppose we wanted to find <strong>14^2</strong> but did not know <strong>13^2</strong> of hand (but obviously <strong>10^2</strong> is <strong>100</strong>). Can we still find our answer?</p>
+<p>From our obervation above:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 13^2 + 13 + 14 \cr
+&amp;= \big(12^2 + 12 + 13 \big) + 13 + 14 \cr
+&amp;= 12^2 + \big(12 + 13 \big) + \big(13 + 14 \big)\cr
+&amp;= 11^2 + \big(11 + 12 \big) + \big(12 + 13 \big) + \big(13 + 14 \big)\cr
+&amp;= 10^2 + \big(\bold{10} + 11 \big) + \big(\bold{11} + 12 \big) + \big(\bold{12} + 13 \big) + \big(\bold{13} + 14 \big)\cr
+&amp;= 10^2 + \bold{\big(10 + 11 + 12 + 13\big)} + \big(11 + 12 + 13 + 14 \big) \cr
+\end{aligned}
+$$</p>
+<p>This pattern looks interesting! Let&rsquo;s generalize it a bit:</p>
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+t &amp;= 1 \cr
+n &amp;= 4 \cr
+a &amp;= 10t + n = 14 \cr
+a - 1 &amp;= 13 \cr
+\end{aligned}
+$$</p>
+<p>From:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 10^2 + \bold{\big(10 + 11 + 12 + 13\big)} + \big(11 + 12 + 13 + 14 \big) \cr
+\end{aligned}
+$$</p>
+<p>Notice that:</p>
+<p>$$
+\begin{aligned}
+\big(10 + 11 + 12 + 13\big) &amp;= \sum_{10}^{13} x_i \cr
+\end{aligned}
+$$</p>
+<p>So:</p>
+<p>$$
+\begin{aligned}
+\big(10 + 11 + 12 + 13\big) &amp;= \cr
+&amp;= \big(10t + \cdots + (a-1)\big) \cr
+&amp;= \frac{4}{2}(10 + 13) \cr
+&amp;= \frac{n}{2}(10t + \big[ (a-1) \big]) \cr
+\end{aligned}
+$$</p>
+<p>And:</p>
+<p>$$
+\begin{aligned}
+\big(11 + 12 + 13 + 14\big) &amp;= \sum_{11}^{14} x_i \cr
+\end{aligned}
+$$</p>
+<p>So:</p>
+<p>$$
+\begin{aligned}
+\big(11 + 12 + 13 + 14\big) &amp;= \cr
+&amp;= \big(\big[ 10t + 1 \big] + \cdots + a\big) \cr
+&amp;= \frac{4}{2}(11 + 14) \cr
+&amp;= \frac{n}{2}(\big[ (10t + 1) \big]+ a) \cr
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s substitute:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 10^2 + \bold{\big(10 + 11 + 12 + 13\big)} + \big(11 + 12 + 13 + 14 \big) \cr
+14^2 &amp;= 100t^2 + \frac{n}{2}\big[ 10t + (a-1) \big] + \frac{n}{2}\big[ (10t + 1) + a \big] \cr
+\end{aligned}
+$$</p>
+<p>Simplify:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 100t^2 + \frac{n}{2}\big[ 10t + a \big] - \bold{\frac{n}{2}} + \frac{n}{2}\big[ (10t + a \big] + \bold{\frac{n}{2}}\cr
+\end{aligned}
+$$</p>
+<p>Rearrange:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 100t^2 + \frac{n}{2}\big[ 10t + a \big] + \frac{n}{2}\big[ (10t + a \big] - \bold{\frac{n}{2}} + \bold{\frac{n}{2}}\cr
+\end{aligned}
+$$</p>
+<p>Combine:</p>
+<p>$$
+\begin{aligned}
+14^2 &amp;= 100t^2 + \frac{n}{2}\big[ 10t + a \big] + \frac{n}{2}\big[ (10t + a \big]\cr
+\end{aligned}
+$$</p>
+<p>And finally&hellip;</p>
+<blockquote>
+</blockquote>
+<p>$$
+\begin{aligned}
+(10t + n)^2 &amp;= 100t^2 + n\big[ 10t + a \big]\cr
+\end{aligned}
+$$</p>
+<p>Ta da!</p>
+<h1 id="examples">Examples</h1>
+<p>Lete&rsquo;s see if this works!</p>
+<h2 id="example-312">Example: <strong>31^2=</strong></h2>
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+t &amp;= 3 \cr
+n &amp;= 1\cr
+a &amp;= 10t + n = 31 \cr
+a - 1 &amp;= 10 \cr
+\text{With: } \cr
+(10t + n)^2 &amp;= 100t^2 + n\big[ 10t + a \big]\cr
+\text{Then: } \cr
+31^2 &amp;= 100(3)^2 + (1)\big[ 10(3) + 31 \big]\cr
+&amp;= 100(3)^2 + \big[ 30 + 31 \big]\cr
+&amp;= 900 + \big[ 61 \big]\cr
+&amp;= 961 \cr
+\end{aligned}
+$$</p>
+<h2 id="example-392">Example: <strong>39^2=</strong></h2>
+<p>$$
+\begin{aligned}
+\text{Let: } \cr
+t &amp;= 3 \cr
+n &amp;= 9\cr
+a &amp;= 10t + n = 39 \cr
+a - 1 &amp;= 38 \cr
+\text{With: } \cr
+(10t + n)^2 &amp;= 100t^2 + n\big[ 10t + a \big]\cr
+\text{Then: } \cr
+39^2 &amp;= 100(3)^2 + (9)\big[ 10(3) + 39 \big]\cr
+&amp;= 100(3)^2 + 9\big[ 30 + 39 \big]\cr
+&amp;= 900 + 9\big[ 69 \big]\cr
+&amp;= 900 + \big[ 630 - 9 \big]\cr
+&amp;= 900 + \big[ 521 \big]\cr
+&amp;= 1521 \cr
+\end{aligned}
+$$</p>
+<p>^ Note, this isn&rsquo;t as fun for numbers where <strong>n</strong> &gt; 5. However, we can easily also solve this as:</p>
+<p>$$
+\begin{aligned}
+39^2 &amp;= 40^2 - 40 - 39\cr
+&amp;= 1600 - 79\cr
+&amp;= 1521\cr
+\end{aligned}
+$$</p>
+<h1 id="reflections">Reflections.</h1>
+<p>This one is pretty neat too, though I still contend that this solution,</p>
+<blockquote>
+</blockquote>
+<p>$$
+\begin{aligned}
+(10t + n)^2 &amp;= 100t^2 + n\big[ 10t + a \big]\cr
+\end{aligned}
+$$</p>
+<p>is not as pretty as:</p>
+<blockquote>
+</blockquote>
+<p>$$
+a^2 = 10 \Bigg[ t \bigg[ \bold{a} + n \bigg] \Bigg] + n^2
+$$</p>
+<p>(From: <a href="/dev/posts/generic-trick-for-squaring-all-numbers/">&ldquo;Generic Trick for Squaring All Numbers&rdquo;</a>. )</p>
+<p>But there you have it! <em>Two</em> approaches for squaring numbers without having to do the actual &ldquo;math&rdquo; of squaring stuff.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fsecond-generic-identity-for-squaring-all-numbers%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fsecond-generic-identity-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fsecond-generic-identity-for-squaring-all-numbers%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

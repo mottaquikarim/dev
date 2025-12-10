@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Trick for Squaring 40s (and 50s)</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Trick for Squaring 40s (and 50s)</h1><time>November 20, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bold522">\(\bold{52}^2\)</a></li>
+    <li><a href="#bold442">\(\bold{44}^2\)</a></li>
+    <li><a href="#bold242">\(\bold{24}^2\)</a></li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="the-trick-i">The Trick (I)</h1>
+<p>Here&rsquo;s a really cute trick for squaring numbers in the \(40\)s.</p>
+<p>$$
+\begin{aligned}
+40^2 &amp;= 1600 \cr
+&amp;= [16] \text{ and } [00] \cr
+41^2 &amp;= 1681 \cr
+&amp;= [16] \text{ and } [81] \cr
+&amp;= [16 + 0] \text{ and } [9^2] \cr
+42^2 &amp;= 1764 \cr
+&amp;= [17] \text{ and } [64] \cr
+&amp;= [16 + 1] \text{ and } [8^2] \cr
+&amp;= [16 + \bold{1}] \text{ and } [(10-\bold{2})^2] \cr
+43^2 &amp;= 1849 \cr
+&amp;= [18] \text{ and } [49] \cr
+&amp;= [16 + \bold{2}] \text{ and } [(10-\bold{3})^2] \cr
+44^2 &amp;= 1936 \cr
+&amp;= [19] \text{ and } [36] \cr
+&amp;= [16 + \bold{3}] \text{ and } [(10-\bold{4})^2] \cr
+45^2 &amp;= 2025 \cr
+&amp;= [20] \text{ and } [25] \cr
+&amp;= [16 + \bold{4}] \text{ and } [(10-\bold{5})^2] \cr
+\end{aligned}
+$$</p>
+<p>and so on! This goes all the way up to 50 and in fact, from 50 we get:</p>
+<h1 id="the-trick-ii">The Trick (II)</h1>
+<p>$$
+\begin{aligned}
+50^2 &amp;= 2500 \cr
+&amp;= [25] \text{ and } [00] \cr
+51^2 &amp;= 2601 \cr
+&amp;= [26] \text{ and } [01] \cr
+&amp;= [25 + 1] \text{ and } [1^2] \cr
+52^2 &amp;= 2704 \cr
+&amp;= [27] \text{ and } [04] \cr
+&amp;= [25 + \bold{2}] \text{ and } [\bold{2}^2] \cr
+53^2 &amp;= 2809 \cr
+&amp;= [28] \text{ and } [09] \cr
+&amp;= [25 + \bold{3}] \text{ and } [\bold{3}^2] \cr
+54^2 &amp;= 2916 \cr
+&amp;= [29] \text{ and } [16] \cr
+&amp;= [25 + \bold{4}] \text{ and } [\bold{4}^2] \cr
+55^2 &amp;= 3025 \cr
+&amp;= [30] \text{ and } [25] \cr
+&amp;= [25 + \bold{5}] \text{ and } [\bold{5}^2] \cr
+\end{aligned}
+$$</p>
+<p>This goes on too! In fact, we can go &ldquo;backwards&rdquo; (into the 30s) and &ldquo;forwards&rdquo; (into the 60s) but the trick becomes less useful since you have to know stuff like \(13^2\) and what not, which isn&rsquo;t nearly as fun/fast.</p>
+<p>My bet is it has to do with the \(\bold{5}\) in the \(\bold{5}0\)s. Looking at just two examples (\(51\) and \(52\)) we can see that:</p>
+<p>$$
+\begin{aligned}
+51^2 &amp;= (50+1)^2 \cr
+&amp;= (50^2 + 2<em>50 +1) \cr
+&amp;= (50^2 + 2</em>50 +1) \cr
+&amp;= (5^2<em>10^2 + 2</em>50 + 1) \cr
+&amp;= (5<em>5</em>10<em>10 + 2</em>5<em>10 + 1) \cr
+&amp;= (5</em>5<em>10</em>10 + 2<em>5</em>5<em>2 + 1) \cr
+&amp;= (100(5</em>5 + 1) + 1) \cr
+&amp;= (100(25 + \bold{1}) + \bold{1}) \cr
+\end{aligned}
+$$</p>
+<p>and likewise with \(52^2\):</p>
+<p>$$
+\begin{aligned}
+52^2 &amp;= (50+2)^2 \cr
+&amp;= (50^2 + 2<em>2</em>50 + 4) \cr
+&amp;= (50^2 + 4<em>50 +4) \cr
+&amp;= (5^2</em>10^2 + 4<em>50 + 4) \cr
+&amp;= (5</em>5<em>10</em>10 + 2<em>2</em>5<em>10 + 4) \cr
+&amp;= (5</em>5<em>10</em>10 + 2<em>2</em>5<em>5</em>2 + 4) \cr
+&amp;= (100(5*5 + 2) + 4) \cr
+&amp;= (100(25 + \bold{2}) + \bold{2^2}) \cr
+\end{aligned}
+$$</p>
+<p>etc. At some point later on I&rsquo;ll follow up with some justification for this.</p>
+<h1 id="update-demonstrating-why-this-works">Update: demonstrating why this works</h1>
+<p>Let&rsquo;s generalize our numbers here, our numbers \(\bold{5}1, \bold{5}2, &hellip;, \bold{5}9, \) can be expressed as:</p>
+<p>$$
+50 + n
+$$</p>
+<p>(Note that <em>any</em> number can be expressed this way, including say 37, in this case \(\bold{n} = -13\). The formula we are about to derive will work for this case <em>but</em> it won&rsquo;t be very useful).</p>
+<p>Ok so our goal now is to come up with a representation of:</p>
+<p>$$
+(50 + n)^2
+$$</p>
+<p>that proves our assertion above. Let&rsquo;s get started.</p>
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= (50+n)(50 + n) \cr
+&amp;= (50*50 + 50 * n + 50 * n + n^2) \cr
+\end{aligned}
+$$</p>
+<p>Since \(50 = 2 * 25 = 2 * 5 * 5\), we substitute all occurrences of \(\bold{50}\):</p>
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= (50*50 + 50 * n + 50 * n + n^2) \cr
+&amp;= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s rearrange our number sentence a bit (note the bolds):</p>
+<p>$$
+\begin{aligned}
+(50 + n)^2 &amp;= ((2 * 5 * 5) * (2 * 5 * 5) + 2 * (2 * 5 * 5) * n + n^2) \cr
+&amp;= (\bold{2 * 2 * 5 * 5} * 5 * 5 + \bold{2 * 2 * 5 * 5} * n + n^2) \cr
+&amp;= \bold{2 * 2 * 5 * 5}(5 * 5 + n) + n^2 \cr
+&amp;= \bold{100}(25+ n) + n^2 \cr
+\end{aligned}
+$$</p>
+<p>That last line: \(\bold{100}(25+ n) + n^2\) proves our assertion.</p>
+<p>Let&rsquo;s plug a few usecases in:</p>
+<h2 id="bold522">\(\bold{52}^2\)</h2>
+<p>$$
+\begin{aligned}
+n &amp;= 2 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+&amp;= \bold{100}(25+ (2)) + (2)^2 \cr
+&amp;= \bold{100}(27) + 4 \cr
+&amp;= 2704
+\end{aligned}
+$$</p>
+<h2 id="bold442">\(\bold{44}^2\)</h2>
+<p>Since \(50 + (-6) == 44\), here \(n == -6 \)</p>
+<p>$$
+\begin{aligned}
+n &amp;= -6 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+&amp;= \bold{100}(25+ (-6)) + (-6)^2 \cr
+&amp;= \bold{100}(19) + 36 \cr
+&amp;= 1936
+\end{aligned}
+$$</p>
+<h2 id="bold242">\(\bold{24}^2\)</h2>
+<p>Since \(50 + (-26) == 24\), here \(n == -26 \)</p>
+<p>$$
+\begin{aligned}
+n &amp;= -26 \cr
+(50 + n)^2 &amp;= \bold{100}(25+ n) + n^2 \cr
+&amp;= \bold{100}(25+ (-26)) + (-26)^2 \cr
+&amp;= \bold{100}(-1) + 676 \cr
+&amp;= -100 + 676 \cr
+&amp;= 576 \cr
+\end{aligned}
+$$</p>
+<p>^ This particular example shows us that while we <em>can</em> indeed use this formula for all numbers less than and greater than 50, it loses value as a mental math trick if we attempt to apply this for squares of numbers \( &lt; 40 \) or \( &gt; 50 \).</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2ftrick-for-squaring-40s-and-50s%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2ftrick-for-squaring-40s-and-50s%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2ftrick-for-squaring-40s-and-50s%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

@@ -1,0 +1,1180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Featured on Taq Karim</title>
+    <link>http://localhost:1313/tags/featured/</link>
+    <description>Recent content in Featured on Taq Karim</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 24 Jan 2022 12:24:16 +0000</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/tags/featured/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>The Semiprime Square Sandwich</title>
+      <link>http://localhost:1313/posts/the-semiprime-square-sandwich/</link>
+      <pubDate>Tue, 09 Dec 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/the-semiprime-square-sandwich/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#1-why-p-must-be-prime&#34;&gt;1. Why \(p\) must be prime&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#2-why-b-must-be-prime&#34;&gt;2. Why \(b\) must be prime&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#3-expressing-p-and-b-in-terms-of-r&#34;&gt;3. Expressing \(p\) and \(b\) in terms of \(r\)&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#1-the-center-prime-is-always-1-pmod60&#34;&gt;1. The center prime is always \(1 \pmod{60}\)&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#modulo-4&#34;&gt;Modulo 4&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#modulo-3&#34;&gt;Modulo 3&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#modulo-5&#34;&gt;Modulo 5&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#putting-it-together&#34;&gt;Putting it together&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#2-the-3b-semiprime-and-quadratic-residues&#34;&gt;2. The \(3b\) semiprime and quadratic residues&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#what-is-a-quadratic-residue&#34;&gt;What is a quadratic residue?&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#what-does-that-force-on-b&#34;&gt;What does that force on \(b\)?&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;lol-wut-again&#34;&gt;Lol, wut (again)?&lt;/h1&gt;
+&lt;p&gt;Some of you may remember a previous post where I explored &lt;strong&gt;semiprime sandwiches&lt;/strong&gt; – stretches of three consecutive integers \([n-1, n, n+1]\) that all happen to be &lt;strong&gt;distinct semiprimes&lt;/strong&gt;. The first such example occurs at:&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>The Twin Prime Generator</title>
+      <link>http://localhost:1313/posts/the-twin-prime-generator/</link>
+      <pubDate>Thu, 08 Dec 2022 10:24:40 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/the-twin-prime-generator/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;A twin prime is a prime number that is either 2 less or 2 more than another prime number—for example, either member of the twin prime pair (41, 43).&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Twin_prime&#34;&gt;source&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;So I realized something interesting the other day, given twin primes \(p, p+2\) and \(q\) the number occurring in between:&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;p&lt;/th&gt;
+          &lt;th&gt;q&lt;/th&gt;
+          &lt;th&gt;p + 2&lt;/th&gt;
+          &lt;th&gt;is \(q \) a multiple of 6?&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 2  \)&lt;/td&gt;
+          &lt;td&gt;\( 3 \)&lt;/td&gt;
+          &lt;td&gt;\( 4 \)&lt;/td&gt;
+          &lt;td&gt;no&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 3  \)&lt;/td&gt;
+          &lt;td&gt;\( 4 \)&lt;/td&gt;
+          &lt;td&gt;\( 5 \)&lt;/td&gt;
+          &lt;td&gt;no&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 5  \)&lt;/td&gt;
+          &lt;td&gt;\( 6 \)&lt;/td&gt;
+          &lt;td&gt;\( 7 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 1 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 11 \)&lt;/td&gt;
+          &lt;td&gt;\( 12 \)&lt;/td&gt;
+          &lt;td&gt;\( 13 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 2 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 17 \)&lt;/td&gt;
+          &lt;td&gt;\( 18 \)&lt;/td&gt;
+          &lt;td&gt;\( 19 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 3 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 29 \)&lt;/td&gt;
+          &lt;td&gt;\( 30 \)&lt;/td&gt;
+          &lt;td&gt;\( 31 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 5 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 41 \)&lt;/td&gt;
+          &lt;td&gt;\( 42 \)&lt;/td&gt;
+          &lt;td&gt;\( 43 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 7 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 59 \)&lt;/td&gt;
+          &lt;td&gt;\( 60 \)&lt;/td&gt;
+          &lt;td&gt;\( 61 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 10 \)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 71 \)&lt;/td&gt;
+          &lt;td&gt;\( 72 \)&lt;/td&gt;
+          &lt;td&gt;\( 73 \)&lt;/td&gt;
+          &lt;td&gt;yes, \( 6 * 12 \)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Note that \( q \) is &lt;em&gt;always&lt;/em&gt; divisible by \( 6 \)! As you can imagine, Dear Reader, I wondered if this held true generally. (And is it turns out, yes. It &lt;em&gt;does&lt;/em&gt;!)&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>🍞 The K-Prime 🍞</title>
+      <link>http://localhost:1313/posts/the-k-prime/</link>
+      <pubDate>Sat, 03 Dec 2022 05:27:51 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/the-k-prime/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#-semiprime----1000-&#34;&gt;🍞 semiprime 🍞 \( &amp;lt; 1000 \)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#-3-prime----5000-&#34;&gt;🍞 3-prime 🍞 \( &amp;lt; 5000 \)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#-4-prime----500000-&#34;&gt;🍞 4-prime 🍞 \( &amp;lt; 500000 \)&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;hol-up&#34;&gt;Hol up.&lt;/h1&gt;
+&lt;p&gt;Remember this? 🍞 &lt;a href=&#34;http://localhost:1313/posts/the-semiprime-sandwich/&#34;&gt;The Semiprime&lt;/a&gt; 🍞&lt;/p&gt;
+&lt;p&gt;Towards the bottom, I made a bold claim!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I don&amp;rsquo;t know how to prove this yet (and I could be very wrong here!) but I would bet that the longest consecutive sequence of k-primes possible is always k+1. For instance, with primes, the longest consecutive sequence possible is 2, eg: \([2,3]\) since primes can be thought of as k-prime numbers where k=1. For semiprimes, eg: k-primes where \(k==2\), the longest consecutive sequence possible is 3, as shown here, etc.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Novel Algorithm(?) for Generating Pythagorean Triples</title>
+      <link>http://localhost:1313/posts/novel-algorithm-for-generating-pythagorean-triples/</link>
+      <pubDate>Mon, 28 Nov 2022 07:18:09 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/novel-algorithm-for-generating-pythagorean-triples/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-is-even&#34;&gt;\(a\) is &lt;strong&gt;even&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-is-odd&#34;&gt;\(a\) is &lt;strong&gt;odd&lt;/strong&gt;&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#implication&#34;&gt;Implication&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#finding-more-possible-solutions&#34;&gt;Finding more possible solutions&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#testing&#34;&gt;Testing&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;background&#34;&gt;Background&lt;/h1&gt;
+&lt;p&gt;The pythagorean theorem states that given any right triangle with legs \(a \), \(b\) and hypotenuse \(c\):&lt;/p&gt;
+&lt;p&gt;$$
+a^2 + b^2 = c^2
+$$&lt;/p&gt;
+&lt;p&gt;(For those who are curious to learn more, &lt;a href=&#34;https://en.wikipedia.org/wiki/Pythagorean_theorem&#34;&gt;please check out wikipedia&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;A pythagorean triple is a set of three natural numbers (\(a,b,c\)) such that \( a^2 + b^2 = c^2 \). We express such a triple as \( \big( a,b,c \big) \) with the understanding that \( c \) is the hypotenuse. Because we are only interested in natural number solutions, the equation \( a^2 + b^2 = c^2 \) is an example of a &lt;a href=&#34;https://en.wikipedia.org/wiki/Diophantine_equation&#34;&gt;nonlinear diophantine equation&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Fifth Generic Trick for Squaring All Numbers</title>
+      <link>http://localhost:1313/posts/fifth-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 06:52:49 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/fifth-generic-trick-for-squaring-all-numbers/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;Ok so for this one, no proof (at least not yet). But, we will demonstrate by example.&lt;/p&gt;
+&lt;h1 id=&#34;squaring--bold30-s&#34;&gt;Squaring \( \bold{30} \)s&lt;/h1&gt;
+&lt;p&gt;Let&amp;rsquo;s begin here.&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Number&lt;/th&gt;
+          &lt;th&gt;Square&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 30^2 \)&lt;/td&gt;
+          &lt;td&gt;\(900\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 31^2 \)&lt;/td&gt;
+          &lt;td&gt;\(961\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 32^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1024\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 33^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1089\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 34^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1156\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 35^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1225\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 36^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1296\)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;\( 39^2 \)&lt;/td&gt;
+          &lt;td&gt;\(1521\)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;So far, there&amp;rsquo;s no &lt;em&gt;real&lt;/em&gt; pattern here. But! What if we decomposed our numbers a bit? eg:&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Fourth Generic Trick for Squaring All Numbers</title>
+      <link>http://localhost:1313/posts/fourth-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 06:22:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/fourth-generic-trick-for-squaring-all-numbers/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;This approach my friends is &lt;em&gt;pretty damn cool&lt;/em&gt; 😎.&lt;/p&gt;
+&lt;h1 id=&#34;derivation&#34;&gt;Derivation&lt;/h1&gt;
+&lt;p&gt;Let&amp;rsquo;s get straight to the derivation here as IMO that is the best way to grok this problem. Suppose we have some number - let&amp;rsquo;s say &lt;strong&gt;82&lt;/strong&gt; - that we&amp;rsquo;d like to square.&lt;/p&gt;
+&lt;p&gt;Moreover, suppose there was a number &lt;em&gt;close&lt;/em&gt; to &lt;strong&gt;82&lt;/strong&gt; that we knew how to square easily. In this case, let&amp;rsquo;s go with &lt;strong&gt;80&lt;/strong&gt; since \( 80^2 = \bold{6400} \) (and this is something we can easily compute mentally).&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Third Generic Trick for Squaring All Numbers</title>
+      <link>http://localhost:1313/posts/third-generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 28 Nov 2022 05:35:45 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/third-generic-trick-for-squaring-all-numbers/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold562&#34;&gt;\(\bold{56}^2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold572&#34;&gt;\(\bold{57}^2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold582&#34;&gt;\(\bold{58}^2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold542&#34;&gt;\(\bold{54}^2\)&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#applying-to-numbers-ending-in--bold6--only&#34;&gt;Applying to numbers ending in \( \bold{6} \) only.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#generic-solution&#34;&gt;Generic solution&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#bold562-1&#34;&gt;\(\bold{56}^2\)&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;tldr-the-trick&#34;&gt;TL;DR: The Trick.&lt;/h1&gt;
+&lt;h2 id=&#34;bold562&#34;&gt;\(\bold{56}^2\)&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+(56)^2 &amp;amp;= (\bold{55} + 1)^2 \cr
+&amp;amp;= 3025 + \bold{2}(55) + 1 \cr
+&amp;amp;= 3025 + 110 + 1 \cr
+&amp;amp;= 3136
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;Note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(55^2\) can be computed &lt;a href=&#34;http://localhost:1313/posts/proving-the-squaring-numbers-ending-in-5-trick/&#34;&gt;using the ending in 5 trick&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;the really important part here is the \(\bold{2}*55\) bit&lt;/li&gt;
+&lt;li&gt;this applies generally but becomes less useful the further we get from a number ending in 5.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;bold572&#34;&gt;\(\bold{57}^2\)&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+(57)^2 &amp;amp;= (\bold{55} + 2)^2 \cr
+&amp;amp;= 3025 + \bold{4}(55) + 4 \cr
+&amp;amp;= 3025 + 220 + 4 \cr
+&amp;amp;= 3249
+\end{aligned}
+$$&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Trick for Squaring 40s (and 50s)</title>
+      <link>http://localhost:1313/posts/trick-for-squaring-40s-and-50s/</link>
+      <pubDate>Sun, 20 Nov 2022 22:36:58 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/trick-for-squaring-40s-and-50s/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold522&#34;&gt;\(\bold{52}^2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold442&#34;&gt;\(\bold{44}^2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bold242&#34;&gt;\(\bold{24}^2\)&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;the-trick-i&#34;&gt;The Trick (I)&lt;/h1&gt;
+&lt;p&gt;Here&amp;rsquo;s a really cute trick for squaring numbers in the \(40\)s.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+40^2 &amp;amp;= 1600 \cr
+&amp;amp;= [16] \text{ and } [00] \cr
+41^2 &amp;amp;= 1681 \cr
+&amp;amp;= [16] \text{ and } [81] \cr
+&amp;amp;= [16 + 0] \text{ and } [9^2] \cr
+42^2 &amp;amp;= 1764 \cr
+&amp;amp;= [17] \text{ and } [64] \cr
+&amp;amp;= [16 + 1] \text{ and } [8^2] \cr
+&amp;amp;= [16 + \bold{1}] \text{ and } [(10-\bold{2})^2] \cr
+43^2 &amp;amp;= 1849 \cr
+&amp;amp;= [18] \text{ and } [49] \cr
+&amp;amp;= [16 + \bold{2}] \text{ and } [(10-\bold{3})^2] \cr
+44^2 &amp;amp;= 1936 \cr
+&amp;amp;= [19] \text{ and } [36] \cr
+&amp;amp;= [16 + \bold{3}] \text{ and } [(10-\bold{4})^2] \cr
+45^2 &amp;amp;= 2025 \cr
+&amp;amp;= [20] \text{ and } [25] \cr
+&amp;amp;= [16 + \bold{4}] \text{ and } [(10-\bold{5})^2] \cr
+\end{aligned}
+$$&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>The Semiprime Sandwich</title>
+      <link>http://localhost:1313/posts/the-semiprime-sandwich/</link>
+      <pubDate>Sun, 20 Nov 2022 21:29:05 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/the-semiprime-sandwich/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-possible-semiprime-n-where-n-is-odd&#34;&gt;A (possible) semiprime 🍞\(n\)🍞 where \(n\) is odd.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-semiprime-n-where-n-is-even&#34;&gt;A semiprime 🍞\(n\)🍞 where \(n\) is even.&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;lol-wut&#34;&gt;Lol, wut?&lt;/h1&gt;
+&lt;p&gt;I had the opportunity to catch up with my old friend, Chai, earlier this week. It has been a &lt;em&gt;while&lt;/em&gt; since we talked and the topic of aging and birthdays came up.&lt;/p&gt;
+&lt;p&gt;Chai is turning 32, or \(2^5\) years old(!!), later on this year. This is the (reasonably speaking) penultimate \(2^n\)&lt;em&gt;th&lt;/em&gt; of age in most of our lives: while an uncomfortable thought, it is highly unlikely anyone reading this article in the year 2022 will live to the age of \(2^7\)). (BTW: Chai if you&amp;rsquo;re reading this (&lt;em&gt;and&lt;/em&gt; Date.now() &amp;lt; 1670302800000): happy early birthday, fam! 🎉🎉)&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Second Generic Identity for Squaring All Numbers</title>
+      <link>http://localhost:1313/posts/second-generic-identity-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 12 Sep 2022 00:48:23 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/second-generic-identity-for-squaring-all-numbers/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-312&#34;&gt;Example: &lt;strong&gt;31^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-392&#34;&gt;Example: &lt;strong&gt;39^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;part-1-the-basic-trick&#34;&gt;Part 1: the Basic Trick&lt;/h1&gt;
+&lt;p&gt;Let&amp;rsquo;s begin with a very simplistic version of this trick.&lt;/p&gt;
+&lt;p&gt;Consider:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+11 ^ 2 &amp;amp;= ? \cr
+&amp;amp;= 10 * 10 + 11 + 10 \cr
+&amp;amp;= 100 + 21 \cr
+&amp;amp;= 121
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;In words:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose we have a number &lt;strong&gt;N&lt;/strong&gt; to square. If we know the square of &lt;strong&gt;N-1&lt;/strong&gt;, the square of &lt;strong&gt;N&lt;/strong&gt; is simply &lt;strong&gt;(N-1)(N-1)&lt;/strong&gt; &lt;em&gt;plus&lt;/em&gt; &lt;strong&gt;N&lt;/strong&gt; &lt;em&gt;plus&lt;/em&gt; &lt;strong&gt;N-1&lt;/strong&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Generic Trick for Squaring All Numbers</title>
+      <link>http://localhost:1313/posts/generic-trick-for-squaring-all-numbers/</link>
+      <pubDate>Mon, 05 Sep 2022 04:28:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/generic-trick-for-squaring-all-numbers/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-312&#34;&gt;Example: &lt;strong&gt;31^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-542&#34;&gt;Example: &lt;strong&gt;54^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-792&#34;&gt;Example: &lt;strong&gt;79^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-1062&#34;&gt;Example: &lt;strong&gt;106^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-312-1&#34;&gt;Example: &lt;strong&gt;31^2=&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;tldr-the-trick&#34;&gt;TL;DR: The Trick.&lt;/h1&gt;
+&lt;p&gt;Let&amp;rsquo;s first grok the trick just by pattern recognition.&lt;/p&gt;
+&lt;h2 id=&#34;example-312&#34;&gt;Example: &lt;strong&gt;31^2=&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+3\bold{1}^2 &amp;amp;= (\bold{3} * 10 + \bold{1}) \cr
+\bold{3} * (3\bold{1} + \bold{1}) &amp;amp;= 96\text{\textunderscore} \cr
+1^2 &amp;amp;= \space\space\space\space 1\cr
+\hline
+&amp;amp;= 961
+\end{aligned}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;example-542&#34;&gt;Example: &lt;strong&gt;54^2=&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+5\bold{4}^2 &amp;amp;= (\bold{5} * 10 + \bold{4}) \cr
+\bold{5} * (5\bold{4} + \bold{4}) &amp;amp;= 290\text{\textunderscore} \cr
+4^2 &amp;amp;= \space\space\space\space 16\cr
+\hline
+&amp;amp;= 2916
+\end{aligned}
+$$&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Demonstrating a Trick for Squaring Numbers Ending in 6</title>
+      <link>http://localhost:1313/posts/demonstrating-a-trick-for-squaring-numbers-ending-in-6/</link>
+      <pubDate>Sun, 04 Sep 2022 11:13:37 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/demonstrating-a-trick-for-squaring-numbers-ending-in-6/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#proof&#34;&gt;Proof.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-what-is-362&#34;&gt;Example: What is 36^2?&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#1-let-t-the-number-in-the-tens-place-3-let-p-t1-or-4&#34;&gt;1. Let &lt;strong&gt;t=&lt;/strong&gt; the number in the &lt;strong&gt;tens&lt;/strong&gt; place, &lt;strong&gt;3&lt;/strong&gt;. Let &lt;strong&gt;p= t+1&lt;/strong&gt;, or &lt;strong&gt;4&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#2-now-let-k-t--p-or-12&#34;&gt;2. Now let &lt;strong&gt;k= t * p&lt;/strong&gt;, or &lt;strong&gt;12&lt;/strong&gt;.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#3-next-let-m-2t--3-or-9&#34;&gt;3. Next let &lt;strong&gt;m= 2t * 3&lt;/strong&gt;, or &lt;strong&gt;9&lt;/strong&gt;.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#4-finally-combine-k-12-m-9-and-6-to-get-1296-done&#34;&gt;4. Finally, combine &lt;strong&gt;k&lt;/strong&gt; (12), &lt;strong&gt;m&lt;/strong&gt; (9) and &lt;strong&gt;6&lt;/strong&gt; to get: &lt;strong&gt;1296&lt;/strong&gt;. Done!&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#some-quick-examples&#34;&gt;Some quick examples.&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#62--36&#34;&gt;6^2 = 36&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#862--7396&#34;&gt;86^2 = 7396&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-comments&#34;&gt;Final comments.&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;!--
+Katex:
+- https://katex.org/docs/supported.html#style-color-size-and-font
+- https://katex.org/docs/support_table.html
+--&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: This post builds on my post &lt;a href=&#34;http://localhost:1313/dev/posts/proving-the-squaring-numbers-ending-in-5-trick/&#34;&gt;&amp;ldquo;Proving the Squaring Numbers Ending in 5 Trick&amp;rdquo;&lt;/a&gt;. I&amp;rsquo;ll be heavily referencing it in this post.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Proving the Squaring Numbers Ending in 5 Trick</title>
+      <link>http://localhost:1313/posts/proving-the-squaring-numbers-ending-in-5-trick/</link>
+      <pubDate>Sun, 04 Sep 2022 00:46:49 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/proving-the-squaring-numbers-ending-in-5-trick/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#example-what-is-252&#34;&gt;Example: what is &lt;strong&gt;25&lt;/strong&gt;^2?.&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#1-let-t-the-the-number-in-the-tens-place-2-let-p-t1-or-3&#34;&gt;1. Let &lt;strong&gt;t=&lt;/strong&gt; the the number in the &lt;strong&gt;tens&lt;/strong&gt; place, &lt;strong&gt;2&lt;/strong&gt;. Let &lt;strong&gt;p=&lt;/strong&gt; &lt;strong&gt;t+1&lt;/strong&gt;, or &lt;strong&gt;3&lt;/strong&gt;.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#2-now-let-k-t--p-or-6&#34;&gt;2. Now, let &lt;strong&gt;k=&lt;/strong&gt; &lt;strong&gt;t * p&lt;/strong&gt;, or &lt;strong&gt;6&lt;/strong&gt;.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#3-take-k-or-6-and-put-it-in-front-of-25-which-gives-us-625-done&#34;&gt;3. Take &lt;strong&gt;k&lt;/strong&gt;, or &lt;strong&gt;6&lt;/strong&gt; and put it in front of &lt;strong&gt;25&lt;/strong&gt;, which gives us &lt;strong&gt;625&lt;/strong&gt;. Done!&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#but-why-tho&#34;&gt;But WHY tho??&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#some-quick-examples&#34;&gt;Some quick examples.&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#52--25&#34;&gt;&lt;strong&gt;5^2&lt;/strong&gt; = &lt;strong&gt;25&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#552--3025&#34;&gt;&lt;strong&gt;55^2&lt;/strong&gt; = &lt;strong&gt;3025&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#1052--11025&#34;&gt;&lt;strong&gt;105^2&lt;/strong&gt; = &lt;strong&gt;11025&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-beautiful-outcome&#34;&gt;A beautiful outcome.&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;So here’s a neat trick. What’s a quick way to square numbers that end in — 5 in your head?&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>A Hack for Transferring Cross Domain Localstorage Data</title>
+      <link>http://localhost:1313/posts/a-hack-for-transferring-cross-domain-localstorage-data/</link>
+      <pubDate>Wed, 02 Feb 2022 08:24:42 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/a-hack-for-transferring-cross-domain-localstorage-data/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#requirements&#34;&gt;Requirements.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#experimentation&#34;&gt;Experimentation.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#output-artifact&#34;&gt;Output Artifact.&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#1-load-wordle-classic-copy-domain-demonstrating-no-stats&#34;&gt;1. Load &amp;ldquo;Wordle Classic&amp;rdquo; copy domain, demonstrating no stats.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#2-paste-the-javascript-snippet&#34;&gt;2. Paste the &lt;code&gt;javascript:&lt;/code&gt; snippet.&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#3-hit-enter-which-will-redirect-us-to-the-wordle-classic-domain&#34;&gt;3. Hit &amp;ldquo;Enter&amp;rdquo;, which will redirect us to the &amp;ldquo;Wordle Classic&amp;rdquo; domain&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#4-stats-dialog-in-wordle-classic-reflects-transferred-state-&#34;&gt;4. Stats dialog in &amp;ldquo;Wordle Classic&amp;rdquo; reflects transferred state 🎉&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#aside-considerations-for-mobile&#34;&gt;&lt;strong&gt;Aside:&lt;/strong&gt; Considerations for Mobile.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#aside-2-transferring-from-homescreen-app&#34;&gt;&lt;strong&gt;Aside 2:&lt;/strong&gt; Transferring from Homescreen App.&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;&lt;strong&gt;BLUF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;🎉 Wordle &lt;a href=&#34;https://www.nytco.com/press/wordle-new-york-times-games/&#34;&gt;has been purchased by the NYTimes!&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;🐱‍💻 I wanted to cache the game in its current state, so I downloaded source and uploaded to my own server: &lt;a href=&#34;https://mottaquikarim.github.io/wordle_classic/&#34;&gt;Wordle Classic&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Reverse Engineering Wordle</title>
+      <link>http://localhost:1313/posts/reverse-engineering-wordle/</link>
+      <pubDate>Mon, 24 Jan 2022 12:24:16 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/reverse-engineering-wordle/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#requirements&#34;&gt;Requirements.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#aside&#34;&gt;Aside.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#experimentation&#34;&gt;Experimentation.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#output-artifact&#34;&gt;Output Artifact.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#updates&#34;&gt;Update(s).&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;&lt;strong&gt;BLUF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;👀 I looked into + grokked &lt;a href=&#34;https://www.powerlanguage.co.uk/wordle/&#34;&gt;Wordle&amp;rsquo;s&lt;/a&gt; javascript source code&lt;/p&gt;
+&lt;p&gt;🐱💻 Then, I managed to come up with a workaround that enables loading &lt;strong&gt;any&lt;/strong&gt; &lt;em&gt;previous&lt;/em&gt; word of the day puzzle&lt;/p&gt;
+&lt;p&gt;🙌 I wrote a little tool to load the original Wordle site but with my &amp;ldquo;hack&amp;rdquo; injected allowing anyone to play any past word of the day puzzle. I call it: &lt;strong&gt;&lt;a href=&#34;https://mottaquikarim.github.io/wordle_timemachine/&#34;&gt;Wordle Time Machine&lt;/a&gt;&lt;/strong&gt; (&lt;strong&gt;EDIT&lt;/strong&gt;: v2 can be found &lt;strong&gt;&lt;a href=&#34;https://mottaquikarim.github.io/wordle_timemachine/v2.html&#34;&gt;here&lt;/a&gt;&lt;/strong&gt;) 🎉&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>A technique for saving content from a `data:text/html` URI</title>
+      <link>http://localhost:1313/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</link>
+      <pubDate>Sat, 22 Jan 2022 12:39:04 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/a-technique-for-saving-content-from-a-datatext/html-uri/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#experimentation&#34;&gt;Experimentation.&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#naive-attempt-uri&#34;&gt;Naive attempt: URI&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#naive-attempt-js-implementation&#34;&gt;Naive attempt: js implementation&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#naive-attempt-remarks&#34;&gt;Naive attempt: remarks&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#refined-attempt-uri&#34;&gt;Refined attempt: URI&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#refined-attempt-js-implementation&#34;&gt;Refined attempt: js implementation&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#refined-attempt-remarks&#34;&gt;Refined attempt: remarks&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#output-artifact&#34;&gt;Output Artifact.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#ps&#34;&gt;PS!&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;OMG! I finally got it. 🙌&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BLUF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;🙌 Turn your chrome tab into a &amp;ldquo;notepad&amp;rdquo; using: &lt;code&gt;data:text/html, &amp;lt;html contenteditable&amp;gt;&lt;/code&gt; (copy and paste this into your URL bar to test it out)&lt;/p&gt;
+&lt;p&gt;🚨 But! If you hit back or refresh by accident, you lose your notes (this sucks)&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Hacking Python With Spells From Harry Potter</title>
+      <link>http://localhost:1313/posts/hacking-python-with-spells-from-harry-potter/</link>
+      <pubDate>Sat, 20 Mar 2021 18:19:39 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/hacking-python-with-spells-from-harry-potter/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#why-tho&#34;&gt;Why tho?&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#type---lumos&#34;&gt;type -&amp;gt; lumos&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#del---avadakedavra&#34;&gt;del -&amp;gt; avadakedavra&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#import---accio&#34;&gt;import -&amp;gt; accio&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-remarks&#34;&gt;Final Remarks&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#update-03212021&#34;&gt;Update 03/21/2021&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/dev/img/hp_py.png&#34; alt=&#34;hp py&#34;&gt;&lt;/p&gt;
+&lt;p&gt;This post is intended to be a follow-up/continuation of my discussion around &lt;a href=&#34;https://github.com/python/cpython&#34;&gt;cpython&lt;/a&gt; and grokking (generally speaking) how the language works &amp;ldquo;under the hood&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(For better context, I&amp;rsquo;d recommend first reading the previous post(s) in this series:&lt;/em&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:1313/dev/posts/grokking-builtin.all-in-python/&#34;&gt;&amp;ldquo;Grokking Builtin.all in Python&amp;rdquo;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:1313/dev/posts/extending-pythons-builtin-c-modules/&#34;&gt;&amp;ldquo;Extending Python&amp;rsquo;s Builtin C Modules&amp;rdquo;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;(That being said, this post is relatively stand alone and you can just probably make do ok reading this without looking at the previous parts).&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Extending Pythons Builtin C Modules</title>
+      <link>http://localhost:1313/posts/extending-pythons-builtin-c-modules/</link>
+      <pubDate>Wed, 17 Mar 2021 20:58:20 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/extending-pythons-builtin-c-modules/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-1-building-cpython&#34;&gt;Step 1: Building CPython&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-2-dockerizing-the-build-process&#34;&gt;Step 2: Dockerizing the build process&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-3-lightly-dipping-our-toes-into-c-land&#34;&gt;Step 3: Lightly dipping our toes into C-land&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-4-implementing-a-custom-builtin-method&#34;&gt;Step 4: Implementing a custom builtin method&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-remarks&#34;&gt;Final Remarks&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;This post is intended to be a follow-up/continuation of my discussion around &lt;a href=&#34;https://github.com/python/cpython&#34;&gt;cpython&lt;/a&gt; and grokking (generally speaking) how &lt;code&gt;all(...)&lt;/code&gt; works.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(For better context, I&amp;rsquo;d recommend first reading the previous post in this series, &lt;a href=&#34;http://localhost:1313/dev/posts/grokking-builtin.all-in-python/&#34;&gt;&amp;ldquo;Grokking Builtin.all in Python&amp;rdquo;&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Having understood how the &lt;code&gt;builtin_all&lt;/code&gt; method behaves, we now turn our attention to how we might be able to either &amp;ldquo;hack&amp;rdquo; &lt;code&gt;builtin_all&lt;/code&gt; to accommodate our intended use case (for no reason except for our own education) or more generally speaking, how we might define a new method that specifically checks to see if &lt;em&gt;all&lt;/em&gt; items in the iterable are equivalent.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Grokking Builtin.all in Python</title>
+      <link>http://localhost:1313/posts/grokking-builtin.all-in-python/</link>
+      <pubDate>Tue, 16 Mar 2021 22:26:46 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/grokking-builtin.all-in-python/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#first-a-sensible-alternative&#34;&gt;First, a sensible alternative&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#venturing-into-the-guts-of-cpython&#34;&gt;Venturing into the guts of CPython&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#tying-it-all-together-finally&#34;&gt;Tying it all together, finally!&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-remarks&#34;&gt;Final remarks&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#sidebar-wtf-is-tp_bool&#34;&gt;Sidebar: WTF is tp_bool???&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;A coworker shared this neat code snippet on slack:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kc&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;and mused to us all:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;this is annoying &lt;br/&gt; &lt;em&gt;&amp;ndash; venerated colleague, circa 2021&lt;/em&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Indeed he&amp;rsquo;s right! It &lt;em&gt;is&lt;/em&gt; annoying. His note piqued my curiousity as to why/how this worked under the hood; in this post I take a dive into the guts of &lt;strong&gt;&lt;a href=&#34;https://github.com/python/cpython&#34;&gt;cpython&lt;/a&gt;&lt;/strong&gt; searching for answers.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Hacking the Covid Appointment Queue</title>
+      <link>http://localhost:1313/posts/hacking-the-covid-appointment-queue/</link>
+      <pubDate>Sat, 27 Feb 2021 19:45:28 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/hacking-the-covid-appointment-queue/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-problem&#34;&gt;The Problem&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#attempt-1-find-stores-with-availability&#34;&gt;Attempt 1: Find stores with Availability&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#attempt-2-running-the-api-calls-from-within-the-browser&#34;&gt;Attempt 2: Running the API calls from within the browser.&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#attempt-3-grokking-then-directly-calling-the-source-code&#34;&gt;Attempt 3: Grokking, then directly calling, the source code&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#closing-thoughts&#34;&gt;Closing Thoughts&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#update-03142021&#34;&gt;UPDATE 03/14/2021&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#video-walkthrough&#34;&gt;Video Walkthrough&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#sidebar-1-cvs-feed&#34;&gt;Sidebar 1: CVS Feed&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#sidebar-2-rite-aid-rules-engine&#34;&gt;Sidebar 2: Rite Aid Rules Engine&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: By examining the minified source code of the &lt;a href=&#34;https://www.riteaid.com/pharmacy/apt-scheduler&#34;&gt;Rite Aid Immunization Scheduler&lt;/a&gt; I was able to figure out a way to book vaccine appointments for my (eligible &amp;ndash; obviously) loved ones and family friends. So far my method has successfully booked appointments for 8 individuals w/pre-existing conditions living in various parts of New Jersey.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Hello, Wrold from Colab</title>
+      <link>http://localhost:1313/posts/hello-wrold-from-colab/</link>
+      <pubDate>Thu, 28 Jan 2021 04:01:51 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/hello-wrold-from-colab/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#what&#34;&gt;What?&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#why&#34;&gt;Why?&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#how&#34;&gt;How?&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Hello, Wrold, from Google Colab!!&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://colab.research.google.com/drive/1K3xuq9Ipy_iUIX_NmH5j-CP4foIVklhA?usp=sharing&#34;&gt;Here&lt;/a&gt; is the colab doc for those following along at home).&lt;/p&gt;
+&lt;h2 id=&#34;what&#34;&gt;What?&lt;/h2&gt;
+&lt;p&gt;This is a post composed in Google Colab as a demonstration of feasibility that blog posts can be generated from a colab notebook.&lt;/p&gt;
+&lt;p&gt;In fact, any &lt;code&gt;ipynb&lt;/code&gt; file is fair game - just drop it in to a particular folder and on build, it will be converted to a markdown file, &amp;ldquo;sanitized&amp;rdquo; and then available as a normal post on Hugo.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Handling Parquet Schema Mismatch Based on Data</title>
+      <link>http://localhost:1313/posts/handling-parquet-schema-mismatch-based-on-data/</link>
+      <pubDate>Sun, 24 Jan 2021 05:38:50 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/handling-parquet-schema-mismatch-based-on-data/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-problem&#34;&gt;The Problem&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#analysis-and-remarks&#34;&gt;Analysis and Remarks&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;TL;DR: explicitly define your parquet schema when reading/writing from pq tables if you want to maintain consistent datatypes even when column values are null.&lt;/p&gt;
+&lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
+&lt;p&gt;Consider the following pandas dataframe, written into parquet format:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pandas&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pyarrow&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pa&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pyarrow.parquet&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pq&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s1&#34;&gt;&amp;#39;organizationId&amp;#39;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;org1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;org2&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;org3&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s1&#34;&gt;&amp;#39;customerProducts&amp;#39;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;p1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;p2&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;p4&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;p5&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;p1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;p3&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;table&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pa&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Table&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;from_pandas&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;pq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write_table&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;table&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;output.parquet&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here, we have a dataframe with two columns - with the &lt;code&gt;customerProducts&lt;/code&gt; col storing a list of strings as data.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>You might not be using json.Decoder correctly in golang</title>
+      <link>http://localhost:1313/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</link>
+      <pubDate>Sun, 24 Jan 2021 04:01:51 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/you-might-not-be-using-json.decoder-correctly-in-golang/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#googling-jsondecoder-example-golang&#34;&gt;Googling: &lt;strong&gt;&amp;ldquo;json.decoder example golang&amp;rdquo;&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-problem&#34;&gt;The Problem&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-fix&#34;&gt;The Fix&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-few-notes&#34;&gt;A few notes&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;TL;DR: prevailing &amp;ldquo;secondary source&amp;rdquo; wisdom (ie: blog posts) about &lt;code&gt;json.Decoder&lt;/code&gt; don&amp;rsquo;t demonstrate the proper way to use it.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;This post is a follow up to my (kinda lengthy) &lt;a href=&#34;http://localhost:1313/posts/is-json.decoder-broken-in-golang/&#34; title=&#34;deep dive&#34;&gt;deep dive&lt;/a&gt; into what I &lt;em&gt;thought&lt;/em&gt; was a bug in golang&amp;rsquo;s &lt;code&gt;json.Decoder&lt;/code&gt; pkg.&lt;/p&gt;
+&lt;p&gt;Instead, I realized that generally speaking, &lt;code&gt;json.Decoder&lt;/code&gt; can be misunderstood - which &lt;em&gt;may&lt;/em&gt; lead to unintended consequences. In this post, I will demonstrate a safer pattern that ought to be used instead of the prevailing wisdom.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Is json.Decoder broken in golang?!</title>
+      <link>http://localhost:1313/posts/is-json.decoder-broken-in-golang/</link>
+      <pubDate>Thu, 14 Jan 2021 01:26:01 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/is-json.decoder-broken-in-golang/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-issue&#34;&gt;The &amp;ldquo;Issue&amp;rdquo;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#grokking-the-json-pkg&#34;&gt;Grokking the &lt;code&gt;json&lt;/code&gt; pkg&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#tracing-bad_json-through-jsondecoder&#34;&gt;Tracing &lt;code&gt;bad_json&lt;/code&gt; through &lt;code&gt;json.Decoder&lt;/code&gt;&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#1-jsonnewdecoder-instantiates-a-jsondecoder-struct&#34;&gt;1. &lt;code&gt;json.NewDecoder&lt;/code&gt; instantiates a &lt;code&gt;json.Decoder&lt;/code&gt; struct&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#2-decoderdecodev-internally-calls-decoderreadvalue&#34;&gt;2. &lt;code&gt;Decoder.Decode(v)&lt;/code&gt; internally calls &lt;code&gt;Decoder.readValue()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#3-decoderreadvalue-processes-chars-wscannerstep&#34;&gt;3. &lt;code&gt;Decoder.readValue&lt;/code&gt; processes chars w/&lt;code&gt;scanner.step()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#4-stepping-through-decoderreadvalue-with-bad_json&#34;&gt;4. Stepping through &lt;code&gt;Decoder.readValue&lt;/code&gt; with &lt;code&gt;bad_json&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#5-bad_json-iteration-table&#34;&gt;5. &lt;code&gt;bad_json&lt;/code&gt; iteration table&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#6-making-sense-of-the-final-iteration-steps&#34;&gt;6. Making sense of the final iteration steps&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-remarks&#34;&gt;Final Remarks&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: No.&lt;/p&gt;
+&lt;p&gt;Although unintuitive, &lt;strong&gt;&lt;code&gt;json.Decoder&lt;/code&gt;&lt;/strong&gt; isn&amp;rsquo;t actually broken! However, some of its behavior can appear &lt;strong&gt;seemingly&lt;/strong&gt; wrong when used incorrectly. (Tread carefully.)&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    
+    
+    <item>
+      <title>Using Makefile &#43; Docker for Golang dev</title>
+      <link>http://localhost:1313/posts/using-makefile--docker-for-golang-dev/</link>
+      <pubDate>Fri, 08 Jan 2021 02:29:26 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/using-makefile--docker-for-golang-dev/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#tldr-the-makefile&#34;&gt;TL;DR: the &lt;strong&gt;Makefile&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#why-docker&#34;&gt;Why Docker?&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#definitions&#34;&gt;Definitions&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#make-clean&#34;&gt;make &lt;strong&gt;clean&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#make-fmt&#34;&gt;make &lt;strong&gt;fmt&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#make-lint&#34;&gt;make &lt;strong&gt;lint&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#make-test&#34;&gt;make &lt;strong&gt;test&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#bonus-make-bash&#34;&gt;BONUS: make &lt;strong&gt;bash&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;(This post was inspired by this &lt;a href=&#34;https://leogtzr.medium.com/how-to-use-makefiles-for-your-golang-development-b4c438fe0bdd&#34;&gt;article&lt;/a&gt; on medium.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;For starters, I&amp;rsquo;d highly recommend reading the article I linked to &lt;em&gt;first&lt;/em&gt;. Leo&amp;rsquo;s points about &lt;em&gt;why&lt;/em&gt; he chooses Make resonate strongly with me.&lt;/p&gt;
+&lt;p&gt;In this post, I&amp;rsquo;ll expand slightly on his Makefile and share how make targets can be leveraged with docker for golang development.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Custom Args in Makefile</title>
+      <link>http://localhost:1313/posts/custom-args-in-makefile/</link>
+      <pubDate>Sun, 03 Jan 2021 00:59:04 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/custom-args-in-makefile/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#without-makefile-targets&#34;&gt;Without Makefile targets&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-wrace-conditions-check&#34;&gt;Run tests w/race conditions check&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-in-short-mode&#34;&gt;Run tests in &amp;ldquo;short&amp;rdquo; mode&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-wverbose-results-in-terminal&#34;&gt;Run tests w/verbose results in terminal&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-for-a-specific-package&#34;&gt;Run tests for a specific package&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-a-specific-test-func-in-a-specific-package&#34;&gt;Run a specific test func in a specific package&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#consolidating-functionality-within-single-make-target&#34;&gt;Consolidating functionality within single Make target&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-wrace-conditions-check-1&#34;&gt;Run tests w/race conditions check&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-in-short-mode-1&#34;&gt;Run tests in &amp;ldquo;short&amp;rdquo; mode&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-wverbose-results-in-terminal-1&#34;&gt;Run tests w/verbose results in terminal&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-tests-for-a-specific-package-1&#34;&gt;Run tests for a specific package&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#run-a-specific-test-func-in-a-specific-package-1&#34;&gt;Run a specific test func in a specific package&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#final-remarks&#34;&gt;Final Remarks&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;TL;DR: use &lt;code&gt;$(eval ARGS=${ARGS} [some additional arg])&lt;/code&gt; within a make target to build custom argument sequences for commands wrapped by make targets - like &lt;code&gt;make test&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Integrating Code Climate w/go pkgs</title>
+      <link>http://localhost:1313/posts/integrating-code-climate-w/go-pkgs/</link>
+      <pubDate>Fri, 01 Jan 2021 14:28:32 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/integrating-code-climate-w/go-pkgs/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-0-write-and-run-some-tests&#34;&gt;Step 0: Write and run some tests!&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#track-code-coverage&#34;&gt;Track code coverage&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#sidebar-generating-code-coverage-results-as-html&#34;&gt;Sidebar: generating code coverage results as HTML&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#getting-started-with-codeclimate&#34;&gt;Getting started with CodeClimate&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-1-downloading-the-test-reporter&#34;&gt;Step 1: Downloading the test reporter&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-2-running-the-tests-with-code-coverage&#34;&gt;Step 2: Running the tests with code coverage&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-3-running-the-after-build&#34;&gt;Step 3: Running the after build&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-code&#34;&gt;The Code&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#makefile&#34;&gt;&lt;code&gt;Makefile&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#github-action&#34;&gt;&lt;code&gt;Github Action&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;TL; DR: When integrating golang code coverage with Code Climate, be sure to set the &lt;code&gt;--prefix&lt;/code&gt; arg (set it to your pkg github prefix, ie: &amp;ldquo;github.com/mottaquikarim/esquerydsl&amp;rdquo;) in the &lt;code&gt;after-build&lt;/code&gt; stage in order for your src code to be recognized by the test reporter.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Generate Lambda Layer Artifacts w/Docker</title>
+      <link>http://localhost:1313/posts/generate-lambda-layer-artifacts-w/docker/</link>
+      <pubDate>Tue, 22 Dec 2020 16:41:25 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/generate-lambda-layer-artifacts-w/docker/</guid>
+      <description>&lt;p&gt;&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-backstory&#34;&gt;&lt;strong&gt;The Backstory&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-problem&#34;&gt;&lt;strong&gt;The Problem&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#lambda-layers-and-docker&#34;&gt;&lt;strong&gt;Lambda Layers and Docker&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+This post (and accompanying code) was inspired by &lt;a href=&#34;https://towardsdatascience.com/how-to-install-python-packages-for-aws-lambda-layer-74e193c76a91&#34;&gt;this&lt;/a&gt; tutorial and a need to easily generate lambda layer artifacts for a grad course I teach at Baruch University.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/mottaquikarim/pkglambdalayer&#34;&gt;Github&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: Generate a lambda layer artifact for python using this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;➜  cat &amp;gt;&amp;gt; requirements.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;requests&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;==&lt;/span&gt;2.24.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;➜  docker run -v &lt;span class=&#34;nv&#34;&gt;$PWD&lt;/span&gt;:/data mottaquikarim/pkglambdalayer:latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;On completion, expect the following:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;➜  ls -ahl
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;total &lt;span class=&#34;m&#34;&gt;1792&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;drwxr-xr-x   &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt; tkarim  staff   160B Dec &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 08:36 .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;drwxr-xr-x  &lt;span class=&#34;m&#34;&gt;23&lt;/span&gt; tkarim  staff   736B Dec &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 08:31 ..
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;drwxr-xr-x  &lt;span class=&#34;m&#34;&gt;13&lt;/span&gt; tkarim  staff   416B Dec &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 08:36 pkg
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-rw-r--r--   &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; tkarim  staff   879K Dec &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 08:36 pkg.zip
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-rw-r--r--   &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; tkarim  staff    17B Dec &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 08:36 requirements.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;pkg.zip&lt;/strong&gt; can be uploaded into your own Lambda Layer using the AWS Console 👍👍&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Safely Construct Elasticsearch Queries w/Golang</title>
+      <link>http://localhost:1313/posts/safely-construct-elasticsearch-queries-w/golang/</link>
+      <pubDate>Wed, 16 Dec 2020 14:28:28 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/safely-construct-elasticsearch-queries-w/golang/</guid>
+      <description>&lt;p&gt;&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-why&#34;&gt;&lt;strong&gt;The Why&lt;/strong&gt;&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#using-strings&#34;&gt;&lt;strong&gt;Using strings&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#using-use-case-specific-structs&#34;&gt;&lt;strong&gt;Using (use-case specific) structs&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#what-does-google-say&#34;&gt;&lt;strong&gt;What does Google say?&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#package-esquerydsl&#34;&gt;&lt;strong&gt;&lt;code&gt;package esquerydsl&lt;/code&gt;&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;strong&gt;TL; DR&lt;/strong&gt;: ya boy wrote a golang elasticsearch query dsl utility. &lt;a href=&#34;https://github.com/mottaquikarim/esquerydsl&#34;&gt;Find it here!&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;the-why&#34;&gt;&lt;strong&gt;The Why&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;If you&amp;rsquo;ve used elasticsearch with golang, then you&amp;rsquo;ve probably used the &lt;a href=&#34;https://github.com/elastic/go-elasticsearch&#34;&gt;official elasticsearch go client&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The es go client is exhaustive and generally, pretty great. However, it can be a bit&amp;hellip;scary when having to deal with constructing search queries using the &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl.html&#34;&gt;elasticsearch query dsl&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Gotcha w/comparing base64 encoded strs</title>
+      <link>http://localhost:1313/posts/gotcha-w/comparing-base64-encoded-strs/</link>
+      <pubDate>Sun, 13 Dec 2020 09:29:57 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/gotcha-w/comparing-base64-encoded-strs/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#is-a--b&#34;&gt;&lt;strong&gt;Is &lt;code&gt;a &amp;lt; b&lt;/code&gt;?&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#is-a_b64--b_b64&#34;&gt;&lt;strong&gt;Is &lt;code&gt;a_b64 &amp;lt; b_b64&lt;/code&gt;?&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#but-why-though&#34;&gt;&lt;strong&gt;But why though?&lt;/strong&gt;&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-1-split-the-string-by-digit&#34;&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; split the string by digit&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-2-convert-each-char-to-binary-equivalent-in-asciihttpswwwrapidtablescomcodetextascii-tablehtml&#34;&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; convert each char to binary equivalent in &lt;a href=&#34;https://www.rapidtables.com/code/text/ascii-table.html&#34;&gt;ASCII&lt;/a&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-3-concatenate-the-binary-representation&#34;&gt;&lt;strong&gt;Step 3:&lt;/strong&gt; concatenate the binary representation&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-4-partition-the-above-but-now-in-groups-6&#34;&gt;&lt;strong&gt;Step 4:&lt;/strong&gt; partition the above but now in groups &lt;code&gt;6&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-5-pad-left-each-partition-to-convert-our-6-bit-byte-into-an-8-bit-byte&#34;&gt;&lt;strong&gt;Step 5:&lt;/strong&gt; pad-left each partition to convert our 6 bit &amp;ldquo;byte&amp;rdquo; into an 8 bit byte&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#step-6-convert-back-to-decimal-base-10-and-translate-by-looking-up-each-decimal-value-in-the-base64-characters-tablehttpsbase64gurulearnbase64-characters&#34;&gt;&lt;strong&gt;Step 6:&lt;/strong&gt; convert back to decimal (base 10) and translate by looking up each decimal value in the &lt;a href=&#34;https://base64.guru/learn/base64-characters&#34;&gt;base64 characters table&lt;/a&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#ok-butwhy-care-about-this&#34;&gt;&lt;strong&gt;Ok but&amp;hellip;why care about this?&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a fun experiment - consider two &amp;ldquo;numerical&amp;rdquo; strings such as:&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Connecting to Elasticsearch Configured via Docker</title>
+      <link>http://localhost:1313/posts/connecting-to-elasticsearch-configured-via-docker/</link>
+      <pubDate>Mon, 16 Mar 2020 06:37:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/connecting-to-elasticsearch-configured-via-docker/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#elastic-search-and-docker&#34;&gt;Elastic Search and Docker&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#gotchas&#34;&gt;Gotchas&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#windows-elasticsearch-doesnt-work&#34;&gt;Windows: ElasticSearch doesn&amp;rsquo;t work&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#even-after-changes-above-not-working&#34;&gt;Even after changes above, not working&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h2 id=&#34;elastic-search-and-docker&#34;&gt;Elastic Search and Docker&lt;/h2&gt;
+&lt;p&gt;Setting up an elasticsearch + kibana runtime is very easy to do with docker-compose:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;3&amp;#39;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;elasticsearch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;docker.elastic.co/elasticsearch/elasticsearch:6.3.2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;environment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cluster.name=docker-cluster&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;bootstrap.memory_lock=true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;s2&#34;&gt;&amp;#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;ulimits&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;memlock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;soft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hard&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;s2&#34;&gt;&amp;#34;9200:9200&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;kibana&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;docker.elastic.co/kibana/kibana:6.3.2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;- &lt;span class=&#34;s2&#34;&gt;&amp;#34;5601:5601&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For more information on the defaults (&lt;code&gt;ulimits&lt;/code&gt; or &lt;code&gt;environment&lt;/code&gt; variables, please see &lt;a href=&#34;https://blog.k2datascience.com/running-elasticsearch-kibana-using-docker-5ff10ad017d0&#34;&gt;this&lt;/a&gt; post)&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Self Grading Quizzes With Airtable</title>
+      <link>http://localhost:1313/posts/self-grading-quizzes-with-airtable/</link>
+      <pubDate>Mon, 16 Mar 2020 06:31:03 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/self-grading-quizzes-with-airtable/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#requirements&#34;&gt;Requirements&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#tldr&#34;&gt;TL;DR:&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#airtable-based-solution&#34;&gt;Airtable based solution&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&#34;#formula-columns&#34;&gt;Formula Columns&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#creating-the-quiz&#34;&gt;Creating the quiz&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-verdict&#34;&gt;The Verdict&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;p&gt;This semester, I am teaching a course at Baruch University on Big Data Technologies.&lt;/p&gt;
+&lt;p&gt;I resolved to administer a small quiz at the start of class to get a feel for how the class is doing overall in terms of comprehension of key materials.&lt;/p&gt;
+&lt;p&gt;However, grading quizzes - especially at such a recurring cadence - will definitely be time consuming, even for a small class of say 15 people (my class has 47 students).&lt;/p&gt;</description>
+    </item>
+    
+    
+  </channel>
+</rss>

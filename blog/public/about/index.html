@@ -1,21 +1,96 @@
 <!DOCTYPE html>
-<html><head>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
     
-    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
-    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
 
     <style>
 #post-header {
     text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
 }
     </style>
 
     
     <link rel="stylesheet" href="/css/style.min.css">
 
-    <title>About</title>
+    <title>About Me</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
 </head>
 <body><header id="banner">
     
@@ -36,6 +111,8 @@
                 <a href="/" title="home">home</a>
             </li><li>
                 <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
             </li>
         </ul>
     </nav>
@@ -43,27 +120,34 @@
 <main id="content">
 <article>
     <header id="post-header">
-        <h1>About</h1><time>January 3, 2021</time></header>
-
-<p><strong>👋👋, wrold!</strong></p>
-
-<p>I am an immigrant originally from <a href="https://en.wikipedia.org/wiki/Bangladesh">Bangladesh</a>; my family moved to the US in the mid 90s when I was 5 years old.
-As a Queens native, I have had the fortune to attend and graduate from two top tier academic institutions in NYC: <a href="https://en.wikipedia.org/wiki/Stuyvesant_High_School">Stuyvesant High School</a> and <a href="https://en.wikipedia.org/wiki/Cooper_Union">the Cooper Union</a>.</p>
-
-<p>Currently I am a backend software engineer at Oracle. I moonlight as an <a href="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2637751">adjunct professor</a> at <a href="https://zicklin.baruch.cuny.edu/faculty-research/academic-departments/information-technology-statistics/">Baruch University</a> and as an <a href="https://generalassemb.ly/instructors/taqqui-karim/1667">instructor</a> at <a href="https://generalassemb.ly/">General Assembly</a>.</p>
-
-<h2 id="talks">Talks</h2>
-
+        <h1>About Me</h1><time>January 9, 2021</time></header><p>👋👋, <a href="%5Burl%5D(https://taqkarim.medium.com/console-log-hello-wrold-3e3abeb44396)">Wrold</a>! I&rsquo;m Taq, I build (and sometimes break) things.</p>
+<p>I am of <a href="https://en.wikipedia.org/wiki/Bengalis">Bangali</a> descent; I grew up in Queens, NY during the late 90s/early aughts. As a native (and proud!) New Yorker, I have had the good fortune to attend and graduate from two top tier academic institutions in NYC:  <a href="https://en.wikipedia.org/wiki/Stuyvesant_High_School">Stuyvesant High School</a> and <a href="https://en.wikipedia.org/wiki/Cooper_Union">the Cooper Union</a>.</p>
+<p>Currently, I serve as Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers operating across 4 foundations:</p>
 <ul>
-<li><a href="http://taq.website/pytn/">Pytennessee 2020</a></li>
-<li><a href="http://taq.website/reinvent/">AWS Re:Invent 2019</a></li>
-<li><a href="http://taq.website/dash/">Datadog Dash 2019</a></li>
-<li><a href="http://taq.website/hartford/">DevOpsDays Hartford 2019</a></li>
+<li><strong>Traffic</strong>: application delivery controllers for all request layers running in Peloton&rsquo;s infrastructure</li>
+<li><strong>Orchestration</strong>: autonomous capabilities for teams to deploy manage and scale applications on Peloton&rsquo;s infrastructure</li>
+<li><strong>Observability</strong>: instrument, ingest, analyze and visualize all pillars of observability.</li>
+<li><strong>Core</strong>: tier0 services and service components powering foundational capabilities such as user identity resolution and shared components in Peloton&rsquo;s monolithic API service</li>
 </ul>
+<!-- Currently, I am the Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers owning and operating the core kubernetes infrastructure that all of our prod / lower env services run on. We also maintain and operate microservice enabling functionality (like an API Gateway + Service Mesh), promote Peloton's SRE + infra sec practice, own the org's infrastructure as code software (built on top of terraform) and ensure the API Monolith (which is where _most_ of our backend software lives) is stable and functional. -->
+<!-- Currently I am a Senior Engineering Manager at Peloton; I have the privilege of leading four teams: the Product API Internal team, the Workout Journey team, the Leaderboard team and the Metrics and Messaging team. We own and operate microservices that help power the leaderboard, real-time in class notifications and a GraphQL gateway for client <> API communications. In sum, we are responsible for operating services that account for a substantial portion of _all_ traffic coming in to the Peloton API. -->
+<p>In the recent past, I also moonlighted as an <a href="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2637751">adjunct professor</a> at <a href="https://zicklin.baruch.cuny.edu/faculty-research/academic-departments/information-technology-statistics/">Baruch University</a> and as an <a href="https://generalassemb.ly/instructors/taqqui-karim/1667">instructor</a> at <a href="https://generalassemb.ly/">General Assembly</a>. (I have since scaled back my activities to focus on building the best possible team experience I can at PTON).</p>
+<p>I&rsquo;ve posted on and off on platforms such as <a href="https://taqkarim.medium.com/">Medium</a> and <a href="https://dev.to/taqkarim">Dev.to</a> in the past - this blog is an exercise in asserting better ownership of my content (mainly for the purpose of retaining long term access).</p>
+<p>I will typically write about topics I find interesting and/or esoteric bugs I&rsquo;ve discovered while building something. I strongly value feedback and would very much appreciate any constructive criticism you might have about my content. Feel free to get in touch on Twitter or Linkedin (links available on main menu).</p>
+<p>Thanks for stopping by, fam.</p>
+<h2 id="talks">Talks</h2>
+<ul>
+<li><a href="https://mottaquikarim.github.io/WEBSITE2/pytn/">Pytennessee 2020</a></li>
+<li><a href="https://mottaquikarim.github.io/WEBSITE2/reinvent/">AWS Re:Invent 2019</a></li>
+<li><a href="https://mottaquikarim.github.io/WEBSITE2/dash/">Datadog Dash 2019</a></li>
+<li><a href="https://mottaquikarim.github.io/WEBSITE2/hartford/">DevOpsDays Hartford 2019</a></li>
+<li><a href="https://docs.google.com/presentation/d/1Mtv1yR3zBIFK_NVz4x0UG4agvc8Nawo2NmvqkMiAHrQ/edit?usp=sharing">GA Instructor Summit 2019</a></li>
+</ul>
+
 </article>
 
         </main><footer id="footer">
-    Copyright © 2020 Taq Karim
+    Copyright © 2022 Taq Karim
 </footer>
 </body>
 </html>

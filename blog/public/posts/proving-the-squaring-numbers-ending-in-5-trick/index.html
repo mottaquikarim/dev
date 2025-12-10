@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Proving the Squaring Numbers Ending in 5 Trick</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>Proving the Squaring Numbers Ending in 5 Trick</h1><time>September 4, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#example-what-is-252">Example: what is <strong>25</strong>^2?.</a>
+      <ul>
+        <li><a href="#1-let-t-the-the-number-in-the-tens-place-2-let-p-t1-or-3">1. Let <strong>t=</strong> the the number in the <strong>tens</strong> place, <strong>2</strong>. Let <strong>p=</strong> <strong>t+1</strong>, or <strong>3</strong>.</a></li>
+        <li><a href="#2-now-let-k-t--p-or-6">2. Now, let <strong>k=</strong> <strong>t * p</strong>, or <strong>6</strong>.</a></li>
+        <li><a href="#3-take-k-or-6-and-put-it-in-front-of-25-which-gives-us-625-done">3. Take <strong>k</strong>, or <strong>6</strong> and put it in front of <strong>25</strong>, which gives us <strong>625</strong>. Done!</a></li>
+      </ul>
+    </li>
+    <li><a href="#but-why-tho">But WHY tho??</a></li>
+    <li><a href="#some-quick-examples">Some quick examples.</a>
+      <ul>
+        <li><a href="#52--25"><strong>5^2</strong> = <strong>25</strong></a></li>
+        <li><a href="#552--3025"><strong>55^2</strong> = <strong>3025</strong></a></li>
+        <li><a href="#1052--11025"><strong>105^2</strong> = <strong>11025</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#a-beautiful-outcome">A beautiful outcome.</a></li>
+  </ul>
+</nav>
+</aside>
+
+<p>So here’s a neat trick. What’s a quick way to square numbers that end in — 5 in your head?</p>
+<p>For example, what is $$25*25 = ?$$</p>
+<p>(Plug into a calculator real quick). We expect our trick to help up compute the solution, 625, <em>quickly</em>.</p>
+<p>Ok, let’s break down the approach.</p>
+<h2 id="example-what-is-252">Example: what is <strong>25</strong>^2?.</h2>
+<p>First, let&rsquo;s re-write our number (25) in a slightly different but equivalent manner:</p>
+<p>$$
+\begin{aligned}
+25^2 &amp;= (20 + 5)^2 \cr
+&amp;= (\bold{2} * 10 + \bold{5} * 1)^2 \cr
+\end{aligned}
+$$</p>
+<p>Here, we have decomposed the number <strong>25</strong>, as we can see:</p>
+<ul>
+<li><strong>2</strong> is in the <strong>tens</strong> place</li>
+<li><strong>5</strong> is in the <strong>ones</strong> place</li>
+</ul>
+<p>To quickly arrive at the square of <strong>25</strong>, we:</p>
+<h3 id="1-let-t-the-the-number-in-the-tens-place-2-let-p-t1-or-3">1. Let <strong>t=</strong> the the number in the <strong>tens</strong> place, <strong>2</strong>. Let <strong>p=</strong> <strong>t+1</strong>, or <strong>3</strong>.</h3>
+<p>$$
+\begin{aligned}
+\bold{Let: } \cr
+t &amp;= 2 \cr
+p &amp;= t + 1 \cr
+\bold{Then: } \cr
+p &amp;= (2) + 1 \cr
+p &amp;=3
+\end{aligned}
+$$</p>
+<h3 id="2-now-let-k-t--p-or-6">2. Now, let <strong>k=</strong> <strong>t * p</strong>, or <strong>6</strong>.</h3>
+<p>Next, we multiply <strong>t</strong> and <strong>p</strong> together:</p>
+<p>$$
+\begin{aligned}
+k &amp;= t * p \cr
+&amp;= 2 * 3 \cr
+&amp;= 6  \cr
+\end{aligned}
+$$</p>
+<h3 id="3-take-k-or-6-and-put-it-in-front-of-25-which-gives-us-625-done">3. Take <strong>k</strong>, or <strong>6</strong> and put it in front of <strong>25</strong>, which gives us <strong>625</strong>. Done!</h3>
+<p>For the last part, <em>concatente</em> <strong>k</strong> and <strong>25</strong> to arrive at our answer &ndash; <strong>625</strong>.</p>
+<p>Tada!</p>
+<h2 id="but-why-tho">But WHY tho??</h2>
+<p>This method works - for <em>all</em> numbers ending in <strong>5</strong> that we would like to square. We will prove this below.</p>
+<p>Suppose we have some number <strong>a</strong> that ends in <strong>5</strong>. We may represent <strong>a</strong> as:</p>
+<p>$$
+\begin{aligned}
+\text{Let } \cr
+a &amp;= (10 * \bold{t} + 1 * \bold{n}) \cr
+\text{Then } \cr
+a^2 &amp;= (10 * \bold{t} + 1 * \bold{n}) * (10 * \bold{t} + 1 * \bold{n}) \cr
+&amp;= (10t +n)(10t + n)
+\end{aligned}
+$$</p>
+<p><strong>NOTE</strong>: we assume here that <strong>t</strong> is an integer greater than or equal to <strong>0</strong>.</p>
+<p>Now, we can expand this number sentence by FOIL, but we will not immediately simplify the terms:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= (10t +n)(10t + n) \cr
+&amp;= 10 * 10 * t * t + 10 * t * n + 10 * t * n + n * n
+\end{aligned}
+$$</p>
+<p>Remember, we <em>only</em> care about numbers ending in <strong>&ndash;5</strong>, so <strong>n=5</strong>. Let&rsquo;s substitue:</p>
+<p>$$
+\begin{aligned}
+n &amp;= 5 \cr
+a^2 &amp;= 10 * 10 * t * t + 10 * t * (5) + 10 * t * (5) + (5) * (5) \cr
+&amp;=  10 * 10 * t * t + 10 * t * (5) + 10 * t * (5) + \bold{25} \cr
+\end{aligned}
+$$</p>
+<p>As we can clearly see: the mystery of why the square of any number ends in <strong>25</strong> is (kinda) solved. Onwards!</p>
+<p>We will now group our terms like so:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= \Bigg[ 10 * 10 * t * t + 10 * t * (5) + 10 * t * (5) \Bigg] + \bold{25} \cr
+&amp;= \Bigg[ \bold{10} * 10 * t * t + \bold{10} * t * (5) + \bold{10} * t * (5) \Bigg] + \bold{25}
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s pull out the <strong>10</strong>:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{10}\Bigg[ 10 * t * t + t * (5) + t * (5) \Bigg] + \bold{25}
+\end{aligned}
+$$</p>
+<p>Ok cool, next &ndash; we will factor the terms <em>inside</em> the large brackets:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{10}\Bigg[ 10 * t * t + t * (5) + t * (5) \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + t * \bold{(5)} + t * \bold{(5)} \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5}\bigg[  2 * t * t + t + t \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5}\bigg[  2 * t * t + 2 * t \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5} * \bold{2 * t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{10} * \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+&amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+<p>Let&rsquo;s look at that last representation once again:</p>
+<p>$$
+a^2 = \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25}
+$$</p>
+<p>Recall that <strong>t</strong> is the number in our <strong>tens</strong> place and this result demonstrates that the square of <strong>a</strong> (where <strong>a</strong> ends with <strong>5</strong>) is <em>always</em> equal to the number in the <strong>tens</strong> place, times the number in the <strong>tens</strong> place plus 1. Because this value, <strong>t(t+1)</strong> is multiplied by 100, we are guaranteed that this number will always end in <strong>25</strong>.</p>
+<p>Donezo!</p>
+<h2 id="some-quick-examples">Some quick examples.</h2>
+<p>Let&rsquo;s put this to the test!</p>
+<h3 id="52--25"><strong>5^2</strong> = <strong>25</strong></h3>
+<p>$$
+\begin{aligned}
+a &amp;= 5 \cr
+a &amp;= (10 * \bold{t} + 1 * \bold{n}) \cr
+t &amp;= 0 \cr
+n &amp;= 5 \cr
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+5^2 &amp;= \bold{100}\Bigg[ \bold{0}\bigg[  0 + 1 \bigg]  \Bigg] + \bold{25} \cr
+25 &amp;= \bold{100}\Bigg[ 0  \Bigg] + \bold{25} \cr
+&amp;= 0 + \bold{25} \cr
+&amp;= 25
+\end{aligned}
+$$</p>
+<h3 id="552--3025"><strong>55^2</strong> = <strong>3025</strong></h3>
+<p>$$
+\begin{aligned}
+a &amp;= 55 \cr
+a &amp;= (10 * \bold{t} + 1 * \bold{n}) \cr
+t &amp;= 5 \cr
+n &amp;= 5 \cr
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+55^2 &amp;= \bold{100}\Bigg[ \bold{5}\bigg[  5 + 1 \bigg]  \Bigg] + \bold{25} \cr
+55^2 &amp;= \bold{100}\Bigg[ \bold{5}\bigg[  6 \bigg]  \Bigg] + \bold{25} \cr
+3025 &amp;= \bold{100}\Bigg[ 30  \Bigg] + \bold{25} \cr
+&amp;= 3000 + \bold{25} \cr
+&amp;= 3025
+\end{aligned}
+$$</p>
+<h3 id="1052--11025"><strong>105^2</strong> = <strong>11025</strong></h3>
+<p>$$
+\begin{aligned}
+a &amp;= 105 \cr
+a &amp;= (10 * \bold{t} + 1 * \bold{n}) \cr
+t &amp;= 10 \cr
+n &amp;= 5 \cr
+a^2 &amp;= \bold{100}\Bigg[ \bold{t}\bigg[  t + 1 \bigg]  \Bigg] + \bold{25} \cr
+105^2 &amp;= \bold{100}\Bigg[ \bold{10}\bigg[  10 + 1 \bigg]  \Bigg] + \bold{25} \cr
+105^2 &amp;= \bold{100}\Bigg[ \bold{10}\bigg[  11 \bigg]  \Bigg] + \bold{25} \cr
+11025 &amp;= \bold{100}\Bigg[ 110  \Bigg] + \bold{25} \cr
+&amp;= 11000 + \bold{25} \cr
+&amp;= 11025
+\end{aligned}
+$$</p>
+<h2 id="a-beautiful-outcome">A beautiful outcome.</h2>
+<p>Honestly, this observation strikes me as exceedingly <em>pretty</em>. We are only able to end up with the <strong>t(t+1)</strong> result <em>because</em> <strong>n=5</strong>. With <strong>n=5</strong>, we are able to factor out our number sentence from above (reproduced below for convenience):</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{10}\Bigg[ 10 * t * t + t * (5) + t * (5) \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + t * \bold{(5)} + t * \bold{(5)} \Bigg] + \bold{25} \cr
+&amp;= \bold{10}\Bigg[ \bold{5}\bigg[  2 * t * t + t + t \bigg]  \Bigg] + \bold{25} \cr
+\end{aligned}
+$$</p>
+<p><strong>t(t+1)</strong> is <em>only</em> possible_because_ <strong>n</strong> was 5 . For instance, if <strong>n</strong> was <strong>6</strong>, we would end up with:</p>
+<p>$$
+\begin{aligned}
+a^2 &amp;= \bold{10}\Bigg[ 10 * t * t + t * (6) + t * (6) \Bigg] + \bold{36} \cr
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + t * \bold{(6)} + t * \bold{(6)} \Bigg] + \bold{36} \cr
+&amp;= \bold{10}\Bigg[ \bold{(5)} * 2 * t * t + \bold{12} * t \Bigg] + \bold{36} \cr
+\end{aligned}
+$$</p>
+<p>With <strong>n=6</strong> (as an example), we end up with terms that are cannot be easily simplified, which is why (AFAIK) no <em>simple</em> solution for squaring numbers that <em>don&rsquo;t</em> end in <strong>5</strong> exists in the same way. <em>(Heads up, I <strong>did</strong> find some interesting results for a more general case; will share that methodology in a future post)</em>.</p>
+<p>In short:</p>
+<blockquote>
+<p>It’s just a happy coincidence! 🎉 🎈🎊 🙌</p></blockquote>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fproving-the-squaring-numbers-ending-in-5-trick%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fproving-the-squaring-numbers-ending-in-5-trick%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fproving-the-squaring-numbers-ending-in-5-trick%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

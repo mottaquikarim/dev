@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>A Hack for Transferring Cross Domain Localstorage Data</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/javascript/">javascript</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/chrome-dev-tools/">chrome dev tools</a></strong></small>
+        <header id="post-header">
+        <h1>A Hack for Transferring Cross Domain Localstorage Data</h1><time>February 2, 2022</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#background">Background.</a></li>
+    <li><a href="#requirements">Requirements.</a></li>
+    <li><a href="#experimentation">Experimentation.</a></li>
+    <li><a href="#output-artifact">Output Artifact.</a>
+      <ul>
+        <li><a href="#1-load-wordle-classic-copy-domain-demonstrating-no-stats">1. Load &ldquo;Wordle Classic&rdquo; copy domain, demonstrating no stats.</a></li>
+        <li><a href="#2-paste-the-javascript-snippet">2. Paste the <code>javascript:</code> snippet.</a></li>
+        <li><a href="#3-hit-enter-which-will-redirect-us-to-the-wordle-classic-domain">3. Hit &ldquo;Enter&rdquo;, which will redirect us to the &ldquo;Wordle Classic&rdquo; domain</a></li>
+        <li><a href="#4-stats-dialog-in-wordle-classic-reflects-transferred-state-">4. Stats dialog in &ldquo;Wordle Classic&rdquo; reflects transferred state 🎉</a></li>
+      </ul>
+    </li>
+    <li><a href="#aside-considerations-for-mobile"><strong>Aside:</strong> Considerations for Mobile.</a></li>
+    <li><a href="#aside-2-transferring-from-homescreen-app"><strong>Aside 2:</strong> Transferring from Homescreen App.</a></li>
+  </ul>
+</nav>
+</aside>
+
+<p><strong>BLUF</strong></p>
+<p>🎉 Wordle <a href="https://www.nytco.com/press/wordle-new-york-times-games/">has been purchased by the NYTimes!</a></p>
+<p>🐱‍💻 I wanted to cache the game in its current state, so I downloaded source and uploaded to my own server: <a href="https://mottaquikarim.github.io/wordle_classic/">Wordle Classic</a></p>
+<p>🤔 But! I wanted to transfer my streaks data to my new hosted app</p>
+<p>💡 Thanks to <code>javascript:</code> and a small code addition to Wordle Classic, I was able to transfer my streaks without having to open up Chrome&rsquo;s Dev Console</p>
+<p>I expound further in this post.</p>
+<h2 id="background">Background.</h2>
+<p>With the purchase of the Wordle game by the Times, I expect a whole slew of new features and code changes as the experience is integrated with the Times ecosystem.</p>
+<p>In order to maintain functionality of my <a href="http://localhost:1313/posts/reverse-engineering-wordle/">hacks</a> (<a href="https://mottaquikarim.github.io/wordle_timemachine/v2.html?d=2021-06-19">Wordle Time Machine</a> and <a href="https://mottaquikarim.github.io/wordle_with_friends/">Wordle with Friends</a>), I decided to <code>File &gt; Save Page As</code> on the original <a href="https://www.powerlanguage.co.uk/wordle/">https://www.powerlanguage.co.uk/wordle/</a> app (in Chrome on my desktop) and host it myself on Github Pages.</p>
+<p>This way, my hacks would remain functional even after the NYTimes devs make changes to the game in the future.</p>
+<p>But having completed this work, it occurred to me that it <em>would</em> be neat to try and consider transferring the statistics data stored in the original Wordle app in my the &ldquo;Wordle Classic&rdquo; copy.</p>
+<h2 id="requirements">Requirements.</h2>
+<p>Now, the naive approach here would be to just open up dev console in Chrome (on the original Wordle app) and do the following:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">stats</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s2">&#34;statistics&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>Then, we can copy/pasta the output in to the dev console of the &ldquo;Wordle Classic&rdquo; copy:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="s2">&#34;statistics&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;JSON OUTPUT FROM ABOVE&gt;&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>🎂</p>
+<p>The key issue with this approach is that for mobile usecases (which is how I&rsquo;ve been playing the game anyways), this is more or less not possible. (Ok, I <em>guess</em> we could connect the phone to safari dev tools and mess around there, but I wanted to avoid this).</p>
+<p>So as a fun thought experiment I decided to consider:</p>
+<blockquote>
+<p>Is it possible at all to &ldquo;transfer&rdquo; localstorage data from one domain to another <em>without</em> having to resort to dev tools?</p></blockquote>
+<p>In particular, I wanted to:</p>
+<ul>
+<li>avoid having to open up console at all</li>
+<li>achieve the transfer ideally by mainly avoiding having to install stuff (like extensions and whatnot)</li>
+</ul>
+<h2 id="experimentation">Experimentation.</h2>
+<p>I have to say, I got lucky again. I played around with the basic initial ideas around iframes and window.postMessage, etc. Ofc (and for good reason!) most cross site shenanigans with js were forbidden by the browser.</p>
+<p>Ok, cool. So then, I thought: maybe using the <code>javascript:</code> prefix in the URL bar could help me figure out next steps?</p>
+<p>I started off with a naive <code>javascript:alert()</code>.</p>
+<p>As expected, this created an alert modal <em>but did not reload the page</em>. This was surprising (to me at least) but also the <strong>key insight</strong> I needed for my technique.</p>
+<p>If <code>javascript:&lt;some arbitrary code here&gt;</code> runs within the context of the loaded page, surely this means I would have access to localStorage when I run something like:</p>
+<pre tabindex="0"><code class="language-javscript" data-lang="javscript">javascript:console.log(window.localStorage.getItem(&#34;statistics&#34;))
+</code></pre><p>&hellip;right? As it turns out &ndash; right indeed!</p>
+<p>I was able to confirm that running the code snippet above <em>would</em> in fact provide access to the localStorage data accessible to the <a href="https://www.powerlanguage.co.uk">www.powerlanguage.co.uk</a> domain.</p>
+<p><img src="/dev/img/example-screenshot-javascript-alert.png" alt="screenshot"></p>
+<p><strong>!!</strong></p>
+<p>Sweet &ndash; we are halfway there.</p>
+<h2 id="output-artifact">Output Artifact.</h2>
+<p>Now, the only work left was to actually send this data over to the &ldquo;Wordle Classic&rdquo; copy. This turned out to be pretty easy &ndash; I modified my <code>javascript:</code> snippet above as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">javascript</span><span class="o">:</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;https://mottaquikarim.github.io/wordle_classic/?statistics=&#34;</span> 
+</span></span><span class="line"><span class="cl">	<span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s2">&#34;statistics&#34;</span><span class="p">))</span>
+</span></span></code></pre></div><p>(Note: formatted weirdly because I couldn&rsquo;t figure out how to enable word-wrapping in my Hugo syntax highlighter 😅)</p>
+<p>The new snippet <em>reads</em> the contents of the original Wordle&rsquo;s <code>statistics</code> localStorage item and navigates us to the &ldquo;Wordle Classic&rdquo; copy, &ldquo;saving&rdquo; the state as a query param. On the &ldquo;Wordle Classic&rdquo; side of things, I added the following script tag:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span> <span class="o">!==</span> <span class="s2">&#34;&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="p">[</span><span class="nx">key</span><span class="p">,</span><span class="nx">val</span><span class="p">]</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">key</span> <span class="o">===</span> <span class="s2">&#34;statistics&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">val</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">alert</span><span class="p">(</span><span class="sb">`successfully updated </span><span class="si">${</span><span class="nx">key</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>And donezo! I was able to successfully transfer my &ldquo;statistics&rdquo; from the <a href="https://www.powerlanguage.co.uk">https://www.powerlanguage.co.uk</a> domain to my <a href="https://mottaquikarim.github.io">https://mottaquikarim.github.io</a> domain. Here&rsquo;s the flow in screenshots:</p>
+<h3 id="1-load-wordle-classic-copy-domain-demonstrating-no-stats">1. Load &ldquo;Wordle Classic&rdquo; copy domain, demonstrating no stats.</h3>
+<p><img src="/dev/img/step_1_show_statistics.png" alt="screenshot"></p>
+<p>Note that the stats dialog shows <strong>0s only</strong></p>
+<h3 id="2-paste-the-javascript-snippet">2. Paste the <code>javascript:</code> snippet.</h3>
+<p><img src="/dev/img/step_2_show_javascript_hack.png" alt="screenshot"></p>
+<p>Note that the localStorage view has a <code>statistics</code> item (which is incidentally missing from (1) where we are looking at the <a href="https://mottaquikarim.github.io">https://mottaquikarim.github.io</a> domain)</p>
+<h3 id="3-hit-enter-which-will-redirect-us-to-the-wordle-classic-domain">3. Hit &ldquo;Enter&rdquo;, which will redirect us to the &ldquo;Wordle Classic&rdquo; domain</h3>
+<p><img src="/dev/img/step_3_show_alert_and_page_reload.png" alt="screenshot"></p>
+<p>Note the URL change and as per the javascript snippet above, we see an alert indicating that the <code>setItem</code> method ran successfully.</p>
+<h3 id="4-stats-dialog-in-wordle-classic-reflects-transferred-state-">4. Stats dialog in &ldquo;Wordle Classic&rdquo; reflects transferred state 🎉</h3>
+<p><img src="/dev/img/step_4_show_transferred_game_state.png" alt="screenshot"></p>
+<p>Note the localStorage view has a <code>statistics</code> item, it should be the same as the item in step (2).</p>
+<p>Ta da!</p>
+<h2 id="aside-considerations-for-mobile"><strong>Aside:</strong> Considerations for Mobile.</h2>
+<p>Going back to the original premise &ndash; I wanted to migrate my stats on mobile,specifically.</p>
+<p>On chrome moblie, this was easy enough. I ran the <code>javascript:</code> snippet and it worked as expected (heads up: pasting the snippet to the URL bar removes the <code>javascript:</code> prefix, you&rsquo;ll have to add that back in otherwise the page redirects to a google search results view).</p>
+<p>For safari though, I ran into this:</p>
+<img style="width: 50%; height: auto; margin: 0 auto;" src="/dev/img/step_2_mobile.JPG">
+<p>Womp womp.</p>
+<p>To solve this problem, I took advantage of Safari&rsquo;s bookmarking feature. To begin, I created a simple bookmark, calling it <code>JS RUNNER</code>.</p>
+<img style="width: 50%; height: auto; margin: 0 auto;" src="/dev/img/step_3_mobile.JPG">
+<p>Then, I navigated to this bookmark and edited it.
+<img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_4_mobile.JPG">
+<img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_6_mobile.JPG"></p>
+<p>In the edit view, I updated the bookmark URL with my <code>javascript:</code> snippet
+<img style="width: 50%; height: auto; margin: 0 auto;" src="/dev/img/step_7_mobile.JPG"></p>
+<p>After saving this change, I was able to run the <code>javascript:</code> code on safari as well, successfully transferring my stats over from the original app to my copy 🎉</p>
+<img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_8_mobile.JPG">
+<img style="width: 48%; height: auto; margin: 0 auto;" src="/dev/img/step_9_mobile.JPG">
+<h2 id="aside-2-transferring-from-homescreen-app"><strong>Aside 2:</strong> Transferring from Homescreen App.</h2>
+<p>One big drawback of my technique is afaik, there is no way to actually transfer this data if you&rsquo;ve saved the game as part of your &ldquo;homescreen&rdquo;. Apple seems to discourage this behavior anyways (the act of adding to Homescreen is buried within the &ldquo;share&rdquo; modal under bookmarks, add to favorites, etc)</p>
+<p>Importantly, it appears that once you <em>do</em> add to homescreen, iOS minimally spawns a new instance of LocalStorage that is distinct from the Safari instance. Because of this, it does appear to be impossible (at least from my understanding today) to transfer localstorage data from the homescreen without a code change to the original app itself.</p>
+
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fa-hack-for-transferring-cross-domain-localstorage-data%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fa-hack-for-transferring-cross-domain-localstorage-data%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fa-hack-for-transferring-cross-domain-localstorage-data%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>

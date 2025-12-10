@@ -1,14 +1,86 @@
 <!DOCTYPE html>
-<html><head>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
     
-    <link rel="shortcut icon" href="http://taqkarim.dev/favicon.ico">
-    <link href="http://taqkarim.dev/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
 
     <style>
 #post-header {
     text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
 }
     </style>
 
@@ -16,6 +88,9 @@
     <link rel="stylesheet" href="/css/style.min.css">
 
     <title>Gotcha w/comparing base64 encoded strs</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
 </head>
 <body><header id="banner">
     
@@ -36,327 +111,256 @@
                 <a href="/" title="home">home</a>
             </li><li>
                 <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
             </li>
         </ul>
     </nav>
 </header>
 <main id="content">
 <article>
-    <header id="post-header">
-        <h1>Gotcha w/comparing base64 encoded strs</h1><time>December 13, 2020</time></header>
-
-<aside id="toc">
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/esoteric-bug/">esoteric bug</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/elasticsearch/">elasticsearch</a></strong></small>
+        <header id="post-header">
+        <h1>Gotcha w/comparing base64 encoded strs</h1><time>December 13, 2020</time></header><aside id="toc">
     <h4>Table of Contents</h4>
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#is-a-b"><strong>Is <code>a &lt; b</code>?</strong></a></li>
-<li><a href="#is-a-b64-b-b64"><strong>Is <code>a_b64 &lt; b_b64</code>?</strong></a></li>
-<li><a href="#but-why-though"><strong>But why though?</strong></a>
-<ul>
-<li><a href="#step-1-split-the-string-by-digit"><strong>Step 1:</strong> split the string by digit</a></li>
-<li><a href="#step-2-convert-each-char-to-binary-equivalent-in-ascii-https-www-rapidtables-com-code-text-ascii-table-html"><strong>Step 2:</strong> convert each char to binary equivalent in <a href="https://www.rapidtables.com/code/text/ascii-table.html">ASCII</a></a></li>
-<li><a href="#step-3-concatenate-the-binary-representation"><strong>Step 3:</strong> concatenate the binary representation</a></li>
-<li><a href="#step-4-partition-the-above-but-now-in-groups-6"><strong>Step 4:</strong> partition the above but now in groups <code>6</code></a></li>
-<li><a href="#step-5-pad-left-each-partition-to-convert-our-6-bit-byte-into-an-8-bit-byte"><strong>Step 5:</strong> pad-left each partition to convert our 6 bit &ldquo;byte&rdquo; into an 8 bit byte</a></li>
-<li><a href="#step-6-convert-back-to-decimal-base-10-and-translate-by-looking-up-each-decimal-value-in-the-base64-characters-table-https-base64-guru-learn-base64-characters"><strong>Step 6:</strong> convert back to decimal (base 10) and translate by looking up each decimal value in the <a href="https://base64.guru/learn/base64-characters">base64 characters table</a></a></li>
-<li><a href="#ok-but-why-care-about-this"><strong>Ok but&hellip;why care about this?</strong></a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#is-a--b"><strong>Is <code>a &lt; b</code>?</strong></a></li>
+    <li><a href="#is-a_b64--b_b64"><strong>Is <code>a_b64 &lt; b_b64</code>?</strong></a></li>
+    <li><a href="#but-why-though"><strong>But why though?</strong></a>
+      <ul>
+        <li><a href="#step-1-split-the-string-by-digit"><strong>Step 1:</strong> split the string by digit</a></li>
+        <li><a href="#step-2-convert-each-char-to-binary-equivalent-in-asciihttpswwwrapidtablescomcodetextascii-tablehtml"><strong>Step 2:</strong> convert each char to binary equivalent in <a href="https://www.rapidtables.com/code/text/ascii-table.html">ASCII</a></a></li>
+        <li><a href="#step-3-concatenate-the-binary-representation"><strong>Step 3:</strong> concatenate the binary representation</a></li>
+        <li><a href="#step-4-partition-the-above-but-now-in-groups-6"><strong>Step 4:</strong> partition the above but now in groups <code>6</code></a></li>
+        <li><a href="#step-5-pad-left-each-partition-to-convert-our-6-bit-byte-into-an-8-bit-byte"><strong>Step 5:</strong> pad-left each partition to convert our 6 bit &ldquo;byte&rdquo; into an 8 bit byte</a></li>
+        <li><a href="#step-6-convert-back-to-decimal-base-10-and-translate-by-looking-up-each-decimal-value-in-the-base64-characters-tablehttpsbase64gurulearnbase64-characters"><strong>Step 6:</strong> convert back to decimal (base 10) and translate by looking up each decimal value in the <a href="https://base64.guru/learn/base64-characters">base64 characters table</a></a></li>
+        <li><a href="#ok-butwhy-care-about-this"><strong>Ok but&hellip;why care about this?</strong></a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
 </aside>
 
-
 <p>Here&rsquo;s a fun experiment - consider two &ldquo;numerical&rdquo; strings such as:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">a</span> <span class="o">=</span> <span class="s2">&#34;1004&#34;</span>
-<span class="n">b</span> <span class="o">=</span> <span class="s2">&#34;1053&#34;</span></code></pre></div>
-<h2 id="is-a-b"><strong>Is <code>a &lt; b</code>?</strong></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">a</span> <span class="o">=</span> <span class="s2">&#34;1004&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span> <span class="o">=</span> <span class="s2">&#34;1053&#34;</span>
+</span></span></code></pre></div><h2 id="is-a--b"><strong>Is <code>a &lt; b</code>?</strong></h2>
 <p>Why yes, of course it is!</p>
-
 <p>Ok, let&rsquo;s try this again, this time b64encoding our two strings.</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">base64</span>
-
-<span class="n">a_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">)</span>
-<span class="c1"># MTAwNA==</span>
-<span class="n">b_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">)</span>
-<span class="c1"># MTA1Mw==</span></code></pre></div>
-<p>How about now?</p>
-
-<h2 id="is-a-b64-b-b64"><strong>Is <code>a_b64 &lt; b_b64</code>?</strong></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">a_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MTAwNA==</span>
+</span></span><span class="line"><span class="cl"><span class="n">b_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf8&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MTA1Mw==</span>
+</span></span></code></pre></div><p>How about now?</p>
+<h2 id="is-a_b64--b_b64"><strong>Is <code>a_b64 &lt; b_b64</code>?</strong></h2>
 <p><strong>NOPE.</strong></p>
-
 <p>What gives?!</p>
-
 <p>And more importantly, this observation implies that:</p>
-
 <blockquote>
-<p>Given two strings a, b such that <code>a &lt; b</code> it is <strong>not necessarily true</strong> that <code>b64(a) &lt; b64(b)</code>!</p>
-</blockquote>
-
+<p>Given two strings a, b such that <code>a &lt; b</code> it is <strong>not necessarily true</strong> that <code>b64(a) &lt; b64(b)</code>!</p></blockquote>
 <p><em>(This is the key takeaway, the rest of this post explains why this is true for some cases)</em></p>
-
-<hr />
-
+<hr>
 <h2 id="but-why-though"><strong>But why though?</strong></h2>
-
 <p>To answer this question, we must delve into the b64 encoding algorithm itself. Let&rsquo;s consider <code>1004</code> as an example.</p>
-
 <h3 id="step-1-split-the-string-by-digit"><strong>Step 1:</strong> split the string by digit</h3>
-
 <table>
-<thead>
-<tr>
-<th>1004</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>1</td>
-</tr>
-
-<tr>
-<td>0</td>
-</tr>
-
-<tr>
-<td>0</td>
-</tr>
-
-<tr>
-<td>4</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>1004</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>4</td>
+      </tr>
+  </tbody>
 </table>
-
-<h3 id="step-2-convert-each-char-to-binary-equivalent-in-ascii-https-www-rapidtables-com-code-text-ascii-table-html"><strong>Step 2:</strong> convert each char to binary equivalent in <a href="https://www.rapidtables.com/code/text/ascii-table.html">ASCII</a></h3>
-
+<h3 id="step-2-convert-each-char-to-binary-equivalent-in-asciihttpswwwrapidtablescomcodetextascii-tablehtml"><strong>Step 2:</strong> convert each char to binary equivalent in <a href="https://www.rapidtables.com/code/text/ascii-table.html">ASCII</a></h3>
 <table>
-<thead>
-<tr>
-<th>1004</th>
-<th>ASCII value</th>
-<th>Binary</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>1</td>
-<td>49</td>
-<td>00110001</td>
-</tr>
-
-<tr>
-<td>0</td>
-<td>48</td>
-<td>00110000</td>
-</tr>
-
-<tr>
-<td>0</td>
-<td>48</td>
-<td>00110000</td>
-</tr>
-
-<tr>
-<td>4</td>
-<td>52</td>
-<td>00110100</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>1004</th>
+          <th>ASCII value</th>
+          <th>Binary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>49</td>
+          <td>00110001</td>
+      </tr>
+      <tr>
+          <td>0</td>
+          <td>48</td>
+          <td>00110000</td>
+      </tr>
+      <tr>
+          <td>0</td>
+          <td>48</td>
+          <td>00110000</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>52</td>
+          <td>00110100</td>
+      </tr>
+  </tbody>
 </table>
-
 <h3 id="step-3-concatenate-the-binary-representation"><strong>Step 3:</strong> concatenate the binary representation</h3>
-
 <blockquote>
-<p><code>1004</code> =&gt; <code>00110001001100000011000000110100</code></p>
-</blockquote>
-
+<p><code>1004</code> =&gt; <code>00110001001100000011000000110100</code></p></blockquote>
 <h3 id="step-4-partition-the-above-but-now-in-groups-6"><strong>Step 4:</strong> partition the above but now in groups <code>6</code></h3>
-
 <table>
-<thead>
-<tr>
-<th>1004 (in groups of 6)</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>001100</td>
-</tr>
-
-<tr>
-<td>010011</td>
-</tr>
-
-<tr>
-<td>000000</td>
-</tr>
-
-<tr>
-<td>110000</td>
-</tr>
-
-<tr>
-<td>001101</td>
-</tr>
-
-<tr>
-<td>00<strong>0000</strong> (pad 4 to complete final group</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>1004 (in groups of 6)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>001100</td>
+      </tr>
+      <tr>
+          <td>010011</td>
+      </tr>
+      <tr>
+          <td>000000</td>
+      </tr>
+      <tr>
+          <td>110000</td>
+      </tr>
+      <tr>
+          <td>001101</td>
+      </tr>
+      <tr>
+          <td>00<strong>0000</strong> (pad 4 to complete final group</td>
+      </tr>
+  </tbody>
 </table>
-
 <h3 id="step-5-pad-left-each-partition-to-convert-our-6-bit-byte-into-an-8-bit-byte"><strong>Step 5:</strong> pad-left each partition to convert our 6 bit &ldquo;byte&rdquo; into an 8 bit byte</h3>
-
 <table>
-<thead>
-<tr>
-<th>1004</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>00001100</td>
-</tr>
-
-<tr>
-<td>00010011</td>
-</tr>
-
-<tr>
-<td>00000000</td>
-</tr>
-
-<tr>
-<td>00110000</td>
-</tr>
-
-<tr>
-<td>00001101</td>
-</tr>
-
-<tr>
-<td>00000000</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>1004</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>00001100</td>
+      </tr>
+      <tr>
+          <td>00010011</td>
+      </tr>
+      <tr>
+          <td>00000000</td>
+      </tr>
+      <tr>
+          <td>00110000</td>
+      </tr>
+      <tr>
+          <td>00001101</td>
+      </tr>
+      <tr>
+          <td>00000000</td>
+      </tr>
+  </tbody>
 </table>
-
-<h3 id="step-6-convert-back-to-decimal-base-10-and-translate-by-looking-up-each-decimal-value-in-the-base64-characters-table-https-base64-guru-learn-base64-characters"><strong>Step 6:</strong> convert back to decimal (base 10) and translate by looking up each decimal value in the <a href="https://base64.guru/learn/base64-characters">base64 characters table</a></h3>
-
+<h3 id="step-6-convert-back-to-decimal-base-10-and-translate-by-looking-up-each-decimal-value-in-the-base64-characters-tablehttpsbase64gurulearnbase64-characters"><strong>Step 6:</strong> convert back to decimal (base 10) and translate by looking up each decimal value in the <a href="https://base64.guru/learn/base64-characters">base64 characters table</a></h3>
 <table>
-<thead>
-<tr>
-<th>1004</th>
-<th>decimal</th>
-<th>b64 character</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>00001100</td>
-<td>12</td>
-<td>M</td>
-</tr>
-
-<tr>
-<td>00010011</td>
-<td>19</td>
-<td>T</td>
-</tr>
-
-<tr>
-<td>00000000</td>
-<td>0</td>
-<td>A</td>
-</tr>
-
-<tr>
-<td>00110000</td>
-<td>48</td>
-<td>w</td>
-</tr>
-
-<tr>
-<td>00001101</td>
-<td>13</td>
-<td>N</td>
-</tr>
-
-<tr>
-<td>00000000</td>
-<td>0</td>
-<td>A</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>1004</th>
+          <th>decimal</th>
+          <th>b64 character</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>00001100</td>
+          <td>12</td>
+          <td>M</td>
+      </tr>
+      <tr>
+          <td>00010011</td>
+          <td>19</td>
+          <td>T</td>
+      </tr>
+      <tr>
+          <td>00000000</td>
+          <td>0</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>00110000</td>
+          <td>48</td>
+          <td>w</td>
+      </tr>
+      <tr>
+          <td>00001101</td>
+          <td>13</td>
+          <td>N</td>
+      </tr>
+      <tr>
+          <td>00000000</td>
+          <td>0</td>
+          <td>A</td>
+      </tr>
+  </tbody>
 </table>
-
 <blockquote>
-<p>So, <code>1004</code> =&gt; <code>MTAwNA</code></p>
-</blockquote>
-
+<p>So, <code>1004</code> =&gt; <code>MTAwNA</code></p></blockquote>
 <p>Tada!</p>
-
 <p>Now (<em>do</em> try this at home, if you want): repeat this exercise for <code>1053</code>, resulting in:</p>
-
 <blockquote>
-<p><code>1053</code> =&gt; <code>MTA1Mw</code></p>
-</blockquote>
-
+<p><code>1053</code> =&gt; <code>MTA1Mw</code></p></blockquote>
 <p>Note that <code>MTAwNA</code> <strong>&gt;</strong> <code>MTA1Mw</code>.</p>
-
 <p>The key to understanding why <code>b64(a) !&lt; b64(b)</code> has to do with <strong>Step 6</strong>.</p>
-
 <p>We convert our new, transformed decimal values according to the base64 characters table - which places numbers such as <code>1-9</code> as <em>higher</em> than characters (in terms of index value).</p>
-
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/w9bi3we0hlb75gbgq3cy.png" alt="Alt Text" /></p>
-
+<p><img src="/dev/img/b64encoding.png" alt="Alt Text"></p>
 <p>Notice how <code>1</code> has decimal value <code>53</code> and <code>w</code> has decimal value <code>48</code>. Contrast this to the ASCII table:</p>
-
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/zln3xr8oy13i5ysguoqg.png" alt="Alt Text" /></p>
-
+<p><img src="/dev/img/asciiencoding.png" alt="Alt Text"></p>
 <p>Note that <code>&quot;1&quot;</code> has a decimal value of <strong>49</strong>.</p>
-
-<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/44cwso2s9neqzvpejp3e.png" alt="Alt Text" /></p>
-
+<p><img src="/dev/img/asciiencoding_w.png" alt="Alt Text"></p>
 <p>But <code>&quot;w&quot;</code> has a decimal value of <strong>77</strong>!</p>
-
 <p>So, when comparing <code>&quot;w&quot; &gt; &quot;1&quot;</code> as strings, the expression is evaluated as <code>True</code>!</p>
-
 <p>In other words, when we convert our bits from <strong>Step 4</strong> to characters, we splice the binary representation because our total # of bits is not divisible by 6 (see my <strong>PPS</strong> for more info).</p>
-
 <p>Then we convert this spliced value in our b64 table where the numeric chars (1-9) have indices that are <em>higher</em> than the indices of the non-numeric chars (A-Z and a-z).</p>
-
 <p>For this reason, when we attempt to perform a string compare, <code>1004</code> in b64 encoded form (<code>MTAwNA</code>) is indeed less than <code>1053</code> in b64 encoded form (<code>MTA1Mw</code>) according to the rules of b64 translation but <strong>not according to the ASCII translation</strong> (see my <strong>PS</strong> for more info).</p>
-
 <p>In ASCII format, <code>MTAwNA</code> is indeed &ldquo;greater&rdquo; than <code>MTA1Mw</code> since char position 3 in <code>MTAwNA</code> (<code>w</code>) actually has a numerical index that is higher than char position 3 in <code>MTA1Mw</code> (<code>1</code>).</p>
-
 <p>Womp womp.</p>
-
-<h3 id="ok-but-why-care-about-this"><strong>Ok but&hellip;why care about this?</strong></h3>
-
+<h3 id="ok-butwhy-care-about-this"><strong>Ok but&hellip;why care about this?</strong></h3>
 <p>Well, long story short: friends don&rsquo;t let friends take fields in their elasticsearch index, b64 encode them into a key and then run queries sorting by these keys because well&hellip;it won&rsquo;t work.</p>
-
 <p>I had one hell of a time figuring this out and even when I observed it, I had trouble justifying this to myself hence this post (which I used to work out my feelings on the matter).</p>
-
 <p>I feel slightly better now.</p>
+<hr>
+<p><strong>PS</strong>: in py3 we compare unicode values not ascii when performing string comparison ops - but for the purposes of this post the <a href="https://www.ssec.wisc.edu/~tomw/java/unicode.html">decimal values are the same</a> since we are only contending with <code>A-Z, a-z,0-9,+,/</code></p>
+<p><strong>PPS</strong>: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I&rsquo;ve yet to explain why (8N mod 6) == 4 does not seem to this problem.</p>
 
-<hr />
-
-<p><strong>PS</strong>: in py3 we compare unicode values not ascii when performing string comparison ops - but for the purposes of this post the <a href="https://www.ssec.wisc.edu/~tomw/java/unicode.html">decimal values are the same</a> since we are only contending with <code>A-Z, a-z,0-9,+,/</code>
-<strong>PPS</strong>: 8N mod 6 will always have remainder 2, 4, or 0. This problem seems to show up specifically when (8N mod 6) == 2 (ie: we pad 4 0s to the right of our last row). The mod 0 case is obvious but I&rsquo;ve yet to explain why (8N mod 6) == 4 does not seem to this problem.</p>
+	    <h2>Share</h2>
+	    <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+	    <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgotcha-w%2fcomparing-base64-encoded-strs%2f" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
 </article>
 
         </main><footer id="footer">
-    Copyright © 2020 Taq Karim
+    Copyright © 2022 Taq Karim
 </footer>
 </body>
 </html>
