@@ -472,16 +472,18 @@ $$</p>
 <p>That&rsquo;s eight possibilities. Now we check which of these eight satisfy our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
 <p>Now we check each of these eight classes against our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
 <p>$$
-\begin{aligned}
-1 &amp;\equiv 1 \pmod 5 \quad \checkmark \\
-7 &amp;\equiv 2 \pmod 5 \quad \times \\
-11 &amp;\equiv 1 \pmod 5 \quad \checkmark \\
-13 &amp;\equiv 3 \pmod 5 \quad \times \\
-17 &amp;\equiv 2 \pmod 5 \quad \times \\
-19 &amp;\equiv 4 \pmod 5 \quad \checkmark \\
-23 &amp;\equiv 3 \pmod 5 \quad \times \\
-29 &amp;\equiv 4 \pmod 5 \quad \checkmark
-\end{aligned}
+\begin{array}{c|c|c}
+\text{Prime} &amp; \text{mod } 5 &amp; \text{OK?} \
+\hline
+1  &amp; 1 &amp; \checkmark \
+7  &amp; 2 &amp; \times \
+11 &amp; 1 &amp; \checkmark \
+13 &amp; 3 &amp; \times \
+17 &amp; 2 &amp; \times \
+19 &amp; 4 &amp; \checkmark \
+23 &amp; 3 &amp; \times \
+29 &amp; 4 &amp; \checkmark \
+\end{array}
 $$</p>
 <p>Four pass, four fail. So <strong>only primes \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\)</strong> can produce valid triples.</p>
 <p>Let us verify against our examples. We have \(r = 11 \equiv 11 \pmod{30}\) and \(r = 29 \equiv 29 \pmod{30}\). Both land in the valid set.</p>

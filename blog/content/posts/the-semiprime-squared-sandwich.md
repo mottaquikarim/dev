@@ -485,17 +485,20 @@ That's eight possibilities. Now we check which of these eight satisfy our constr
 Now we check each of these eight classes against our constraint \\(r \equiv 1\\) or \\(4 \pmod 5\\):
 
 $$
-\begin{aligned}
-1 &\equiv 1 \pmod 5 \quad \checkmark \\\\
-7 &\equiv 2 \pmod 5 \quad \times \\\\
-11 &\equiv 1 \pmod 5 \quad \checkmark \\\\
-13 &\equiv 3 \pmod 5 \quad \times \\\\
-17 &\equiv 2 \pmod 5 \quad \times \\\\
-19 &\equiv 4 \pmod 5 \quad \checkmark \\\\
-23 &\equiv 3 \pmod 5 \quad \times \\\\
-29 &\equiv 4 \pmod 5 \quad \checkmark
-\end{aligned}
+\begin{array}{c|c|c}
+\text{Prime} & \text{mod } 5 & \text{OK?} \\
+\hline
+1  & 1 & \checkmark \\
+7  & 2 & \times \\
+11 & 1 & \checkmark \\
+13 & 3 & \times \\
+17 & 2 & \times \\
+19 & 4 & \checkmark \\
+23 & 3 & \times \\
+29 & 4 & \checkmark \\
+\end{array}
 $$
+
 
 Four pass, four fail. So **only primes \\(r \equiv 1, 11, 19,\\) or \\(29 \pmod{30}\\)** can produce valid triples.
 
