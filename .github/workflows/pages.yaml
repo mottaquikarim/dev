@@ -3,7 +3,7 @@ name: Deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - main     # or master, match your default branch
+      - master     # or master, match your default branch
   workflow_dispatch:
 
 permissions:
