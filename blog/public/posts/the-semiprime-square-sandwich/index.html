@@ -471,20 +471,58 @@ $$</p>
 <p>1, 7, 11, 13, 17, 19, 23, 29.</p>
 <p>That&rsquo;s eight possibilities. Now we check which of these eight satisfy our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
 <p>Now we check each of these eight classes against our constraint \(r \equiv 1\) or \(4 \pmod 5\):</p>
-<p>$$
-\begin{array}{c|c|c}
-\text{Prime} &amp; \text{mod } 5 &amp; \text{OK?} \
-\hline
-1  &amp; 1 &amp; \checkmark \
-7  &amp; 2 &amp; \times \
-11 &amp; 1 &amp; \checkmark \
-13 &amp; 3 &amp; \times \
-17 &amp; 2 &amp; \times \
-19 &amp; 4 &amp; \checkmark \
-23 &amp; 3 &amp; \times \
-29 &amp; 4 &amp; \checkmark \
-\end{array}
-$$</p>
+<p>Now we check each of these eight classes against our constraint (r \equiv 1 \text{ or } 4 \pmod 5):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Prime (r)</th>
+          <th>(r \bmod 5)</th>
+          <th>OK?</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>✓</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>2</td>
+          <td>×</td>
+      </tr>
+      <tr>
+          <td>11</td>
+          <td>1</td>
+          <td>✓</td>
+      </tr>
+      <tr>
+          <td>13</td>
+          <td>3</td>
+          <td>×</td>
+      </tr>
+      <tr>
+          <td>17</td>
+          <td>2</td>
+          <td>×</td>
+      </tr>
+      <tr>
+          <td>19</td>
+          <td>4</td>
+          <td>✓</td>
+      </tr>
+      <tr>
+          <td>23</td>
+          <td>3</td>
+          <td>×</td>
+      </tr>
+      <tr>
+          <td>29</td>
+          <td>4</td>
+          <td>✓</td>
+      </tr>
+  </tbody>
+</table>
 <p>Four pass, four fail. So <strong>only primes \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\)</strong> can produce valid triples.</p>
 <p>Let us verify against our examples. We have \(r = 11 \equiv 11 \pmod{30}\) and \(r = 29 \equiv 29 \pmod{30}\). Both land in the valid set.</p>
 <p>This constraint is quite restrictive. Among the first several primes greater than 5, we have: 7 (out), 11 (in), 13 (out), 17 (out), 19 (in), 23 (out), 29 (in), 31 (in), 37 (out), 41 (in), 43 (out), 47 (out), 53 (out), 59 (in), 61 (in)&hellip; Only about half the primes even have a chance of being \(r\), and then the primality conditions on \(p\) and \(b\) filter further.</p>

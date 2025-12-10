@@ -484,20 +484,18 @@ That's eight possibilities. Now we check which of these eight satisfy our constr
 
 Now we check each of these eight classes against our constraint \\(r \equiv 1\\) or \\(4 \pmod 5\\):
 
-$$
-\begin{array}{c|c|c}
-\text{Prime} & \text{mod } 5 & \text{OK?} \\
-\hline
-1  & 1 & \checkmark \\
-7  & 2 & \times \\
-11 & 1 & \checkmark \\
-13 & 3 & \times \\
-17 & 2 & \times \\
-19 & 4 & \checkmark \\
-23 & 3 & \times \\
-29 & 4 & \checkmark \\
-\end{array}
-$$
+Now we check each of these eight classes against our constraint \(r \equiv 1 \text{ or } 4 \pmod 5\):
+
+| Prime \(r\) | \(r \bmod 5\) | OK? |
+|-------------|---------------|-----|
+| 1           | 1             | ✓   |
+| 7           | 2             | ×   |
+| 11          | 1             | ✓   |
+| 13          | 3             | ×   |
+| 17          | 2             | ×   |
+| 19          | 4             | ✓   |
+| 23          | 3             | ×   |
+| 29          | 4             | ✓   |
 
 
 Four pass, four fail. So **only primes \\(r \equiv 1, 11, 19,\\) or \\(29 \pmod{30}\\)** can produce valid triples.
