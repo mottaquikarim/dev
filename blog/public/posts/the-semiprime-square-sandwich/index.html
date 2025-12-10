@@ -155,10 +155,12 @@ table td {
   <ul>
     <li><a href="#1-the-center-prime-is-always-1-pmod60">1. The center prime is always \(1 \pmod{60}\)</a>
       <ul>
-        <li><a href="#working-modulo-8-and-hence-modulo-4">Working modulo 8 (and hence modulo 4)</a></li>
+        <li><a href="#the-approach">The approach</a></li>
+        <li><a href="#working-modulo-4">Working modulo 4</a></li>
         <li><a href="#working-modulo-3">Working modulo 3</a></li>
         <li><a href="#working-modulo-5">Working modulo 5</a></li>
-        <li><a href="#putting-the-congruences-together">Putting the congruences together</a></li>
+        <li><a href="#why-stop-at-5">Why stop at 5?</a></li>
+        <li><a href="#putting-it-together">Putting it together</a></li>
       </ul>
     </li>
     <li><a href="#2-the-top-prime-and-quadratic-residues">2. The top prime and quadratic residues</a>
@@ -319,90 +321,62 @@ $$</p>
 <p>$$
 p = \frac{r^2+1}{2},
 $$</p>
-<p>with \(r\) an odd prime not equal to 3 or 5. Our goal is to pin down \(p\) modulo 60. Since \(60 = 4 \times 3 \times 5\), we can work modulo each factor separately and combine the results at the end using the Chinese Remainder Theorem.</p>
-<h3 id="working-modulo-8-and-hence-modulo-4">Working modulo 8 (and hence modulo 4)</h3>
-<p>Any odd integer can be written as \(2k+1\) for some integer \(k\). Squaring gives</p>
+<p>with \(r\) an odd prime not equal to 3 or 5. Our goal is to figure out what remainder \(p\) leaves when divided by various numbers. It turns out \(p\) always leaves remainder 1 when divided by 60. Let&rsquo;s see why.</p>
+<h3 id="the-approach">The approach</h3>
+<p>We want to understand what remainders \(p\) can leave when divided by various numbers. We&rsquo;ll check small primes—2, 3, and 5—and see what constraints emerge. (Why these three? They&rsquo;re the smallest primes, and small primes often reveal structure. We&rsquo;ll see what we find.)</p>
+<p>At the end, we&rsquo;ll combine whatever constraints we discover. If \(p\) leaves remainder 1 when divided by several numbers that share no common factors (mathematicians call such numbers &ldquo;coprime&rdquo;), then we can combine those facts into a single statement about a larger modulus. This trick is called the <a href="https://en.wikipedia.org/wiki/Chinese_remainder_theorem">Chinese Remainder Theorem</a>.</p>
+<p>For example, if we find that \(p\) leaves remainder 1 when divided by 4, by 3, and by 5—and since 4, 3, and 5 share no common factors—we could conclude that \(p\) leaves remainder 1 when divided by \(4 \times 3 \times 5 = 60\).</p>
+<p>Let&rsquo;s see what actually happens.</p>
+<h3 id="working-modulo-4">Working modulo 4</h3>
+<p>First, we need a fact about odd squares: any odd number squared leaves remainder 1 when divided by 8 (and hence also when divided by 4).</p>
+<p>Let&rsquo;s prove this. Any odd number can be written as \(2k+1\) for some integer \(k\). Squaring:</p>
 <p>$$
 (2k+1)^2 = 4k^2 + 4k + 1 = 4k(k+1) + 1.
 $$</p>
-<p>Since one of \(k\) or \(k+1\) is even, \(k(k+1)\) is always even, so \(4k(k+1)\) is divisible by 8. Therefore</p>
+<p>Now, either \(k\) is even or \(k+1\) is even, so \(k(k+1)\) is always even. That means \(4k(k+1)\) is divisible by 8. So</p>
 <p>$$
-r^2 \equiv 1 \pmod{8}
+(2k+1)^2 \equiv 1 \pmod{8}.
 $$</p>
-<p>for any odd \(r\).</p>
-<p>This means</p>
-<p>$$
-r^2 + 1 \equiv 2 \pmod{8},
-$$</p>
-<p>and dividing by 2 gives</p>
+<p>In plain English: any odd number squared, divided by 8, leaves remainder 1.</p>
+<p>Since \(r\) is an odd prime, \(r^2 \equiv 1 \pmod 8\), which means \(r^2 + 1 \equiv 2 \pmod 8\). Dividing by 2:</p>
 <p>$$
 p = \frac{r^2+1}{2} \equiv 1 \pmod{4}.
 $$</p>
+<p>So \(p\) leaves remainder 1 when divided by 4. ✓</p>
 <h3 id="working-modulo-3">Working modulo 3</h3>
-<p>For a prime \(r \neq 3\), we have</p>
+<p>What remainder does \(r\) leave when divided by 3? Since \(r\) is a prime other than 3, it&rsquo;s not divisible by 3, so \(r\) leaves remainder 1 or 2.</p>
+<p>Let&rsquo;s square both cases. If \(r \equiv 1 \pmod 3\), then \(r^2 \equiv 1\). If \(r \equiv 2 \pmod 3\), then \(r^2 = 4 \equiv 1 \pmod 3\).</p>
+<p>Either way, \(r^2 \equiv 1 \pmod 3\), so \(r^2 + 1 \equiv 2 \pmod 3\).</p>
+<p>Now we need to &ldquo;divide by 2&rdquo; in modular arithmetic. This means finding a number that, when multiplied by 2, gives 1 (mod 3). That number is 2 itself, since \(2 \times 2 = 4 \equiv 1 \pmod 3\). So &ldquo;dividing by 2&rdquo; is the same as &ldquo;multiplying by 2&rdquo;:</p>
 <p>$$
-r \equiv 1 \text{ or } 2 \pmod{3}.
+p = \frac{r^2+1}{2} \equiv 2 \times 2 \equiv 4 \equiv 1 \pmod{3}.
 $$</p>
-<p>Squaring either case:</p>
-<ul>
-<li>if \(r \equiv 1\), then \(r^2 \equiv 1\);</li>
-<li>if \(r \equiv 2\), then \(r^2 \equiv 4 \equiv 1 \pmod{3}\).</li>
-</ul>
-<p>So always</p>
-<p>$$
-r^2 \equiv 1 \pmod{3}.
-$$</p>
-<p>Then</p>
-<p>$$
-r^2 + 1 \equiv 1 + 1 \equiv 2 \pmod{3}.
-$$</p>
-<p>Now 2 has an inverse modulo 3, namely 2 again, because \(2\cdot 2 = 4 \equiv 1 \pmod{3}\). So we can &ldquo;divide by 2&rdquo; by multiplying by 2:</p>
-<p>$$
-p = \frac{r^2+1}{2} \equiv 2 \cdot 2 \equiv 4 \equiv 1 \pmod{3}.
-$$</p>
-<p>So \(p\) leaves remainder 1 when divided by 3.</p>
+<p>So \(p\) leaves remainder 1 when divided by 3. ✓</p>
 <h3 id="working-modulo-5">Working modulo 5</h3>
-<p>For a prime \(r \neq 5\), the possibilities modulo 5 are</p>
+<p>What remainder does \(r\) leave when divided by 5? Since \(r\) is a prime other than 5, the possibilities are 1, 2, 3, or 4.</p>
+<p>Let&rsquo;s square each: \(1^2 = 1\), \(2^2 = 4\), \(3^2 = 9 \equiv 4\), \(4^2 = 16 \equiv 1 \pmod 5\).</p>
+<p>So \(r^2\) is either 1 or 4 modulo 5. We need to handle these two cases separately.</p>
+<p><strong>Case 1:</strong> \(r^2 \equiv 1 \pmod 5\).</p>
+<p>Then \(r^2 + 1 \equiv 2 \pmod 5\). To divide by 2, we need the inverse of 2 modulo 5. Since \(2 \times 3 = 6 \equiv 1 \pmod 5\), the inverse is 3. So:</p>
 <p>$$
-r \equiv 1,2,3,\text{ or }4 \pmod{5}.
+p = \frac{r^2+1}{2} \equiv 2 \times 3 \equiv 6 \equiv 1 \pmod{5}.
 $$</p>
-<p>Squaring each: \(1^2 \equiv 1\), and \(4^2 = 16 \equiv 1\), and \(2^2 = 4\), and \(3^2 = 9 \equiv 4 \pmod{5}\).</p>
-<p>So \(r^2\) is either \(1\) or \(4\) modulo 5.</p>
-<p><strong>Case 1: \(r^2 \equiv 1 \pmod{5}\).</strong><br>
-Then</p>
-<p>$$
-r^2 + 1 \equiv 2 \pmod{5}.
-$$</p>
-<p>The inverse of 2 modulo 5 is 3, because \(2\cdot 3 = 6 \equiv 1 \pmod{5}\). So</p>
-<p>$$
-p = \frac{r^2+1}{2} \equiv 2\cdot 3 \equiv 6 \equiv 1 \pmod{5}.
-$$</p>
-<p><strong>Case 2: \(r^2 \equiv 4 \pmod{5}\).</strong><br>
-Then</p>
-<p>$$
-r^2 + 1 \equiv 4 + 1 \equiv 5 \equiv 0 \pmod{5}.
-$$</p>
-<p>So \(p = (r^2+1)/2\) would be divisible by 5. The only way a prime is divisible by 5 is if it equals 5 itself. That would give</p>
-<p>$$
-p = 5 = \frac{r^2+1}{2} \Rightarrow r^2 = 9 \Rightarrow r = 3,
-$$</p>
-<p>but \(r = 3\) fails to produce a valid triple (as we saw above: 11 is prime, not a semiprime).</p>
-<p>So in all valid cases we must actually be in Case 1, and therefore</p>
-<p>$$
-p \equiv 1 \pmod{5}.
-$$</p>
-<h3 id="putting-the-congruences-together">Putting the congruences together</h3>
-<p>We now know</p>
-<p>$$
-p \equiv 1 \pmod{4},\qquad
-p \equiv 1 \pmod{3},\qquad
-p \equiv 1 \pmod{5}.
-$$</p>
-<p>The least common multiple of 4, 3, and 5 is 60, and the only residue class modulo 60 that is 1 modulo all three is \(1\) itself. So</p>
+<p><strong>Case 2:</strong> \(r^2 \equiv 4 \pmod 5\).</p>
+<p>Then \(r^2 + 1 \equiv 5 \equiv 0 \pmod 5\), so \(p = (r^2+1)/2\) would be divisible by 5. But \(p\) is prime, so the only way \(p\) can be divisible by 5 is if \(p = 5\). That would mean \(r^2 + 1 = 10\), so \(r^2 = 9\), so \(r = 3\).</p>
+<p>But we already saw that \(r = 3\) doesn&rsquo;t produce a valid triple—the triple (9, 10, 11) fails because 11 is prime, not a semiprime. So Case 2 never actually happens for valid triples.</p>
+<p>Therefore \(p \equiv 1 \pmod 5\). ✓</p>
+<h3 id="why-stop-at-5">Why stop at 5?</h3>
+<p>We could keep going—check modulo 7, 11, 13, and so on. But something special happened with 2, 3, and 5: in each case, \(p\) was forced into a <em>single</em> residue class (remainder 1). That&rsquo;s a strong constraint.</p>
+<p>For larger primes, this stops being true. Take 7 as an example. The possible remainders for \(r\) modulo 7 are 1, 2, 3, 4, 5, and 6. Squaring each: \(1^2 = 1\), \(2^2 = 4\), \(3^2 = 9 \equiv 2\), \(4^2 = 16 \equiv 2\), \(5^2 = 25 \equiv 4\), \(6^2 = 36 \equiv 1 \pmod 7\).</p>
+<p>So \(r^2\) can be 1, 2, or 4 modulo 7—three different possibilities. This means \(p = (r^2+1)/2\) can land in multiple residue classes modulo 7, not just one. The constraint is weaker, so it&rsquo;s less useful.</p>
+<p>The primes 2, 3, and 5 are special because they tightly constrain \(p\). Beyond that, we get diminishing returns.</p>
+<h3 id="putting-it-together">Putting it together</h3>
+<p>We&rsquo;ve shown that \(p\) leaves remainder 1 when divided by 4, by 3, and by 5. Since \(4 \times 3 \times 5 = 60\) and these numbers share no common factors, \(p\) must leave remainder 1 when divided by 60:</p>
 <p>$$
 p \equiv 1 \pmod{60}.
 $$</p>
-<p>Check against the actual examples. For \(r = 11\), we get \(p = (121+1)/2 = 61\), and indeed \(61 = 60\cdot 1 + 1\). For \(r = 29\), we get \(p = (841+1)/2 = 421\), and \(421 = 60\cdot 7 + 1\).</p>
+<p>Let&rsquo;s verify with our examples. For \(r = 11\), we get \(p = (121+1)/2 = 61 = 60 + 1\). ✓</p>
+<p>For \(r = 29\), we get \(p = (841+1)/2 = 421 = 7 \times 60 + 1\). ✓</p>
 <p>So the middle primes always sit in the &ldquo;\(60k+1\)&rdquo; lane of the number line.</p>
 <hr>
 <h2 id="2-the-top-prime-and-quadratic-residues">2. The top prime and quadratic residues</h2>
@@ -549,6 +523,25 @@ $$</p>
 (841,\ 842,\ 843) = (29^2,\ 2\cdot 421,\ 3\cdot 281).
 $$</p>
 <p>In both cases, you can see: the bottom is a square of a prime, the middle is \(2p\) with \(p \equiv 1 \pmod{60}\), and the top is \(3b\) with \(b \equiv 1\) or \(17 \pmod{24}\).</p>
+<hr>
+<h1 id="quick-recap">Quick recap</h1>
+<p>In this analysis, we have classified square-centered semiprime triples. Here is what we found.</p>
+<p>A &ldquo;semiprime square sandwich&rdquo;  \((r^2, r^2+1, r^2+2)\) consists of three consecutive distinct semiprimes if and only if:</p>
+<ol>
+<li>\(r\) is prime</li>
+<li>\(p = (r^2+1)/2\) is prime</li>
+<li>\(b = (r^2+2)/3\) is prime</li>
+</ol>
+<p>When all three conditions hold, the triple takes the form</p>
+<p>$$
+(r^2,\ 2p,\ 3b)
+$$</p>
+<p>and the auxiliary primes are locked together by the relation</p>
+<p>$$
+3b = 2p + 1.
+$$</p>
+<p>From this structure, we derived necessary constraints on where these primes can live: \(p \equiv 1 \pmod{60}\), \(b \equiv 1\) or \(17 \pmod{24}\), and \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\). These constraints can help filter candidates, but they are not sufficient—you still need all three values to actually be prime.</p>
+<p>The first two examples are \(r = 11\) and \(r = 29\), giving the triples \((121, 122, 123)\) and \((841, 842, 843)\).</p>
 <hr>
 <h1 id="final-thoughts">Final thoughts</h1>
 <p>This result sits in an interesting middle ground. The basic phenomenon—that there exist triples of consecutive semiprimes starting with a prime square—is already catalogued in the OEIS as sequence <a href="https://oeis.org/A179502">A179502</a>, and a comment on <a href="https://oeis.org/A039833">A039833</a> notes the 2p-1, 2p, 2p+1 structure for general semiprime sandwiches.</p>

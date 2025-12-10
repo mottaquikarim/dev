@@ -30,10 +30,12 @@
   &lt;ul&gt;
     &lt;li&gt;&lt;a href=&#34;#1-the-center-prime-is-always-1-pmod60&#34;&gt;1. The center prime is always \(1 \pmod{60}\)&lt;/a&gt;
       &lt;ul&gt;
-        &lt;li&gt;&lt;a href=&#34;#working-modulo-8-and-hence-modulo-4&#34;&gt;Working modulo 8 (and hence modulo 4)&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#the-approach&#34;&gt;The approach&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#working-modulo-4&#34;&gt;Working modulo 4&lt;/a&gt;&lt;/li&gt;
         &lt;li&gt;&lt;a href=&#34;#working-modulo-3&#34;&gt;Working modulo 3&lt;/a&gt;&lt;/li&gt;
         &lt;li&gt;&lt;a href=&#34;#working-modulo-5&#34;&gt;Working modulo 5&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href=&#34;#putting-the-congruences-together&#34;&gt;Putting the congruences together&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#why-stop-at-5&#34;&gt;Why stop at 5?&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#putting-it-together&#34;&gt;Putting it together&lt;/a&gt;&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/li&gt;
     &lt;li&gt;&lt;a href=&#34;#2-the-top-prime-and-quadratic-residues&#34;&gt;2. The top prime and quadratic residues&lt;/a&gt;
