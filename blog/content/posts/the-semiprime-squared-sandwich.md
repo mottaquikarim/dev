@@ -7,27 +7,29 @@ katex: true
 
 {{<toc>}}
 
----
+**The BLUF:**
 
-**The BLUF:** 
+Consider the number 11. For the purposes of our post, 11 is a very interesting number because \\(11^2 = 121\\) and 121, 122 and 123 happen to be consecutive semiprimes: \\(121 = 11^2\\), \\(122 = 2 \cdot 61\\), \\(123 = 3 \cdot 41\\). As I've shown before, the longest possible chain of consecutive semiprimes is three—I've named this phenomenon [The Semiprime Sandwich]({{< relref "posts/the-semiprime-sandwich.md" >}}).
 
-Triples of consecutive semiprimes starting with a prime number squared (like \\(11^2\\) = 121, \\(11^2\\) + 1 = 122, \\(11^2\\) + 2 = 123) have been catalogued before, but their internal structure has not. This post proves that every such triple has the form \\((r^2, 2p, 3b)\\) where the auxiliary primes \\(p\\) and \\(b\\) satisfy the linear relation \\(3b = 2p + 1\\). From this single constraint, everything else follows: \\(p \equiv 1 \pmod{60}\\), \\(b \equiv 1\\) or \\(17 \pmod{24}\\), and \\(r \equiv 1, 11, 19,\\) or \\(29 \pmod{30}\\). The relation \\(3b = 2p + 1\\) in this context and the complete structural analysis that follows appear to be novel.
+But this particular semiprime sandwich is even more interesting. It starts with a perfect square, and that constraint forces a lot of structure.
+
+The existence of such sandwiches has been catalogued before. But! There doesn't seem to be much in the literature describing their internal behavior. For instance: the middle term is always \\(2p\\) for some prime \\(p\\), and the last term is always \\(3b\\) for some prime \\(b\\). These two primes are related by a pretty basic equation:
+
+$$
+3b = 2p + 1.
+$$
+
+Once you have this, you can show that \\(p\\) must leave remainder 1 when divided by 60, that \\(b\\) must leave remainder 1 or 17 when divided by 24, and that \\(r\\) must leave remainder 1, 11, 19, or 29 when divided by 30.
+
+The equation \\(3b = 2p + 1\\) and the structural analysis that follows appear to be new.
 
 ---
 
 # Semiprimes and Sandwiches, Oh My!
 
-A few years ago, around this time of year coincidentally, I wrote about [The Semiprime Sandwich]({{< relref "posts/the-semiprime-sandwich.md" >}}) – stretches of three consecutive integers \\([n-1, n, n+1]\\) that all happen to be **distinct semiprimes**. The first such example occurs at:
-
-$$
-33,\ 34,\ 35.
-$$
-
 I have not thought about semiprime sandwiches in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).
 
-Recently, I stumbled on a special case of the semiprime sandwich where **one of the three numbers is a perfect square** of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic. In this post, I walk through that analysis and land on a neat little theorem that captures every such triple.
-
----
+Recently, I stumbled on a special case where **one of the three numbers is a perfect square** of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic. In this post, I walk through that analysis and land on a neat little theorem that captures every such triple.
 
 # Square-Centered Semiprime Triples
 
