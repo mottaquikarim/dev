@@ -9,15 +9,15 @@ katex: true
 
 # Semiprimes and Sandwiches, Oh My!
 
-I have not thought about semiprime sandwiches in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).
+I have not thought about [semiprime sandwiches]({{< relref "posts/the-semiprime-sandwich.md" >}}) in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).
 
-Recently, I stumbled on a special case where **one of the three numbers is a perfect square** of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic. 
+Recently, I stumbled on a special case where **the first term in the sequence is the square** of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic. 
 
-Consider the number 11. For the purposes of our post, 11 is a very interesting number because \\(11^2 = 121\\) and 121, 122 and 123 happen to be consecutive semiprimes: \\(121 = 11^2\\), \\(122 = 2 \cdot 61\\), \\(123 = 3 \cdot 41\\). As I've shown before, the longest possible chain of consecutive semiprimes is three—I've named this phenomenon [The Semiprime Sandwich]({{< relref "posts/the-semiprime-sandwich.md" >}}).
+Consider the number 11. For the purposes of our post, 11 is a very interesting number because \\(11^2 = 121\\) and 121, 122 and 123 happen to be consecutive semiprimes: \\(121 = 11^2\\), \\(122 = 2 \cdot 61\\), \\(123 = 3 \cdot 41\\). As I've shown before, the longest possible chain of consecutive semiprimes is three—I've named this phenomenon ["The Semiprime Sandwich"]({{< relref "posts/the-semiprime-sandwich.md" >}}).
 
 But this particular semiprime sandwich is even more interesting. It starts with a perfect square, and that constraint forces a lot of structure.
 
-The existence of such sandwiches has been catalogued before. But! There doesn't seem to be much in the literature describing their internal behavior. For instance: the middle term is always \\(2p\\) for some prime \\(p\\), and the last term is always \\(3b\\) for some prime \\(b\\). These two primes are related by a pretty basic equation:
+The existence of these types of sandwiches (where the first term is the perfect square of a prime) has been catalogued before. But! There doesn't seem to be much in the literature describing their internal behavior. For instance: the middle term is always \\(2p\\) for some prime \\(p\\), and the last term is always \\(3b\\) for some prime \\(b\\). These two primes are related by a pretty basic equation:
 
 $$
 3b = 2p + 1.
@@ -25,7 +25,7 @@ $$
 
 Once you have this, you can show that \\(p\\) must leave remainder 1 when divided by 60, that \\(b\\) must leave remainder 1 or 17 when divided by 24, and that \\(r\\) must leave remainder 1, 11, 19, or 29 when divided by 30.
 
-The equation \\(3b = 2p + 1\\) and the structural analysis that follows appear to be new. In this post, I walk through that analysis and land on a neat little theorem that captures every such triple.
+This structure forces the linear relationship \\(3b = 2p + 1\\), which, along with the subsequent modular analysis, appears to be novel. This post details that analysis, culminating in a theorem that completely classifies every such triple.
 
 ---
 
@@ -48,19 +48,19 @@ A **square semiprime** is one of the form \\(r^2\\) where \\(r\\) is prime.
 
 By **distinct semiprimes**, I mean the three numbers have different prime factorizations. So \\((9, 10, 11)\\) would not count even if all three were semiprimes, because we want three genuinely different factorization patterns.
 
-Assume we are in the square case and write
+For the square case, let:
 
 $$
 n = r^2,
 $$
 
-so the triple becomes
+where \\(r\\) is prime. So the triple becomes
 
 $$
 (r^2,\ r^2+1,\ r^2+2).
 $$
 
-Now we squeeze this configuration using nothing more than parity (even/odd) and divisibility by 3.
+We will now analyze this configuration by applying the fundamental principles of divisibility by 2 and 3.
 
 ---
 

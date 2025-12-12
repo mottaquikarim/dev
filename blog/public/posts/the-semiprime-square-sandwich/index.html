@@ -176,16 +176,16 @@ table td {
 </aside>
 
 <h1 id="semiprimes-and-sandwiches-oh-my">Semiprimes and Sandwiches, Oh My!</h1>
-<p>I have not thought about semiprime sandwiches in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).</p>
-<p>Recently, I stumbled on a special case where <strong>one of the three numbers is a perfect square</strong> of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic.</p>
-<p>Consider the number 11. For the purposes of our post, 11 is a very interesting number because \(11^2 = 121\) and 121, 122 and 123 happen to be consecutive semiprimes: \(121 = 11^2\), \(122 = 2 \cdot 61\), \(123 = 3 \cdot 41\). As I&rsquo;ve shown before, the longest possible chain of consecutive semiprimes is three—I&rsquo;ve named this phenomenon <a href="/posts/the-semiprime-sandwich/">The Semiprime Sandwich</a>.</p>
+<p>I have not thought about <a href="/posts/the-semiprime-sandwich/">semiprime sandwiches</a> in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).</p>
+<p>Recently, I stumbled on a special case where <strong>the first term in the sequence is the square</strong> of a prime. It turns out that sandwiches in this configuration are completely classifiable with some light algebra and modular arithmetic.</p>
+<p>Consider the number 11. For the purposes of our post, 11 is a very interesting number because \(11^2 = 121\) and 121, 122 and 123 happen to be consecutive semiprimes: \(121 = 11^2\), \(122 = 2 \cdot 61\), \(123 = 3 \cdot 41\). As I&rsquo;ve shown before, the longest possible chain of consecutive semiprimes is three—I&rsquo;ve named this phenomenon <a href="/posts/the-semiprime-sandwich/">&ldquo;The Semiprime Sandwich&rdquo;</a>.</p>
 <p>But this particular semiprime sandwich is even more interesting. It starts with a perfect square, and that constraint forces a lot of structure.</p>
-<p>The existence of such sandwiches has been catalogued before. But! There doesn&rsquo;t seem to be much in the literature describing their internal behavior. For instance: the middle term is always \(2p\) for some prime \(p\), and the last term is always \(3b\) for some prime \(b\). These two primes are related by a pretty basic equation:</p>
+<p>The existence of these types of sandwiches (where the first term is the perfect square of a prime) has been catalogued before. But! There doesn&rsquo;t seem to be much in the literature describing their internal behavior. For instance: the middle term is always \(2p\) for some prime \(p\), and the last term is always \(3b\) for some prime \(b\). These two primes are related by a pretty basic equation:</p>
 <p>$$
 3b = 2p + 1.
 $$</p>
 <p>Once you have this, you can show that \(p\) must leave remainder 1 when divided by 60, that \(b\) must leave remainder 1 or 17 when divided by 24, and that \(r\) must leave remainder 1, 11, 19, or 29 when divided by 30.</p>
-<p>The equation \(3b = 2p + 1\) and the structural analysis that follows appear to be new. In this post, I walk through that analysis and land on a neat little theorem that captures every such triple.</p>
+<p>This structure forces the linear relationship \(3b = 2p + 1\), which, along with the subsequent modular analysis, appears to be novel. This post details that analysis, culminating in a theorem that completely classifies every such triple.</p>
 <hr>
 <h1 id="square-centered-semiprime-triples">Square-Centered Semiprime Triples</h1>
 <p>We will focus on triples of consecutive integers</p>
@@ -199,15 +199,15 @@ $$</p>
 <p>So \(6 = 2\cdot 3\), \(15 = 3\cdot 5\), and \(25 = 5^2\) are all semiprimes.<br>
 A <strong>square semiprime</strong> is one of the form \(r^2\) where \(r\) is prime.</p>
 <p>By <strong>distinct semiprimes</strong>, I mean the three numbers have different prime factorizations. So \((9, 10, 11)\) would not count even if all three were semiprimes, because we want three genuinely different factorization patterns.</p>
-<p>Assume we are in the square case and write</p>
+<p>For the square case, let:</p>
 <p>$$
 n = r^2,
 $$</p>
-<p>so the triple becomes</p>
+<p>where \(r\) is prime. So the triple becomes</p>
 <p>$$
 (r^2,\ r^2+1,\ r^2+2).
 $$</p>
-<p>Now we squeeze this configuration using nothing more than parity (even/odd) and divisibility by 3.</p>
+<p>We will now analyze this configuration by applying the fundamental principles of divisibility by 2 and 3.</p>
 <hr>
 <h2 id="step-1-forcing-the-factor-2">Step 1: forcing the factor \(2\)</h2>
 <p>Among three consecutive integers, exactly one is even. (Refer to my original post for analysis proving this)</p>
