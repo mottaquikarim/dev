@@ -227,6 +227,8 @@ we can ask: **where do these primes actually live in the integers?**
 
 Three simple facts emerge. First, the "middle" prime \\(p\\) always leaves remainder 1 when divided by 60. Second, the "top" prime \\(b\\) can only leave remainder 1 or 17 when divided by 24. Third, the source prime \\(r\\) can only leave remainder 1, 11, 19, or 29 when divided by 30.
 
+Once the structure \\((r², 2p, 3b)\\) with \\(3b = 2p + 1\\) is fixed, these congruence conditions are forced consequences rather than independent phenomena.
+
 Let's walk through each fact in more detail below.
 
 ---
@@ -427,8 +429,6 @@ For our theorem, this gives us a necessary condition: if you hand me a supposed 
 
 Combined with the constraint on \\(p\\) (that \\(p \equiv 1 \pmod{60}\\)), we now have a fairly complete picture of what valid triples look like. The bottom is \\(r^2\\) for some prime \\(r\\). The middle is \\(2p\\) where \\(p\\) lives in the \\(60k + 1\\) lane. The top is \\(3b\\) where \\(b\\) lives in one of the two lanes \\(24k + 1\\) or \\(24k + 17\\). These constraints are all necessary, and together with the primality requirements, they are sufficient.
 
-So far, all the data points hit the \\(17 \pmod{24}\\) lane.
-
 ---
 
 ## 3. The source prime lives in four residue classes
@@ -510,6 +510,68 @@ $$
 $$
 
 In both cases, you can see: the bottom is a square of a prime, the middle is \\(2p\\) with \\(p \equiv 1 \pmod{60}\\), and the top is \\(3b\\) with \\(b \equiv 1\\) or \\(17 \pmod{24}\\).
+
+---
+
+# Computational verification
+
+The classification gives us a straightforward search strategy. Instead of checking all integers, we only consider primes \\(r \equiv 1, 11, 19, 29 \pmod{30}\\), then verify whether \\(p = (r^2+1)/2\\) and \\(b = (r^2+2)/3\\) are both prime.
+
+Here is a simple Python implementation:
+
+```python
+def is_prime(n):
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_sandwiches(limit):
+    """Find all semiprime square sandwiches with r < limit."""
+    results = []
+    for r in range(2, limit):
+        if not is_prime(r):
+            continue
+        if r % 30 not in [1, 11, 19, 29]:
+            continue
+        
+        r_sq = r * r
+        p = (r_sq + 1) // 2
+        b = (r_sq + 2) // 3
+        
+        if is_prime(p) and is_prime(b):
+            results.append((r, p, b))
+    return results
+```
+
+Running this up to \\(r < 10{,}000\\) finds 35 valid triples. The first several are:
+
+| \\(r\\) | \\(r \mod 30\\) | Triple | Factorization | \\(b \mod 24\\) |
+|---------|-----------------|--------|---------------|-----------------|
+| 11 | 11 | (121, 122, 123) | \\((11^2,\ 2 \cdot 61,\ 3 \cdot 41)\\) | 17 |
+| 29 | 29 | (841, 842, 843) | \\((29^2,\ 2 \cdot 421,\ 3 \cdot 281)\\) | 17 |
+| 79 | 19 | (6241, 6242, 6243) | \\((79^2,\ 2 \cdot 3121,\ 3 \cdot 2081)\\) | 17 |
+| 271 | 1 | (73441, 73442, 73443) | \\((271^2,\ 2 \cdot 36721,\ 3 \cdot 24481)\\) | 1 |
+| 379 | 19 | (143641, 143642, 143643) | \\((379^2,\ 2 \cdot 71821,\ 3 \cdot 47881)\\) | 1 |
+| 461 | 11 | (212521, 212522, 212523) | \\((461^2,\ 2 \cdot 106261,\ 3 \cdot 70841)\\) | 17 |
+
+A few observations:
+
+**All four residue classes appear.** The first three examples hit \\(r \equiv 11, 29, 19 \pmod{30}\\). We have to wait until \\(r = 271\\) for the first example with \\(r \equiv 1 \pmod{30}\\). This is just chance; there is no structural reason why one class should appear before another.
+
+**Both lanes for \\(b\\) are populated.** The first three examples all have \\(b \equiv 17 \pmod{24}\\), but starting at \\(r = 271\\), we see examples with \\(b \equiv 1 \pmod{24}\\). Among the 35 triples found, 15 have \\(b \equiv 1\\) and 20 have \\(b \equiv 17\\). The slight imbalance is likely statistical noise.
+
+**The triples are sparse.** There are 1,229 primes below 10,000. Of these, about half (615) satisfy the \\(r \equiv 1, 11, 19, 29 \pmod{30}\\) constraint. But only 35 of those (about 5.7%) actually produce valid triples. The primality conditions on \\(p\\) and \\(b\\) are the real bottleneck.
+
+**Gaps can be large.** After \\(r = 29\\), the next valid prime is \\(r = 79\\), a gap of 50. Many primes in between satisfy the modular constraint but fail the primality tests. For instance, \\(r = 31\\) gives \\(p = 481 = 13 \cdot 37\\), which is composite.
+
+The theorem does not make searching *fast* in any complexity-theoretic sense. We still need to test primality for each candidate. But it does reduce the search space by a factor of 4 (only checking primes in four residue classes instead of all primes) and provides a sanity check: if you find a triple, you can verify it satisfies the structural constraints.
 
 ---
 

@@ -16,8 +16,11 @@
     {{- .Content -}}
     {{- if eq .Type "posts"}}
 	    <h2>Share</h2>
-	    <a href="https://twitter.com/intent/tweet?original_referer={{ .Permalink }}&text=Check out this article by @taqkarim: {{ .Permalink }}" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
-	    <a href="https://www.linkedin.com/shareArticle?mini=false&url={{ .Permalink }}" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+        <a href="https://twitter.com/intent/tweet?original_referer={{ .Permalink }}?utm_source=twitter&text=Check out this article by @taqkarim: {{ .Permalink }}?utm_source=twitter" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+        <a href="https://www.linkedin.com/shareArticle?mini=false&url={{ .Permalink }}?utm_source=linkedin" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+        <a href="https://www.reddit.com/submit?url={{ .Permalink | urlquery }}%3Futm_source%3Dreddit&title={{ .Title | urlquery }}" target="_blank" rel="noopener">
+          <i class="fab fa-reddit fa-2x"></i>
+        </a>
 	{{- end }}
 </article>
 {{ end }}
