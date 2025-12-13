@@ -565,13 +565,13 @@ A few observations:
 
 **All four residue classes appear.** The first three examples hit \\(r \equiv 11, 29, 19 \pmod{30}\\). We have to wait until \\(r = 271\\) for the first example with \\(r \equiv 1 \pmod{30}\\). This is just chance; there is no structural reason why one class should appear before another.
 
-**Both lanes for \\(b\\) are populated.** The first three examples all have \\(b \equiv 17 \pmod{24}\\), but starting at \\(r = 271\\), we see examples with \\(b \equiv 1 \pmod{24}\\). Among the 35 triples found, 15 have \\(b \equiv 1\\) and 20 have \\(b \equiv 17\\). The slight imbalance is likely statistical noise.
+**Both lanes for \\(b\\) are populated.** The first three examples all have \\(b \equiv 17 \pmod{24}\\), but starting at \\(r = 271\\), we see examples with \\(b \equiv 1 \pmod{24}\\). Among the 35 triples found, 18 have \\(b \equiv 1\\) and 17 have \\(b \equiv 17\\), a nearly even split.
 
-**The triples are sparse.** There are 1,229 primes below 10,000. Of these, about half (615) satisfy the \\(r \equiv 1, 11, 19, 29 \pmod{30}\\) constraint. But only 35 of those (about 5.7%) actually produce valid triples. The primality conditions on \\(p\\) and \\(b\\) are the real bottleneck.
+**The triples are sparse.** There are 1,229 primes below 10,000. Of these, about half (609) satisfy the \\(r \equiv 1, 11, 19, 29 \pmod{30}\\) constraint. But only 35 of those (about 5.7%) actually produce valid triples. The primality conditions on \\(p\\) and \\(b\\) are the real bottleneck.
 
 **Gaps can be large.** After \\(r = 29\\), the next valid prime is \\(r = 79\\), a gap of 50. Many primes in between satisfy the modular constraint but fail the primality tests. For instance, \\(r = 31\\) gives \\(p = 481 = 13 \cdot 37\\), which is composite.
 
-The theorem does not make searching *fast* in any complexity-theoretic sense. We still need to test primality for each candidate. But it does reduce the search space by a factor of 4 (only checking primes in four residue classes instead of all primes) and provides a sanity check: if you find a triple, you can verify it satisfies the structural constraints.
+The theorem does not make searching *fast* in any complexity-theoretic sense. We still need to test primality for each candidate. But it does reduce the search space by a factor of 2 (only checking primes in four of the eight valid residue classes mod 30) and provides a sanity check: if you find a triple, you can verify it satisfies the structural constraints.
 
 ---
 
