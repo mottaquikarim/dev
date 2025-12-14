@@ -8,13 +8,14 @@ type: "bulkhead"
 
 I am of [Bangali](https://en.wikipedia.org/wiki/Bengalis) descent; I grew up in Queens, NY during the late 90s/early aughts. As a native (and proud!) New Yorker, I have had the good fortune to attend and graduate from two top tier academic institutions in NYC:  [Stuyvesant High School](https://en.wikipedia.org/wiki/Stuyvesant_High_School) and [the Cooper Union](https://en.wikipedia.org/wiki/Cooper_Union).
 
-Currently, I serve as Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers operating across 4 foundations:
+Currently, I serve as [Senior Director of Engineering at Peloton](https://www.linkedin.com/in/mottaqui-karim), where I lead our Platform organization and several backend product teams (about 10 teams in total). We own the infrastructure and core backend services that power the Peloton experience: from traffic routing and orchestration to user identity management to workout creation and storage.
+
+<!-- Currently, I serve as Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers operating across 4 foundations:
 
 * **Traffic**: application delivery controllers for all request layers running in Peloton's infrastructure
 * **Orchestration**: autonomous capabilities for teams to deploy manage and scale applications on Peloton's infrastructure
 * **Observability**: instrument, ingest, analyze and visualize all pillars of observability.
-* **Core**: tier0 services and service components powering foundational capabilities such as user identity resolution and shared components in Peloton's monolithic API service
-
+* **Core**: tier0 services and service components powering foundational capabilities such as user identity resolution and shared components in Peloton's monolithic API service -->
 
 
 <!-- Currently, I am the Director of Core Platform Software at Peloton; I am lucky and fortunate to work with an amazing team of engineers owning and operating the core kubernetes infrastructure that all of our prod / lower env services run on. We also maintain and operate microservice enabling functionality (like an API Gateway + Service Mesh), promote Peloton's SRE + infra sec practice, own the org's infrastructure as code software (built on top of terraform) and ensure the API Monolith (which is where _most_ of our backend software lives) is stable and functional. -->
