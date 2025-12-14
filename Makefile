@@ -45,7 +45,7 @@ build:
 
 develop:
 	docker run \
-	  --rm -it -d \
+	  --rm -it \
 	  -v /Users/taq.karim/taq/dev/blog:/src \
 	  -p 1313:1313 \
 	  -u root \

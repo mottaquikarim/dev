@@ -6,9 +6,51 @@
     <description>Recent content in Tags on Taq Karim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 09 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Dec 2025 22:31:54 +0000</lastBuildDate>
     
 	<atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+    <item>
+      <title>When Sandwiches Come in Pairs</title>
+      <link>http://localhost:1313/posts/when-sandwiches-come-in-pairs/</link>
+      <pubDate>Sat, 13 Dec 2025 22:31:54 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/when-sandwiches-come-in-pairs/</guid>
+      <description>&lt;aside id=&#34;toc&#34;&gt;
+    &lt;h4&gt;Table of Contents&lt;/h4&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-heuristic-framework&#34;&gt;The Heuristic Framework&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#empirical-verification&#34;&gt;Empirical Verification&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-converging-constant&#34;&gt;The Converging Constant&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#verification-of-modular-constraints&#34;&gt;Verification of Modular Constraints&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#gap-statistics&#34;&gt;Gap Statistics&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-algebraic-constraint&#34;&gt;The Algebraic Constraint&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#computational-search&#34;&gt;Computational Search&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#twin-valid-prime-density&#34;&gt;Twin Valid Prime Density&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#the-six-prime-constellation&#34;&gt;The Six-Prime Constellation&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#octo-valid-primes-the-next-smallest-gap&#34;&gt;Octo Valid Primes: The Next Smallest Gap&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-number-tbd-valid-sandwich-primes&#34;&gt;A-number (TBD): Valid Sandwich Primes&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-number-tbd-twin-valid-sandwich-primes&#34;&gt;A-number (TBD): Twin Valid Sandwich Primes&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#a-number-tbd-squares-starting-twin-valid-sandwiches&#34;&gt;A-number (TBD): Squares Starting Twin Valid Sandwiches&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/aside&gt;
+
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In &lt;a href=&#34;http://localhost:1313/posts/the-semiprime-square-sandwich/&#34;&gt;my previous post&lt;/a&gt;, I classified the structure of semiprime square sandwiches—triples of consecutive semiprimes \((r^2, r^2+1, r^2+2)\) where \(r\) is prime. The classification revealed tight constraints: the middle term is always \(2p\) with \(p \equiv 1 \pmod{60}\), the final term is always \(3b\) with \(b \equiv 1\) or \(17 \pmod{24}\), and the source prime \(r\) must satisfy \(r \equiv 1, 11, 19, 29 \pmod{30}\).&lt;/p&gt;</description>
+    </item>
     
     
     
@@ -22,32 +64,36 @@
     &lt;h4&gt;Table of Contents&lt;/h4&gt;
     &lt;nav id=&#34;TableOfContents&#34;&gt;
   &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&#34;#1-why-p-must-be-prime&#34;&gt;1. Why \(p\) must be prime&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&#34;#2-why-b-must-be-prime&#34;&gt;2. Why \(b\) must be prime&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&#34;#3-expressing-p-and-b-in-terms-of-r&#34;&gt;3. Expressing \(p\) and \(b\) in terms of \(r\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-1-forcing-the-factor-2&#34;&gt;Step 1: forcing the factor \(2\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#step-2-forcing-the-factor-3&#34;&gt;Step 2: forcing the factor \(3\)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#summary-of-the-structure&#34;&gt;Summary of the structure&lt;/a&gt;&lt;/li&gt;
   &lt;/ul&gt;
 
   &lt;ul&gt;
     &lt;li&gt;&lt;a href=&#34;#1-the-center-prime-is-always-1-pmod60&#34;&gt;1. The center prime is always \(1 \pmod{60}\)&lt;/a&gt;
       &lt;ul&gt;
-        &lt;li&gt;&lt;a href=&#34;#modulo-4&#34;&gt;Modulo 4&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href=&#34;#modulo-3&#34;&gt;Modulo 3&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href=&#34;#modulo-5&#34;&gt;Modulo 5&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#the-approach&#34;&gt;The approach&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#working-modulo-4&#34;&gt;Working modulo 4&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#working-modulo-3&#34;&gt;Working modulo 3&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#working-modulo-5&#34;&gt;Working modulo 5&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#why-stop-at-5&#34;&gt;Why stop at 5?&lt;/a&gt;&lt;/li&gt;
         &lt;li&gt;&lt;a href=&#34;#putting-it-together&#34;&gt;Putting it together&lt;/a&gt;&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/li&gt;
-    &lt;li&gt;&lt;a href=&#34;#2-the-3b-semiprime-and-quadratic-residues&#34;&gt;2. The \(3b\) semiprime and quadratic residues&lt;/a&gt;
+    &lt;li&gt;&lt;a href=&#34;#2-the-top-prime-and-quadratic-residues&#34;&gt;2. The top prime and quadratic residues&lt;/a&gt;
       &lt;ul&gt;
-        &lt;li&gt;&lt;a href=&#34;#what-is-a-quadratic-residue&#34;&gt;What is a quadratic residue?&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href=&#34;#what-does-that-force-on-b&#34;&gt;What does that force on \(b\)?&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#quick-definition-quadratic-residue&#34;&gt;Quick definition: quadratic residue&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#what-does-this-say-about-b&#34;&gt;What does this say about \(b\)?&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;#why-this-restriction-matters&#34;&gt;Why this restriction matters&lt;/a&gt;&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#3-the-source-prime-lives-in-four-residue-classes&#34;&gt;3. The source prime lives in four residue classes&lt;/a&gt;&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/nav&gt;
 &lt;/aside&gt;
 
-&lt;h1 id=&#34;lol-wut-again&#34;&gt;Lol, wut (again)?&lt;/h1&gt;
-&lt;p&gt;Some of you may remember a previous post where I explored &lt;strong&gt;semiprime sandwiches&lt;/strong&gt; – stretches of three consecutive integers \([n-1, n, n+1]\) that all happen to be &lt;strong&gt;distinct semiprimes&lt;/strong&gt;. The first such example occurs at:&lt;/p&gt;</description>
+&lt;h1 id=&#34;semiprimes-and-sandwiches-oh-my&#34;&gt;Semiprimes and Sandwiches, Oh My!&lt;/h1&gt;
+&lt;p&gt;I have not thought about &lt;a href=&#34;http://localhost:1313/posts/the-semiprime-sandwich/&#34;&gt;semiprime sandwiches&lt;/a&gt; in a while (though I do think about sandwiches, the eating kind, perhaps a little too often).&lt;/p&gt;</description>
     </item>
     
     

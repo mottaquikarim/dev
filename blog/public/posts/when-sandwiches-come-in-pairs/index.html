@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thoughts on code and building things.">
+    
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <link href="http://localhost:1313/fontawesome/css/all.min.css" rel="stylesheet">
+
+    <style>
+#post-header {
+    text-align: center;
+}
+
+main#content blockquote {
+  margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 5px solid;
+    display: inline-flex;
+}
+main#content p code {
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+ 
+table {
+padding: 1.5rem 2.2rem;
+    margin: 20px 0;
+    margin-left: -3.8%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+ 
+table {
+  color: #333;
+  background: white;
+  border: 1px solid grey;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  color: #777;
+  background: rgba(0,0,0,.1);
+}
+table caption {
+  padding:.5em;
+}
+table th,
+table td {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+ 
+[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.05);
+}
+[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+  background: rgba(255,255,255,.05);
+}
+ 
+[data-table-theme*=dark] {
+  color: #ddd;
+  background: #333;
+  font-size: 12pt;
+  border-collapse: collapse;
+}
+[data-table-theme*=dark] thead th,
+[data-table-theme*=dark] tfoot th {
+  color: #aaa;
+  background: rgba(0255,255,255,.15);
+}
+[data-table-theme*=dark] caption {
+  padding:.5em;
+}
+[data-table-theme*=dark] th,
+[data-table-theme*=dark] td {
+  padding: .5em;
+  border: 1px solid grey;
+}
+    </style>
+
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>When Sandwiches Come in Pairs</title>
+    <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	const opts = [
+		  {left: "$$", right: "$$", display: true},
+		  {left: "$", right: "$", display: false},
+		  {left: "\\(", right: "\\)", display: false},
+		  {left: "\\[", right: "\\]", display: true}]
+		renderMathInElement(document.body, opts);
+		
+    });
+</script>
+    
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "50d6391b0ac14e93bae2808292658be2"}'></script>
+    
+</head>
+<body><header id="banner">
+    
+    <nav>
+        <ul>
+            <li>
+                <a href="https://github.com/mottaquikarim" title="github" target="_blank"><i class='fab fa-github'></i></a>
+            </li><li>
+                <a href="https://www.linkedin.com/in/mottaqui-karim-5b01212a/" title="linkedin" target="_blank"><i class='fab fa-linkedin'></i></a>
+            </li><li>
+                <a href="https://twitter.com/taqkarim" title="twitter" target="_blank"><i class='fab fa-twitter'></i></a>
+            </li>
+        </ul>
+    </nav>
+    <nav>
+        <ul>
+            <li>
+                <a href="/" title="home">home</a>
+            </li><li>
+                <a href="/about/" title="about">about</a>
+            </li><li>
+                <a href="/tags/" title="tags">tags</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <small><strong>TAGS: </strong></small>
+        
+        
+            <small><strong><a href="http://localhost:1313/tags/math/">math</a></strong></small>
+        
+            <small><strong><a href="http://localhost:1313/tags/just-for-fun/">just for fun</a></strong></small>
+        <header id="post-header">
+        <h1>When Sandwiches Come in Pairs</h1><time>December 13, 2025</time></header><aside id="toc">
+    <h4>Table of Contents</h4>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-heuristic-framework">The Heuristic Framework</a></li>
+    <li><a href="#empirical-verification">Empirical Verification</a></li>
+    <li><a href="#the-converging-constant">The Converging Constant</a></li>
+    <li><a href="#verification-of-modular-constraints">Verification of Modular Constraints</a></li>
+    <li><a href="#gap-statistics">Gap Statistics</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#the-algebraic-constraint">The Algebraic Constraint</a></li>
+    <li><a href="#computational-search">Computational Search</a></li>
+    <li><a href="#twin-valid-prime-density">Twin Valid Prime Density</a></li>
+    <li><a href="#the-six-prime-constellation">The Six-Prime Constellation</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#octo-valid-primes-the-next-smallest-gap">Octo Valid Primes: The Next Smallest Gap</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#a-number-tbd-valid-sandwich-primes">A-number (TBD): Valid Sandwich Primes</a></li>
+    <li><a href="#a-number-tbd-twin-valid-sandwich-primes">A-number (TBD): Twin Valid Sandwich Primes</a></li>
+    <li><a href="#a-number-tbd-squares-starting-twin-valid-sandwiches">A-number (TBD): Squares Starting Twin Valid Sandwiches</a></li>
+  </ul>
+</nav>
+</aside>
+
+<h1 id="introduction">Introduction</h1>
+<p>In <a href="/posts/the-semiprime-square-sandwich/">my previous post</a>, I classified the structure of semiprime square sandwiches—triples of consecutive semiprimes \((r^2, r^2+1, r^2+2)\) where \(r\) is prime. The classification revealed tight constraints: the middle term is always \(2p\) with \(p \equiv 1 \pmod{60}\), the final term is always \(3b\) with \(b \equiv 1\) or \(17 \pmod{24}\), and the source prime \(r\) must satisfy \(r \equiv 1, 11, 19, 29 \pmod{30}\).</p>
+<p>This post extends the analysis in two directions. First, I present quantitative heuristics predicting how many such triples exist up to a bound \(N\), verified computationally up to \(10^{10}\). Second, I investigate <strong>twin valid primes</strong>—twin prime pairs \((r, r+2)\) where <em>both</em> primes generate valid semiprime square sandwiches.</p>
+<hr>
+<h1 id="quantitative-heuristics-the-bateman-horn-prediction">Quantitative Heuristics: The Bateman-Horn Prediction</h1>
+<p>The classification theorem reduces the existence of square-centered semiprime triples to a simultaneous primality problem: find primes \(r\) such that both \((r^2+1)/2\) and \((r^2+2)/3\) are also prime. This connects our problem to the <strong>Bateman-Horn conjecture</strong>, a standard heuristic for counting primes in polynomial sequences.</p>
+<h2 id="the-heuristic-framework">The Heuristic Framework</h2>
+<p>The Bateman-Horn conjecture predicts that for &ldquo;nice&rdquo; polynomial systems, the count of integers \(n \leq N\) satisfying multiple primality conditions follows:</p>
+<p>$$
+\pi(N) \sim C \cdot \frac{N}{(\log N)^k}
+$$</p>
+<p>where \(k\) is the number of independent primality conditions and \(C\) is a computable constant depending on local densities at each prime.</p>
+<p>In our setting, we have three conditions:</p>
+<ol>
+<li>\(r\) is prime</li>
+<li>\(p = (r^2 + 1)/2\) is prime</li>
+<li>\(b = (r^2 + 2)/3\) is prime</li>
+</ol>
+<p>Each condition contributes one factor of \(\log N\) to the denominator, suggesting:</p>
+<p>$$
+\pi(N) \sim C \cdot \frac{N}{(\log N)^3}
+$$</p>
+<h2 id="empirical-verification">Empirical Verification</h2>
+<p>To test this prediction, I computed all valid source primes \(r \leq 10^{10}\). The results:</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(N\)</th>
+          <th>Actual Count</th>
+          <th>\(N/(\log N)^3\)</th>
+          <th>Empirical \(C\)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\(10^4\)</td>
+          <td>35</td>
+          <td>12.8</td>
+          <td>2.73</td>
+      </tr>
+      <tr>
+          <td>\(10^5\)</td>
+          <td>160</td>
+          <td>65.5</td>
+          <td>2.44</td>
+      </tr>
+      <tr>
+          <td>\(10^6\)</td>
+          <td>759</td>
+          <td>379.2</td>
+          <td>2.00</td>
+      </tr>
+      <tr>
+          <td>\(10^7\)</td>
+          <td>4,668</td>
+          <td>2,388.1</td>
+          <td>1.95</td>
+      </tr>
+      <tr>
+          <td>\(10^8\)</td>
+          <td>30,319</td>
+          <td>15,998.6</td>
+          <td>1.90</td>
+      </tr>
+      <tr>
+          <td>\(10^9\)</td>
+          <td>204,439</td>
+          <td>112,363.5</td>
+          <td>1.82</td>
+      </tr>
+      <tr>
+          <td>\(10^{10}\)</td>
+          <td>1,456,226</td>
+          <td>819,130.2</td>
+          <td>1.78</td>
+      </tr>
+  </tbody>
+</table>
+<p>The fit to the \(N/(\log N)^3\) form is excellent, but the empirical constant \(C\) is not constant—it decreases slowly with \(N\).</p>
+<h2 id="the-converging-constant">The Converging Constant</h2>
+<p>Fitting the data to candidate models reveals that \(C(N)\) follows a logarithmic correction:</p>
+<p>$$
+C(N) \approx C_\infty + \frac{a}{(\log N)^2}
+$$</p>
+<p>The best fit gives:</p>
+<p>$$
+C(N) \approx 1.60 + \frac{100}{(\log N)^2}
+$$</p>
+<p>This predicts \(C_\infty \approx 1.60\) as \(N \to \infty\), though convergence is slow—even at \(N = 10^{100}\), the formula gives \(C \approx 1.601\).</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(N\)</th>
+          <th>Actual \(C\)</th>
+          <th>Predicted \(C\)</th>
+          <th>Error</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\(10^6\)</td>
+          <td>2.00</td>
+          <td>2.12</td>
+          <td>−6%</td>
+      </tr>
+      <tr>
+          <td>\(10^7\)</td>
+          <td>1.95</td>
+          <td>1.98</td>
+          <td>−2%</td>
+      </tr>
+      <tr>
+          <td>\(10^8\)</td>
+          <td>1.90</td>
+          <td>1.89</td>
+          <td>+0.3%</td>
+      </tr>
+      <tr>
+          <td>\(10^9\)</td>
+          <td>1.82</td>
+          <td>1.83</td>
+          <td>−0.6%</td>
+      </tr>
+      <tr>
+          <td>\(10^{10}\)</td>
+          <td>1.78</td>
+          <td>1.79</td>
+          <td>−0.4%</td>
+      </tr>
+  </tbody>
+</table>
+<p>The agreement is excellent for \(N \geq 10^7\).</p>
+<p><strong>Prediction formula:</strong></p>
+<p>$$
+\pi(N) \approx \left(1.60 + \frac{100}{(\log N)^2}\right) \cdot \frac{N}{(\log N)^3}
+$$</p>
+<h2 id="verification-of-modular-constraints">Verification of Modular Constraints</h2>
+<p>All 1,456,226 computed triples (up to \(10^{10}\)) satisfy the predicted constraints with <strong>zero violations</strong>:</p>
+<p><strong>Source prime \(r \pmod{30}\)</strong> (sampled):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Residue</th>
+          <th>Percentage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>24.6%</td>
+      </tr>
+      <tr>
+          <td>11</td>
+          <td>25.4%</td>
+      </tr>
+      <tr>
+          <td>19</td>
+          <td>25.0%</td>
+      </tr>
+      <tr>
+          <td>29</td>
+          <td>25.0%</td>
+      </tr>
+  </tbody>
+</table>
+<p>The four valid residue classes are populated almost perfectly uniformly.</p>
+<p><strong>Middle prime \(p \pmod{60}\)</strong> (sampled):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Residue</th>
+          <th>Percentage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>100%</td>
+      </tr>
+  </tbody>
+</table>
+<p>Every sampled middle prime satisfies \(p \equiv 1 \pmod{60}\), exactly as predicted.</p>
+<p><strong>Top prime \(b \pmod{24}\)</strong> (sampled):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Residue</th>
+          <th>Percentage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>49.7%</td>
+      </tr>
+      <tr>
+          <td>17</td>
+          <td>50.3%</td>
+      </tr>
+  </tbody>
+</table>
+<p>Both predicted classes appear with remarkably even frequency.</p>
+<h2 id="gap-statistics">Gap Statistics</h2>
+<p>The gaps between consecutive valid \(r\) values grow with \(N\):</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(N\)</th>
+          <th>Min Gap</th>
+          <th>Max Gap</th>
+          <th>Median Gap</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\(10^7\)</td>
+          <td>18</td>
+          <td>19,680</td>
+          <td>1,432</td>
+      </tr>
+      <tr>
+          <td>\(10^8\)</td>
+          <td>2</td>
+          <td>38,942</td>
+          <td>2,240</td>
+      </tr>
+      <tr>
+          <td>\(10^9\)</td>
+          <td>2</td>
+          <td>66,908</td>
+          <td>3,330</td>
+      </tr>
+      <tr>
+          <td>\(10^{10}\)</td>
+          <td>2</td>
+          <td>100,380</td>
+          <td>4,692</td>
+      </tr>
+  </tbody>
+</table>
+<p>The minimum gap of 2 corresponds to twin valid primes, discussed below.</p>
+<hr>
+<h1 id="twin-valid-primes">Twin Valid Primes</h1>
+<p>Now for the main event. Given the classification of valid source primes, a natural question arises: can consecutive primes <em>both</em> generate valid sandwiches?</p>
+<p>Specifically, if \((r, r+2)\) are twin primes, can both \(r\) and \(r+2\) produce semiprime square sandwiches?</p>
+<h2 id="the-algebraic-constraint">The Algebraic Constraint</h2>
+<p>For both \(r\) and \(r+2\) to be valid source primes, both must lie in the set \(\{1, 11, 19, 29\} \pmod{30}\).</p>
+<p>Twin primes differ by 2, so we need residue classes \(a\) and \(a+2\) (mod 30) that are both valid. Checking all possibilities:</p>
+<ul>
+<li>\(1 + 2 = 3 \not\in \{1, 11, 19, 29\}\) ✗</li>
+<li>\(11 + 2 = 13 \not\in \{1, 11, 19, 29\}\) ✗</li>
+<li>\(19 + 2 = 21 \not\in \{1, 11, 19, 29\}\) ✗</li>
+<li>\(29 + 2 = 31 \equiv 1 \pmod{30}\) ✓</li>
+</ul>
+<p><strong>Only one transition works:</strong> \(29 \to 1\).</p>
+<blockquote>
+<p><strong>Theorem (Twin Valid Prime Constraint).</strong> If twin primes \((r, r+2)\) both generate valid semiprime square sandwiches, then necessarily \(r \equiv 29 \pmod{30}\) and \(r+2 \equiv 1 \pmod{30}\).</p></blockquote>
+<p>This is remarkably restrictive. Not only must \((r, r+2)\) be twin primes, but \(r\) must land in a specific residue class.</p>
+<h2 id="computational-search">Computational Search</h2>
+<p>Searching up to \(10^{10}\), I found exactly <strong>182 twin valid prime pairs</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(r\)</th>
+          <th>\(r+2\)</th>
+          <th>\(r \bmod 30\)</th>
+          <th>\((r+2) \bmod 30\)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>661,949</td>
+          <td>661,951</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>6,142,949</td>
+          <td>6,142,951</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>8,359,919</td>
+          <td>8,359,921</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>23,304,959</td>
+          <td>23,304,961</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>68,412,959</td>
+          <td>68,412,961</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>100,319,039</td>
+          <td>100,319,041</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>118,243,259</td>
+          <td>118,243,261</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>123,338,879</td>
+          <td>123,338,881</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>149,016,059</td>
+          <td>149,016,061</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>204,394,049</td>
+          <td>204,394,051</td>
+          <td>29</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+      </tr>
+  </tbody>
+</table>
+<p>Every single pair has the predicted structure: \(r \equiv 29 \pmod{30}\).</p>
+<h2 id="twin-valid-prime-density">Twin Valid Prime Density</h2>
+<p>The growth of twin valid primes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(N\)</th>
+          <th>Valid \(r\)</th>
+          <th>Twin Pairs</th>
+          <th>Twins per 1000 Valid</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\(10^7\)</td>
+          <td>4,668</td>
+          <td>3</td>
+          <td>0.64</td>
+      </tr>
+      <tr>
+          <td>\(10^8\)</td>
+          <td>30,319</td>
+          <td>5</td>
+          <td>0.16</td>
+      </tr>
+      <tr>
+          <td>\(10^9\)</td>
+          <td>204,439</td>
+          <td>39</td>
+          <td>0.19</td>
+      </tr>
+      <tr>
+          <td>\(10^{10}\)</td>
+          <td>1,456,226</td>
+          <td>182</td>
+          <td>0.12</td>
+      </tr>
+  </tbody>
+</table>
+<p>Twin valid primes are getting <em>relatively</em> rarer—they grow slower than the total count. This makes sense: twin valid primes require <em>six</em> simultaneous primality conditions, while ordinary valid primes require only three.</p>
+<h2 id="the-six-prime-constellation">The Six-Prime Constellation</h2>
+<p>For each twin valid prime pair, we get a constellation of six related primes:</p>
+<ol>
+<li>\(r\) — the first source prime</li>
+<li>\(r + 2\) — the twin source prime</li>
+<li>\(p_1 = (r^2 + 1)/2\) — middle prime for first sandwich</li>
+<li>\(p_2 = ((r+2)^2 + 1)/2\) — middle prime for second sandwich</li>
+<li>\(b_1 = (r^2 + 2)/3\) — top prime for first sandwich</li>
+<li>\(b_2 = ((r+2)^2 + 2)/3\) — top prime for second sandwich</li>
+</ol>
+<p>These six primes satisfy polynomial relationships. From the algebra:</p>
+<p>$$
+p_2 - p_1 = \frac{(r+2)^2 + 1}{2} - \frac{r^2 + 1}{2} = \frac{4r + 4}{2} = 2(r+1)
+$$</p>
+<p>$$
+b_2 - b_1 = \frac{(r+2)^2 + 2}{3} - \frac{r^2 + 2}{3} = \frac{4r + 4}{3} = \frac{4(r+1)}{3}
+$$</p>
+<p>Since \(r \equiv 29 \pmod{30}\), we have \(r + 1 \equiv 0 \pmod{30}\), giving:</p>
+<p>$$
+p_2 - p_1 \equiv 0 \pmod{60}, \qquad b_2 - b_1 \equiv 0 \pmod{40}
+$$</p>
+<p><strong>Verification with \(r = 661949\):</strong></p>
+<ul>
+<li>
+<p>\(p_1 = (661949^2 + 1)/2 = 219088239301\)</p>
+</li>
+<li>
+<p>\(p_2 = (661951^2 + 1)/2 = 219089563201\)</p>
+</li>
+<li>
+<p>\(p_2 - p_1 = 1323900 = 60 \times 22065\) ✓</p>
+</li>
+<li>
+<p>\(b_1 = (661949^2 + 2)/3 = 146058826201\)</p>
+</li>
+<li>
+<p>\(b_2 = (661951^2 + 2)/3 = 146059708801\)</p>
+</li>
+<li>
+<p>\(b_2 - b_1 = 882600 = 40 \times 22065\) ✓</p>
+</li>
+</ul>
+<p>The gap between consecutive \(p\) values is exactly \(\frac{3}{2}\) times the gap between consecutive \(b\) values.</p>
+<hr>
+<h1 id="forbidden-gaps-cousin-and-sexy-primes-cannot-both-be-valid">Forbidden Gaps: Cousin and Sexy Primes Cannot Both Be Valid</h1>
+<p>The twin prime analysis reveals a broader phenomenon: <strong>most prime gap types cannot produce valid pairs</strong>.</p>
+<p>For two primes \(r\) and \(r + k\) to both generate valid sandwiches, we need:</p>
+<ul>
+<li>\(r \equiv a \pmod{30}\) for some \(a \in \{1, 11, 19, 29\}\)</li>
+<li>\(r + k \equiv b \pmod{30}\) for some \(b \in \{1, 11, 19, 29\}\)</li>
+</ul>
+<p>This means \(k \equiv b - a \pmod{30}\) for valid residues \(a, b\).</p>
+<p>Computing all possible differences:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Gap \(k \pmod{30}\)</th>
+          <th>Valid Transition(s)</th>
+          <th>Common Name</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2</td>
+          <td>\(29 \to 1\)</td>
+          <td>Twin primes</td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td>\(11 \to 19\)</td>
+          <td>Octo primes</td>
+      </tr>
+      <tr>
+          <td>10</td>
+          <td>\(1 \to 11\), \(19 \to 29\)</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>12</td>
+          <td>\(19 \to 1\), \(29 \to 11\)</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>18</td>
+          <td>\(1 \to 19\), \(11 \to 29\)</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>20</td>
+          <td>\(11 \to 1\), \(29 \to 19\)</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>22</td>
+          <td>\(19 \to 11\)</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>28</td>
+          <td>\(1 \to 29\)</td>
+          <td>—</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Gaps 4 and 6 are impossible.</strong></p>
+<p>For gap 4 (cousin primes):</p>
+<ul>
+<li>\(1 + 4 = 5 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(11 + 4 = 15 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(19 + 4 = 23 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(29 + 4 = 33 \equiv 3 \not\in \{1, 11, 19, 29\}\)</li>
+</ul>
+<p>For gap 6 (sexy primes):</p>
+<ul>
+<li>\(1 + 6 = 7 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(11 + 6 = 17 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(19 + 6 = 25 \not\in \{1, 11, 19, 29\}\)</li>
+<li>\(29 + 6 = 35 \equiv 5 \not\in \{1, 11, 19, 29\}\)</li>
+</ul>
+<blockquote>
+<p><strong>Theorem (Forbidden Gaps).</strong> If primes \(r\) and \(r+k\) both generate valid semiprime square sandwiches with \(0 &lt; k &lt; 30\), then \(k \in \{2, 8, 10, 12, 18, 20, 22, 28\}\). In particular, <strong>cousin primes (gap 4) and sexy primes (gap 6) cannot both generate valid sandwiches.</strong></p></blockquote>
+<p>The mod 30 constraint creates &ldquo;forbidden zones&rdquo; in the gap spectrum.</p>
+<h2 id="octo-valid-primes-the-next-smallest-gap">Octo Valid Primes: The Next Smallest Gap</h2>
+<p>After twin primes (gap 2), the next possible gap is 8. This requires \(r \equiv 11 \pmod{30}\) and \(r + 8 \equiv 19 \pmod{30}\).</p>
+<p>For \((r, r+8)\) to both be valid, we need:</p>
+<ol>
+<li>\(r\) and \(r+8\) both prime</li>
+<li>\((r^2+1)/2\) and \(((r+8)^2+1)/2\) both prime</li>
+<li>\((r^2+2)/3\) and \(((r+8)^2+2)/3\) both prime</li>
+</ol>
+<p>The relationship between auxiliary primes:</p>
+<p>$$
+p_2 - p_1 = \frac{(r+8)^2 - r^2}{2} = \frac{16r + 64}{2} = 8(r + 4)
+$$</p>
+<p>$$
+b_2 - b_1 = \frac{(r+8)^2 - r^2}{3} = \frac{16r + 64}{3} = \frac{16(r + 4)}{3}
+$$</p>
+<p>For \(b_2 - b_1\) to be an integer, we need \(r + 4 \equiv 0 \pmod{3}\). Since \(r \equiv 11 \pmod{30}\) and \(11 \equiv 2 \pmod{3}\), we have \(r + 4 \equiv 2 + 1 \equiv 0 \pmod{3}\). ✓</p>
+<p>This is automatically satisfied by the residue constraint.</p>
+<hr>
+<h1 id="heuristic-for-twin-valid-prime-density">Heuristic for Twin Valid Prime Density</h1>
+<p>For twin valid primes specifically, we need six independent primality conditions:</p>
+<ol>
+<li>\(r\) is prime (with \(r \equiv 29 \pmod{30}\))</li>
+<li>\(r + 2\) is prime</li>
+<li>\((r^2 + 1)/2\) is prime</li>
+<li>\(((r+2)^2 + 1)/2\) is prime</li>
+<li>\((r^2 + 2)/3\) is prime</li>
+<li>\(((r+2)^2 + 2)/3\) is prime</li>
+</ol>
+<p>By Bateman-Horn, we expect:</p>
+<p>$$
+\pi_{\text{twin}}(N) \sim C_{\text{twin}} \cdot \frac{N}{(\log N)^6}
+$$</p>
+<p>Testing against the data:</p>
+<table>
+  <thead>
+      <tr>
+          <th>\(N\)</th>
+          <th>Twin Pairs</th>
+          <th>\(N/(\log N)^6\)</th>
+          <th>Empirical \(C_{\text{twin}}\)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>\(10^8\)</td>
+          <td>5</td>
+          <td>2.56</td>
+          <td>1.95</td>
+      </tr>
+      <tr>
+          <td>\(10^9\)</td>
+          <td>39</td>
+          <td>12.63</td>
+          <td>3.09</td>
+      </tr>
+      <tr>
+          <td>\(10^{10}\)</td>
+          <td>182</td>
+          <td>67.10</td>
+          <td>2.71</td>
+      </tr>
+  </tbody>
+</table>
+<p>The constant has significant variance at these scales—not surprising given the small counts. Taking \(C_{\text{twin}} \approx 3\) as a rough estimate:</p>
+<p><strong>Prediction for \(10^{12}\):</strong></p>
+<p>$$
+\pi_{\text{twin}}(10^{12}) \approx 3 \cdot \frac{10^{12}}{(\log 10^{12})^6} \approx 3 \cdot 2247 \approx 6700 \text{ pairs}
+$$</p>
+<hr>
+<h1 id="the-structure-of-twin-sandwich-pairs">The Structure of Twin Sandwich Pairs</h1>
+<p>When \((r, r+2)\) are twin valid primes, the two sandwiches have a beautiful relationship.</p>
+<p>The first sandwich:</p>
+<p>$$
+(r^2, ; 2p_1, ; 3b_1)
+$$</p>
+<p>The second sandwich:</p>
+<p>$$
+((r+2)^2, ; 2p_2, ; 3b_2)
+$$</p>
+<p>The gap between the starting squares:</p>
+<p>$$
+(r+2)^2 - r^2 = 4r + 4
+$$</p>
+<p>For \(r = 661949\):</p>
+<ul>
+<li>First sandwich: \((438176478601, ; 438176478602, ; 438176478603)\)</li>
+<li>Second sandwich: \((438179126401, ; 438179126402, ; 438179126403)\)</li>
+<li>Gap between sandwiches: \(438179126401 - 438176478601 = 2647800 = 4 \times 661950\)</li>
+</ul>
+<p>The sandwiches are separated by \(4(r+1)\)—close enough to be &ldquo;neighboring&rdquo; but not overlapping.</p>
+<hr>
+<h1 id="summary">Summary</h1>
+<table>
+  <thead>
+      <tr>
+          <th>Result</th>
+          <th>Statement</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Asymptotic count</strong></td>
+          <td>\(\pi(N) \sim C(N) \cdot N/(\log N)^3\) with \(C(N) \to 1.60\)</td>
+      </tr>
+      <tr>
+          <td><strong>Valid r up to \(10^{10}\)</strong></td>
+          <td>1,456,226</td>
+      </tr>
+      <tr>
+          <td><strong>Modular constraints</strong></td>
+          <td>\(r \equiv 1, 11, 19, 29 \pmod{30}\); verified with 0 violations</td>
+      </tr>
+      <tr>
+          <td><strong>Twin valid primes</strong></td>
+          <td>Require \(r \equiv 29 \pmod{30}\); 182 pairs up to \(10^{10}\)</td>
+      </tr>
+      <tr>
+          <td><strong>Forbidden gaps</strong></td>
+          <td>Gaps 4 and 6 impossible; smallest valid gaps are 2 and 8</td>
+      </tr>
+      <tr>
+          <td><strong>Twin count heuristic</strong></td>
+          <td>\(\pi_{\text{twin}}(N) \sim C \cdot N/(\log N)^6\), \(C \approx 3\)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h1 id="oeis-sequences">OEIS Sequences</h1>
+<p>Based on this analysis, I propose three new sequences:</p>
+<h2 id="a-number-tbd-valid-sandwich-primes">A-number (TBD): Valid Sandwich Primes</h2>
+<p><strong>Definition:</strong> Primes \(r\) such that \(r^2\), \(r^2+1\), and \(r^2+2\) are consecutive semiprimes.</p>
+<p><strong>Data:</strong> 11, 29, 79, 271, 379, 461, 521, 631, 739, 881, 929, 1459, 1531, 1709, 2161, 2239, 2341, 2729, 3049, 3491, &hellip;</p>
+<p><strong>Comments:</strong></p>
+<ul>
+<li>Equivalently, primes \(r &gt; 3\) such that \((r^2+1)/2\) and \((r^2+2)/3\) are both prime.</li>
+<li>All terms satisfy \(r \equiv 1, 11, 19,\) or \(29 \pmod{30}\).</li>
+<li>The middle term is \(2p\) where \(p \equiv 1 \pmod{60}\).</li>
+<li>The final term is \(3b\) where \(b \equiv 1\) or \(17 \pmod{24}\).</li>
+<li>The auxiliary primes satisfy \(3b = 2p + 1\).</li>
+<li>Asymptotically, \(\pi(N) \sim 1.6 \cdot N/(\log N)^3\).</li>
+</ul>
+<h2 id="a-number-tbd-twin-valid-sandwich-primes">A-number (TBD): Twin Valid Sandwich Primes</h2>
+<p><strong>Definition:</strong> Primes \(r\) such that both \(r\) and \(r+2\) generate valid semiprime square sandwiches.</p>
+<p><strong>Data:</strong> 661949, 6142949, 8359919, 23304959, 68412959, 100319039, 118243259, 123338879, 149016059, 204394049, &hellip;</p>
+<p><strong>Comments:</strong></p>
+<ul>
+<li>All terms satisfy \(r \equiv 29 \pmod{30}\).</li>
+<li>Subset of A001359 (lesser of twin primes).</li>
+<li>Cousin primes (gap 4) and sexy primes (gap 6) cannot both be valid sandwich primes.</li>
+<li>182 terms below \(10^{10}\).</li>
+</ul>
+<h2 id="a-number-tbd-squares-starting-twin-valid-sandwiches">A-number (TBD): Squares Starting Twin Valid Sandwiches</h2>
+<p><strong>Definition:</strong> \(r^2\) where \(r\) and \(r+2\) are twin valid sandwich primes.</p>
+<p><strong>Data:</strong> 438176478601, 37736002324601, 69887806326561, 543120067418681, 4680332772466681, &hellip;</p>
+<hr>
+<h1 id="open-questions">Open Questions</h1>
+<ol>
+<li>
+<p><strong>Are there infinitely many valid sandwich primes?</strong> The Bateman-Horn heuristic suggests yes, but a proof is beyond current methods.</p>
+</li>
+<li>
+<p><strong>Are there infinitely many twin valid prime pairs?</strong> Even harder—requires six simultaneous primality conditions.</p>
+</li>
+<li>
+<p><strong>Do octo valid primes (gap 8) exist?</strong> Computationally tractable to search.</p>
+</li>
+<li>
+<p><strong>What is the exact asymptotic constant?</strong> The empirical \(C_\infty \approx 1.60\) could potentially be derived from first principles, though the calculation is subtle.</p>
+</li>
+</ol>
+<hr>
+<h1 id="final-thoughts">Final Thoughts</h1>
+<p>The semiprime square sandwich began as a curious observation about \(11^2 = 121\). The classification theorem revealed unexpected structure: the linear relation \(3b = 2p + 1\), the tight modular constraints, the connection to quadratic residues.</p>
+<p>The twin valid prime extension shows this structure has depth. The constraint \(r \equiv 29 \pmod{30}\) for twin pairs, the forbidden gaps at 4 and 6, the six-prime constellation—none of this was obvious from staring at examples.</p>
+<p>What makes recreational mathematics worthwhile is precisely this: you start with a pattern, and the pattern has <em>reasons</em>. The reasons connect to real mathematics. And sometimes, the reasons raise questions that nobody has answered yet.</p>
+
+	    <h2>Share</h2>
+        <a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2flocalhost%3a1313%2fposts%2fwhen-sandwiches-come-in-pairs%2f?utm_source=twitter&text=Check out this article by @taqkarim: http%3a%2f%2flocalhost%3a1313%2fposts%2fwhen-sandwiches-come-in-pairs%2f?utm_source=twitter" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
+        <a href="https://www.linkedin.com/shareArticle?mini=false&url=http%3a%2f%2flocalhost%3a1313%2fposts%2fwhen-sandwiches-come-in-pairs%2f?utm_source=linkedin" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+        <a href="https://www.reddit.com/submit?url=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Fwhen-sandwiches-come-in-pairs%2F%3Futm_source%3Dreddit&title=When&#43;Sandwiches&#43;Come&#43;in&#43;Pairs" target="_blank" rel="noopener">
+          <i class="fab fa-reddit fa-2x"></i>
+        </a>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 Taq Karim
+</footer>
+</body>
+</html>
