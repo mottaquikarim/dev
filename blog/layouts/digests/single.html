@@ -1,0 +1,29 @@
+{{ define "main" }}
+<article>
+    <header id="post-header">
+        <h1>{{ .Title }}</h1>
+        {{- if isset .Params "date" -}}
+            <time>{{ .Date.Format "January 2, 2006" }}</time>
+        {{- end -}}
+    </header>
+
+    {{- .Content -}}
+
+    <ol class="digest-list">
+        {{ range .Params.posts }}
+            {{ $page := site.GetPage (printf "/posts/%s" .) }}
+            {{ if $page }}
+                <li style="margin-bottom: 1em;">
+                    <a href="{{ $page.RelPermalink }}" style="font-weight: bold;">{{ $page.Title }}</a>
+                    <small><time>{{ $page.Date.Format "January 2, 2006" }}</time></small>
+                    {{ with $page.Params.description }}
+                        <div>{{ . }}</div>
+                    {{ end }}
+                </li>
+            {{ else }}
+                <li><em>Missing post: {{ . }}</em></li>
+            {{ end }}
+        {{ end }}
+    </ol>
+</article>
+{{ end }}

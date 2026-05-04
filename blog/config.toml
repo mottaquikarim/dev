@@ -57,6 +57,7 @@ pygmentsUseClasses = true
 
 [permalinks]
   posts = "/posts/:title/"
+  digests = "/digests/:slug/"
 
 [markup.goldmark.renderer]
   # Allows HTML in Markdown

@@ -3,6 +3,7 @@ title: "Generic Trick for Squaring All Numbers"
 date: 2022-09-05T04:28:00Z
 tags: ["math", "just for fun"]
 katex: true
+digest: "mental-arithmetic-identities"
 ---
 
 {{<toc>}}

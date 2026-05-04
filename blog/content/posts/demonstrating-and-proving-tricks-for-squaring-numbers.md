@@ -3,6 +3,7 @@ title: "Demonstrating a Trick for Squaring Numbers Ending in 6"
 date: 2022-09-04T11:13:37Z
 tags: ["math", "just for fun"]
 katex: true
+digest: "mental-arithmetic-identities"
 ---
 
 {{<toc>}}

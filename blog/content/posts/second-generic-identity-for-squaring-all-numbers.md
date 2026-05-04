@@ -3,6 +3,7 @@ title: "Second Generic Identity for Squaring All Numbers"
 date: 2022-09-12T00:48:23Z
 tags: ["math", "just for fun"]
 katex: true
+digest: "mental-arithmetic-identities"
 ---
 
 {{<toc>}}
