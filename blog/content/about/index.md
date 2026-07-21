@@ -31,6 +31,12 @@ I will typically write about topics I find interesting and/or esoteric bugs I've
 Thanks for stopping by, fam.
 
 
+## Featured In
+
+* [How Peloton Engineers the World's Largest Live Fitness Events on AWS](https://aws.amazon.com/blogs/industries/how-peloton-engineers-the-worlds-largest-live-fitness-events-on-aws/) - AWS for Industries Blog, Jul 2026
+* [Peloton Behind the Scenes Engineering Stops the Crashes](https://theclipout.com/peloton-behind-the-scenes-engineering/) - The Clip Out, Jul 2026
+* [Peloton's engineering team makes the case for test in production](https://www.techtarget.com/searchcloudcomputing/feature/Pelotons-engineering-team-makes-the-case-for-test-in-production) - TechTarget, Jul 2026
+
 ## Talks
 
 * [Pytennessee 2020](https://mottaquikarim.github.io/WEBSITE2/pytn/)
