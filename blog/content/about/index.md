@@ -35,7 +35,7 @@ Thanks for stopping by, fam.
 
 * [How Peloton Engineers the World's Largest Live Fitness Events on AWS](https://aws.amazon.com/blogs/industries/how-peloton-engineers-the-worlds-largest-live-fitness-events-on-aws/) - AWS for Industries Blog, Jul 2026
 * [Peloton Behind the Scenes Engineering Stops the Crashes](https://theclipout.com/peloton-behind-the-scenes-engineering/) - The Clip Out, Jul 2026
-* [How Peloton's Engineers Keep Turkey Burn From Crashing: They Test on the Live Platform](https://www.pelobuddy.com/peloton-testing-production/) - Peloton Buddy, Jul 2026
+* [How Peloton's Engineers Keep Turkey Burn From Crashing: They Test on the Live Platform](https://www.pelobuddy.com/peloton-testing-production/) - Pelo Buddy, Jul 2026
 * [Peloton's engineering team makes the case for test in production](https://www.techtarget.com/searchcloudcomputing/feature/Pelotons-engineering-team-makes-the-case-for-test-in-production) - TechTarget, Jul 2026
 
 ## Talks
