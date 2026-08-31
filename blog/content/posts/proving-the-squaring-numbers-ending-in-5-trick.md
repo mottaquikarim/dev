@@ -1,5 +1,6 @@
 ---
 title: "Proving the Squaring Numbers Ending in 5 Trick"
+description: "Why does the quick trick for squaring numbers that end in 5 actually work? A step-by-step algebraic proof, starting from 25^2 and generalising from there."
 date: 2022-09-04T00:46:49Z
 tags: ["math", "just for fun"]
 katex: true

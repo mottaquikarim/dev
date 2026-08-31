@@ -1,5 +1,6 @@
 ---
 title: "Second Generic Identity for Squaring All Numbers"
+description: "A second identity for squaring any number in your head, built up from the simple 11^2 case and then generalised into a trick that works for every number."
 date: 2022-09-12T00:48:23Z
 tags: ["math", "just for fun"]
 katex: true

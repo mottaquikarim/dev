@@ -1,9 +1,10 @@
 ---
 title: "Press"
+description: "An index of press coverage, patents, talks, open source and side projects by Taq Karim, from Peloton platform engineering to reverse-engineering Wordle."
 date: 2026-08-31T00:00:00Z
 ---
 
-Instead of a boring CV, I thought it would be neat (and differentiating!) to "show" not "tell". Please find below a fairly exhaustive list of mentions of me on the internet. This list includes blog posts and interviews of me on behalf of current/former employers, links to videos/decks of talks I gave (mostly pre-COVID), some organic media coverage of various hacks / games and a select list of blog posts I've written in the past (mostly original (but hobbyist) math proofs with some fun deep dives with code). Note, it doesn't appear that there's much from before the 2020s so most of this is also *fairly* recent, at least at the time of writing.
+Please find below a fairly exhaustive list of mentions of me on the internet. This list includes blog posts and interviews of me on behalf of current/former employers, links to videos/decks of talks I gave (mostly pre-COVID), some organic media coverage of various hacks / games and a select list of blog posts I've written in the past (mostly original (but hobbyist) math proofs with some fun deep dives with code). Note, it doesn't appear that there's much from before the 2020s so most of this is also *fairly* recent, at least at the time of writing.
 
 ## High Scale Software, Architecture & Patents
 
@@ -17,13 +18,6 @@ Instead of a boring CV, I thought it would be neat (and differentiating!) to "sh
 ## Select (Recently) Peloton Features Shipped (Press Coverage)
 
 *Below are some more recent (~2025, mostly) member-facing features I directly built and shipped at Peloton, broken out by feature and then by outlet. Some of these features are currently being used every day by millions of Peloton's Members across the world.*
-
-### Instructor Schedule Pages ([instructor-schedule.onepeloton.com](http://instructor-schedule.onepeloton.com))
-
-I shipped this (well, Bureau did, end to end) for my friend, a current Peloton Instructor, initially but thanks to coverage by the publications below, it is now being used organically by a variety of Peloton "fan" accounts across social media.
-
-1. **Pelobuddy** (2026-07): [*Peloton "Instructor Schedule" Pages Created For Every Instructor*](https://www.pelobuddy.com/instructor-schedule-pages/) (pelobuddy.com) Independent coverage of the per-instructor schedule pages I built and soft-launched, walking through the list/calendar views and linking every current instructor's page.
-2. **The Clip Out** (2026-07): [*New Peloton Live Class Schedule Pages Debut*](https://theclipout.com/peloton-live-class-schedule-pages/) (theclipout.com) A second, independent outlet covering the same launch, describing the URL structure, list/calendar views, and shared functionality.
 
 ### Club Peloton (loyalty & recognition program)
 

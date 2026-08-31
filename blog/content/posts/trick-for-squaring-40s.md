@@ -1,5 +1,6 @@
 ---
 title: "Trick for Squaring 40s (and 50s)"
+description: "A cute trick for squaring numbers in the 40s and 50s in your head, shown by example, generalised, and then followed by a demonstration of why it works."
 date: 2022-11-20T22:36:58Z
 tags: ["math", "just for fun"]
 katex: true

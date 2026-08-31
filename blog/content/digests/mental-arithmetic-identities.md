@@ -1,5 +1,6 @@
 ---
 title: "Mental Arithmetic Identities (2022)"
+description: "A 2022 collection of write-ups proving the mental-arithmetic tricks for squaring numbers, then generalizing them into identities that work for any number."
 date: 2022-11-28
 slug: mental-arithmetic-identities
 posts:

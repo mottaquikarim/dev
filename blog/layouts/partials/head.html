@@ -1,10 +1,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{ with .Site.Params.description -}}
-    <meta name="description" content="{{ . }}">
-    {{ end }}
-    {{ printf `<link rel="shortcut icon" href="%s">` ("favicon.ico" | absURL) | safeHTML }}
+    {{ printf `<link rel="icon" href="%s" type="image/svg+xml">` ("favicon.svg" | absURL) | safeHTML }}
     {{ with .OutputFormats.Get "rss" -}}
         {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
     {{ end -}}
@@ -106,7 +103,7 @@ table td {
     {{ $css := $resources | resources.Concat "css/style.css" | minify }}
     {{ printf `<link rel="stylesheet" href="%s">` $css.RelPermalink | safeHTML }}
 
-    <title>{{ .Title }}</title>
+    {{ partial "seo.html" . }}
     <script data-goatcounter="https://devtaqkarim.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
     {{ if .Params.katex}}{{ partial "katex.html" . }}{{ end }}

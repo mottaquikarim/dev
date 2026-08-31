@@ -1,0 +1,129 @@
+{{- /*
+    Centralised SEO metadata: page-specific title and description, canonical URL,
+    Open Graph / Twitter card tags and JSON-LD structured data.
+
+    Pages can override any of it from front matter:
+      description: "..."   meta description, og:description, twitter:description
+      images: ["..."]      social card image (absolute or site-relative URL)
+*/ -}}
+
+{{- $site := .Site -}}
+{{- $author := $site.Params.author | default $site.Title -}}
+
+{{- /* Title: "<page> · <site>" everywhere except the homepage. */ -}}
+{{- $title := printf "%s · %s" .Title $site.Title -}}
+{{- if .IsHome -}}
+    {{- $title = printf "%s · %s" $site.Title $site.Params.description -}}
+{{- end -}}
+
+{{- /* Description: front matter first, else the page's own opening prose. */ -}}
+{{- $description := "" -}}
+{{- if .Description -}}
+    {{- $description = .Description -}}
+{{- else if .IsPage -}}
+    {{- /* Drop the table-of-contents aside so the summary starts at real prose. */ -}}
+    {{- $description = .Content | replaceRE `(?s)<aside id="toc">.*?</aside>` "" -}}
+{{- else if .Data.Terms -}}
+    {{- $description = printf "Every topic written about on %s — %s" $site.Title $site.Params.description -}}
+{{- else if .Data.Singular -}}
+    {{- $description = printf "Every post tagged “%s” on %s — %s" .Title $site.Title $site.Params.description -}}
+{{- end -}}
+{{- $description = $description | plainify | htmlUnescape | replaceRE `\s+` " " | replaceRE `^\s+|\s+$` "" | truncate 160 -}}
+{{- /* Pages with no prose of their own (list pages, link digests) fall back to the site blurb. */ -}}
+{{- if eq $description "" -}}
+    {{- $description = $site.Params.description -}}
+{{- end -}}
+
+{{- /* Social card image: front matter first, else the site-wide card (see extra/og-card). */ -}}
+{{- $image := "og-card.jpg" | absURL -}}
+{{- with .Params.images -}}
+    {{- $image = index . 0 | absURL -}}
+{{- end -}}
+
+{{- /* Profile links, reused as schema.org sameAs. */ -}}
+{{- $sameAs := slice -}}
+{{- range $site.Menus.main -}}
+    {{- $sameAs = $sameAs | append .URL -}}
+{{- end -}}
+
+<title>{{ $title }}</title>
+<link rel="canonical" href="{{ .Permalink }}">
+{{- /*
+    /posts/, /digests/ and /fieldguides/ all render the same archive listing as the
+    homepage. Keep the URLs working but stop them competing with it in search results.
+*/ -}}
+{{- if eq .Kind "section" }}
+<meta name="robots" content="noindex, follow">
+{{- end }}
+<meta name="description" content="{{ $description }}">
+<meta name="author" content="{{ $author }}">
+
+<meta property="og:site_name" content="{{ $site.Title }}">
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="{{ replace ($site.LanguageCode | default `en-US`) "-" "_" }}">
+<meta property="og:image" content="{{ $image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ $author }} — {{ $site.Params.description }}">
+{{- if .IsPage }}
+<meta property="og:type" content="article">
+<meta property="article:author" content="{{ $author }}">
+{{- with .Date }}
+<meta property="article:published_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+{{- with .Lastmod }}
+<meta property="article:modified_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+{{- range .Params.tags }}
+<meta property="article:tag" content="{{ . }}">
+{{- end }}
+{{- else }}
+<meta property="og:type" content="website">
+{{- end }}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ .Title }}">
+<meta name="twitter:description" content="{{ $description }}">
+<meta name="twitter:image" content="{{ $image }}">
+<meta name="twitter:image:alt" content="{{ $author }} — {{ $site.Params.description }}">
+{{- with $site.Params.twitter }}
+<meta name="twitter:site" content="@{{ . }}">
+<meta name="twitter:creator" content="@{{ . }}">
+{{- end }}
+
+{{- /* JSON-LD: WebSite + Person on the homepage, BlogPosting on articles. */ -}}
+{{- $person := dict "@type" "Person" "name" $author "url" $site.BaseURL "sameAs" $sameAs -}}
+{{- $ld := dict "@context" "https://schema.org" -}}
+{{- if .IsHome -}}
+    {{- $ld = merge $ld (dict
+        "@type" "WebSite"
+        "name" $site.Title
+        "url" $site.BaseURL
+        "description" $description
+        "author" $person
+        "publisher" $person) -}}
+{{- else if and .IsPage (ne .Type "digests") -}}
+    {{- $ld = merge $ld (dict
+        "@type" "BlogPosting"
+        "headline" .Title
+        "description" $description
+        "url" .Permalink
+        "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+        "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+        "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+        "wordCount" .WordCount
+        "keywords" (delimit (.Params.tags | default slice) ", ")
+        "author" $person
+        "publisher" $person) -}}
+    {{- $ld = merge $ld (dict "image" $image) -}}
+{{- else -}}
+    {{- $ld = merge $ld (dict
+        "@type" "CollectionPage"
+        "name" .Title
+        "description" $description
+        "url" .Permalink
+        "isPartOf" (dict "@type" "WebSite" "name" $site.Title "url" $site.BaseURL)) -}}
+{{- end -}}
+<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
