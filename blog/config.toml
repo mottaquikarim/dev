@@ -55,6 +55,13 @@ pygmentsUseClasses = true
     url = "/tags/"
     weight = 30
 
+  [[menu.secondary]]
+    identifier = "press"
+    name = "press"
+    title = "press"
+    url = "/press/"
+    weight = 40
+
 [permalinks]
   posts = "/posts/:title/"
   digests = "/digests/:slug/"
