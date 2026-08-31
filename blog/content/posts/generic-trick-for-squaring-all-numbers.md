@@ -1,5 +1,6 @@
 ---
 title: "Generic Trick for Squaring All Numbers"
+description: "A generic mental-arithmetic trick for squaring any two-digit number, first grokked by pattern recognition and then written out as an algebraic identity."
 date: 2022-09-05T04:28:00Z
 tags: ["math", "just for fun"]
 katex: true

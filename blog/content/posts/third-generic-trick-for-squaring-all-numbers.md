@@ -1,5 +1,6 @@
 ---
 title: "Third Generic Trick for Squaring All Numbers"
+description: "A third mental-arithmetic identity for squaring any number by working from a nearby anchor value, for example reaching 56^2 from 55^2, with the algebra shown."
 date: 2022-11-28T05:35:45Z
 tags: ["math", "just for fun"]
 katex: true

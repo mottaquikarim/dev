@@ -5,10 +5,13 @@ languageCode = "en-US"
 enableInlineShortcodes = true
 pygmentsCodeFences = true
 pygmentsUseClasses = true
+enableRobotsTXT = true
 
 [params]
   description = "Thoughts on code and building things."
   copyright = "Copyright © 2022 Taq Karim"
+  author = "Taq Karim"
+  twitter = "taqkarim"
   dark = "pff"
   highlight = true
 

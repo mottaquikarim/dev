@@ -1,5 +1,6 @@
 ---
 title: "Fifth Generic Trick for Squaring All Numbers"
+description: "A fifth mental-arithmetic pattern for squaring numbers, worked out from the 30s and then generalised to any number. Demonstrated by example, proof pending."
 date: 2022-11-28T06:52:49Z
 tags: ["math", "just for fun"]
 katex: true

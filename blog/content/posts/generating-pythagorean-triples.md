@@ -1,5 +1,6 @@
 ---
 title: "Novel Algorithm(?) for Generating Pythagorean Triples"
+description: "A possibly original algorithm for generating Pythagorean triples, derived from the Diophantine equation a^2 + b^2 = c^2 and checked against the known formulas."
 date: 2022-11-28T07:18:09Z
 tags: ["math", "just for fun"]
 katex: true

@@ -1,5 +1,6 @@
 ---
 title: "About Me"
+description: "Taq Karim is Senior Director of Engineering at Peloton, leading the Platform organization. Queens-raised New Yorker who builds (and sometimes breaks) things."
 date: 2021-01-09T06:35:04Z
 type: "bulkhead"
 ---

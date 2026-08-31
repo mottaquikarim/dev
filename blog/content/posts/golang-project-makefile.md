@@ -1,5 +1,6 @@
 ---
 title: "Using Makefile + Docker for Golang dev"
+description: "How to pair a Makefile with Docker for Go development: fmt, lint, test and shell targets that run in a container, so a Go package needs no local toolchain."
 date: 2021-01-08T02:29:26Z
 tags: ["golang", "makefile"]
 ---
