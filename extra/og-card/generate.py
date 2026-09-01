@@ -15,7 +15,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
-PHOTO = os.path.join(ROOT, "blog", "static", "img", "taq_karim_recent.jpg")
+PHOTO = os.path.join(ROOT, "blog", "static", "img", "taq_karim_profile.jpg")
 OUT = os.path.join(ROOT, "blog", "static", "og-card.jpg")
 
 W, H = 1200, 630
