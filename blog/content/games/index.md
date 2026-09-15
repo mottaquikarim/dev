@@ -27,7 +27,7 @@ date: 2026-09-15T00:00:00Z
 }
 </style>
 
-I've been building daily word games for a while now. It started when I accidentally played Wordle without my partner (she was not pleased) — things escalated from there. They're all free and playable in your browser.
+I enjoy thinking up (with friends and family) and building web-based word games. Some of them, like Freestyle and Wordle Time Machine, have gotten slightly popular or re-blogged/tweeted etc. All free, all playable in your browser.
 
 <div class="games-list">
   <a class="game-card" href="https://playfreestyle.co">
