@@ -27,7 +27,7 @@ date: 2026-09-15T00:00:00Z
 }
 </style>
 
-I enjoy thinking up (with friends and family) and building web-based word games. Some of them, like Freestyle and Wordle Time Machine, have gotten slightly popular or re-blogged/tweeted etc. All free, all playable in your browser.
+I enjoy thinking up (with friends and family) and building web-based word games. Some of them, like Freestyle and Wordle Time Machine, have gotten slightly popular or re-blogged/tweeted etc. Take your pick.
 
 <div class="games-list">
   <a class="game-card" href="https://playfreestyle.co">
