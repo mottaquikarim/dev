@@ -27,7 +27,7 @@ date: 2026-09-15T00:00:00Z
 }
 </style>
 
-A collection of the daily word games I've built over the years. All free, all playable in your browser.
+I've been building daily word games for a while now. It started when I accidentally played Wordle without my partner (she was not pleased) — things escalated from there. They're all free and playable in your browser.
 
 <div class="games-list">
   <a class="game-card" href="https://playfreestyle.co">
