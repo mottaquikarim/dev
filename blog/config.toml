@@ -65,6 +65,13 @@ enableRobotsTXT = true
     url = "/press/"
     weight = 40
 
+  [[menu.secondary]]
+    identifier = "games"
+    name = "games"
+    title = "games"
+    url = "/games/"
+    weight = 50
+
 [permalinks]
   posts = "/posts/:title/"
   digests = "/digests/:slug/"
