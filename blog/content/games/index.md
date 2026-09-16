@@ -1,6 +1,6 @@
 ---
 title: "Word Games"
-description: "Daily games by Taq Karim — Freestyle, Ditty, Skirmish, Wordle Time Machine, Fall and Whodoku."
+description: "Daily games by Taq Karim — Freestyle, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
 date: 2026-09-15T00:00:00Z
 ---
 
@@ -51,6 +51,14 @@ I enjoy thinking up (with friends and family) and building web-based word games.
     <div class="g-body">
       <h3>Skirmish</h3>
       <p>A daily mini-chess game. Weird boards, fast games. First to 3 checks wins.</p>
+    </div>
+    <span class="g-play">Play &rarr;</span>
+  </a>
+  <a class="game-card" href="https://taq.is/across-times">
+    <img src="/dev/games/across-times.png" alt="Across Times icon">
+    <div class="g-body">
+      <h3>Across Times</h3>
+      <p>The NYT crossword, as a time machine. A different day in history, every day.</p>
     </div>
     <span class="g-play">Play &rarr;</span>
   </a>
