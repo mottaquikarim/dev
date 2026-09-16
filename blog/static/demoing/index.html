@@ -28,6 +28,11 @@
   video { display: block; width: 100%; max-width: 340px; margin: 24px auto; border-radius: 12px; }
   pre { background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 8px; padding: 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; color: #9ecbff; }
   .kicker { color: #f5793a; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .share-btn { display: block; width: 100%; margin: 28px 0 8px; padding: 18px; font-size: 19px; font-weight: 700; color: #121213; background: #f5793a; border: none; border-radius: 14px; cursor: pointer; -webkit-appearance: none; }
+  .share-btn:active { transform: scale(0.98); }
+  .share-note { text-align: center; font-size: 13px; color: #777; margin: 0 0 8px; min-height: 18px; }
+  ol.steps { color: #bbb; line-height: 1.7; padding-left: 22px; }
+  ol.steps strong { color: #eee; }
 </style>
 </head>
 <body>
@@ -36,6 +41,15 @@
   <h1>It's not 3D. It's this video.</h1>
   <p>Paste this page's URL into iMessage. The link card plays the clip below <strong>inline, muted, on loop</strong>. That is the entire Polycam trick.</p>
   <video src="demo.mp4" poster="poster.jpg" muted loop playsinline controls></video>
+  <button class="share-btn" id="shareBtn" type="button">Share this page</button>
+  <p class="share-note" id="shareNote"></p>
+  <p><strong>To film it:</strong></p>
+  <ol class="steps">
+    <li>Tap <strong>Share this page</strong> above</li>
+    <li>Pick <strong>Messages</strong> in the share sheet</li>
+    <li>Send it to yourself (or a friend)</li>
+    <li>The bubble plays the video inline. That's <strong>og:video</strong>, not 3D.</li>
+  </ol>
   <p>iMessage fetches this page's HTML itself, reads the <strong>og:video</strong> tag, and renders the MP4 in the card. The share button (or a paste, same thing) only hands over the URL. No USDZ, no interactive 3D, no JavaScript API.</p>
   <p>The exact tags this page uses:</p>
   <pre>&lt;meta property="og:title" content="Paste this link into iMessage. The card plays video."&gt;
@@ -45,5 +59,33 @@
 &lt;meta property="og:video:width" content="794"&gt;
 &lt;meta property="og:video:height" content="1080"&gt;</pre>
 </main>
+<script>
+(function () {
+  var btn = document.getElementById('shareBtn');
+  var note = document.getElementById('shareNote');
+  var url = 'https://taq.is/demoing';
+  btn.addEventListener('click', async function () {
+    var data = {
+      title: 'Paste this link into iMessage. The card plays video.',
+      text: 'No 3D involved, just an og:video tag.',
+      url: url
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(data);
+      } catch (e) {
+        /* user cancelled, do nothing */
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      note.textContent = 'Link copied. Paste it into iMessage.';
+    } catch (e) {
+      note.textContent = url;
+    }
+  });
+})();
+</script>
 </body>
 </html>
