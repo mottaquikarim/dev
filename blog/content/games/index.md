@@ -1,6 +1,6 @@
 ---
 title: "Word Games"
-description: "Daily word games by Taq Karim — Freestyle, Ditty, Wordle Time Machine, Fall and Whodoku."
+description: "Daily games by Taq Karim — Freestyle, Ditty, Skirmish, Wordle Time Machine, Fall and Whodoku."
 date: 2026-09-15T00:00:00Z
 ---
 
@@ -43,6 +43,14 @@ I enjoy thinking up (with friends and family) and building web-based word games.
     <div class="g-body">
       <h3>Ditty</h3>
       <p>Wordle, but you have to rhyme. Every guess must rhyme with the last.</p>
+    </div>
+    <span class="g-play">Play &rarr;</span>
+  </a>
+  <a class="game-card" href="https://taq.is/skirmish">
+    <img src="/dev/games/skirmish.png" alt="Skirmish icon">
+    <div class="g-body">
+      <h3>Skirmish</h3>
+      <p>A daily mini-chess game. Weird boards, fast games. First to 3 checks wins.</p>
     </div>
     <span class="g-play">Play &rarr;</span>
   </a>
