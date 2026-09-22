@@ -48,7 +48,7 @@ Upon request from the current CMO of Peloton, and indication from my partner (Ju
 
 ### Peloton IQ Running Launch: Pace Targets, HR Zone Workouts, ReRuns & WHOOP Integration (Sept 2026)
 
-My team worked on four pieces of Peloton's big September 2026 running announcement, which I sponsored: personalized pace targets for every interval, heart-rate zone guided workouts, ReRuns (replay an outdoor route's elevation on your tread), and a two-way WHOOP integration. All of it activates October 1, 2026. Pelo Buddy covered the whole batch in one podcast episode: **Pelo Buddy TV** (2026-09): [*Episode 285*](https://www.pelobuddy.com/pelo-buddy-tv-episode-285/) (pelobuddy.com) Community podcast roundup of the launch: WHOOP integration, IQ Pace Targets, ReRuns, and HR Zone Workouts.
+My team worked on four pieces of Peloton's big September 2026 running announcement, which I sponsored: personalized pace targets for every interval, heart-rate zone guided workouts, ReRuns (replay an outdoor route's elevation on your Tread), and a two-way WHOOP integration. All of it goes live October 1, 2026. Pelo Buddy covered the whole batch in one podcast episode: **Pelo Buddy TV** (2026-09): [*Episode 285*](https://www.pelobuddy.com/pelo-buddy-tv-episode-285/) (pelobuddy.com) Community podcast roundup of the launch: WHOOP integration, IQ Pace Targets, ReRuns, and HR Zone Workouts.
 
 **IQ Pace Targets** — personalized target speed ranges for every interval in a run, computed from your recent running performance (roughly 10 runs with Personalization on), applied with one tap. Basically Power Zones for the Tread.
 
@@ -57,6 +57,7 @@ My team worked on four pieces of Peloton's big September 2026 running announceme
 3. **Engadget** (2026-09): [*Peloton Has Made A Foldable (Treadmill)*](https://www.engadget.com/2264548/peloton-tread-flex-vision-launch/) (engadget.com) Hands-on launch coverage from IFA Berlin, confirming Pace Targets ship on all three new treads.
 4. **Stuff** (2026-09): [*Peloton has three new treadmills but it's the fold-away one that has me hooked*](https://www.stuff.tv/features/peloton-has-three-new-treadmills-but-its-the-fold-away-one-that-has-me-hooked/) (stuff.tv) Launch coverage walking through the new Peloton IQ software additions.
 5. **The Sun** (2026-09): [*Peloton invents SHRINKING treadmill that folds up to fit in small homes*](https://www.thesun.co.uk/tech/40454331/peloton-invents-shrinking-treadmill-folds-small-homes/) (thesun.co.uk) Mainstream UK coverage of the launch batch (also in the Irish and Scottish editions).
+6. **Pelo Buddy** (2026-09): [*Peloton IQ Pace Targets Add More Personalized Running Speed Ranges*](https://www.pelobuddy.com/peloton-iq-pace-targets/) (pelobuddy.com) Community-press deep dive: the 10-run minimum, the "IQ Current" indicator, tap-to-apply shortcuts, and pre-class suggestions.
 
 **Heart Rate Zone Workouts** — a new "Just Guidance" workout format for Zone 2 cardiovascular training, guided by live heart-rate data from your connected watch instead of fixed speed/incline targets.
 
@@ -65,6 +66,7 @@ My team worked on four pieces of Peloton's big September 2026 running announceme
 3. **Engadget** (2026-09): [*Peloton Has Made A Foldable (Treadmill)*](https://www.engadget.com/2264548/peloton-tread-flex-vision-launch/) (engadget.com) Hands-on launch coverage from IFA Berlin, noting Zone 2 training was a top member request.
 4. **Stuff** (2026-09): [*Peloton has three new treadmills but it's the fold-away one that has me hooked*](https://www.stuff.tv/features/peloton-has-three-new-treadmills-but-its-the-fold-away-one-that-has-me-hooked/) (stuff.tv) Launch coverage walking through the new Peloton IQ software additions.
 5. **The Sun** (2026-09): [*Peloton invents SHRINKING treadmill that folds up to fit in small homes*](https://www.thesun.co.uk/tech/40454331/peloton-invents-shrinking-treadmill-folds-small-homes/) (thesun.co.uk) Mainstream UK coverage of the launch batch (also in the Irish and Scottish editions).
+6. **Pelo Buddy** (2026-09): [*Peloton Adding Heart Rate Zone Workouts (with Guided Zone 2 Training) on Peloton Tread*](https://www.pelobuddy.com/peloton-heart-rate-zone-workouts/) (pelobuddy.com) Community-press walkthrough: Guidance-based Zone 2 format, custom zone ranges in your profile, works on all Tread models with no new hardware needed.
 
 **ReRuns** — sync an outdoor route's incline/elevation data (tracked via the Peloton app, e.g. on an Apple Watch) to any Peloton Tread, which recreates the hills and gradients indoors. Ships with pre-loaded routes, including TCS New York City Marathon segments built with New York Road Runners.
 
