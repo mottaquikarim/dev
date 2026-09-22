@@ -1,6 +1,6 @@
 ---
 title: "Word Games"
-description: "Daily games by Taq Karim — Freestyle, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
+description: "Daily games by Taq Karim — Freestyle, Celebrity Eyes, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
 date: 2026-09-15T00:00:00Z
 ---
 
@@ -35,6 +35,14 @@ I enjoy thinking up (with friends and family) and building web-based word games.
     <div class="g-body">
       <h3>Freestyle</h3>
       <p>The daily rhyming word game. Find words that rhyme with the seed — before your guesses run out.</p>
+    </div>
+    <span class="g-play">Play &rarr;</span>
+  </a>
+  <a class="game-card" href="https://taq.is/celebrity-eyes/">
+    <img src="/dev/games/celebrity-eyes.png" alt="Celebrity Eyes icon">
+    <div class="g-body">
+      <h3>Celebrity Eyes</h3>
+      <p>Wordle, but you guess the celebrity from just their eyes. Six guesses, zooming out a little more each time.</p>
     </div>
     <span class="g-play">Play &rarr;</span>
   </a>
