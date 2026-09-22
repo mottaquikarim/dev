@@ -75,6 +75,7 @@ My team worked on four pieces of Peloton's big September 2026 running announceme
 3. **Engadget** (2026-09): [*Peloton Has Made A Foldable (Treadmill)*](https://www.engadget.com/2264548/peloton-tread-flex-vision-launch/) (engadget.com) Hands-on launch coverage from IFA Berlin.
 4. **Stuff** (2026-09): [*Peloton has three new treadmills but it's the fold-away one that has me hooked*](https://www.stuff.tv/features/peloton-has-three-new-treadmills-but-its-the-fold-away-one-that-has-me-hooked/) (stuff.tv) Launch coverage calling ReRuns the feature that got the author most excited.
 5. **The Sun** (2026-09): [*Peloton invents SHRINKING treadmill that folds up to fit in small homes*](https://www.thesun.co.uk/tech/40454331/peloton-invents-shrinking-treadmill-folds-small-homes/) (thesun.co.uk) Mainstream UK coverage of the launch batch (also in the Irish and Scottish editions).
+6. **Pelo Buddy** (2026-09): [*Peloton ReRuns Feature Lets You Recreate Race Courses & Outdoor Route Elevation on Your Tread*](https://www.pelobuddy.com/peloton-reruns-feature/) (pelobuddy.com) Community-press deep dive: route sources (Peloton, Garmin, Apple Health, WHOOP), the Discover tab with featured courses, auto-incline on the Tread, and the NYC Marathon course in the works.
 
 **WHOOP Integration** — two-way sync: Peloton workouts flow into WHOOP's recovery and strain metrics, and WHOOP heart-rate data flows back into Peloton. The first new wearable partner since Peloton IQ launched, joining Garmin, Apple Health, and Fitbit.
 
@@ -83,6 +84,7 @@ My team worked on four pieces of Peloton's big September 2026 running announceme
 3. **Engadget** (2026-09): [*Peloton Has Made A Foldable (Treadmill)*](https://www.engadget.com/2264548/peloton-tread-flex-vision-launch/) (engadget.com) Hands-on launch coverage from IFA Berlin.
 4. **CNN** (2026-09): [*Peloton is releasing its cheapest treadmill yet as it bets on running for a turnaround*](https://www.cnn.com/2026/09/22/business/peloton-new-tread) (cnn.com) General-news coverage of the launch, noting the expanded WHOOP integration.
 5. **Stuff** (2026-09): [*Peloton has three new treadmills but it's the fold-away one that has me hooked*](https://www.stuff.tv/features/peloton-has-three-new-treadmills-but-its-the-fold-away-one-that-has-me-hooked/) (stuff.tv) Launch coverage walking through the new Peloton IQ software additions.
+6. **Pelo Buddy** (2026-09): [*Peloton Announces WHOOP Integration for Two-Way Workout Syncing & ReRuns*](https://www.pelobuddy.com/peloton-whoop-integration/) (pelobuddy.com) Community-press deep dive: live today (Sept 22, ahead of the Oct 1 batch), two-way sync, WHOOP as a ReRuns route source, and Stern's "playing Switzerland" wearable strategy.
 
 ## Wordle Reverse Engineering & Secondary Press Coverage
 
