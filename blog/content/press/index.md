@@ -86,6 +86,27 @@ My team worked on four pieces of Peloton's big September 2026 running announceme
 5. **Stuff** (2026-09): [*Peloton has three new treadmills but it's the fold-away one that has me hooked*](https://www.stuff.tv/features/peloton-has-three-new-treadmills-but-its-the-fold-away-one-that-has-me-hooked/) (stuff.tv) Launch coverage walking through the new Peloton IQ software additions.
 6. **Pelo Buddy** (2026-09): [*Peloton Announces WHOOP Integration for Two-Way Workout Syncing & ReRuns*](https://www.pelobuddy.com/peloton-whoop-integration/) (pelobuddy.com) Community-press deep dive: live today (Sept 22, ahead of the Oct 1 batch), two-way sync, WHOOP as a ReRuns route source, and Stern's "playing Switzerland" wearable strategy.
 
+### Peloton AI Assistant Integrations: ChatGPT, Meta Muse & Google Gemini (2025-2026)
+
+Peloton inside every AI assistant. In under a year: a built-in ChatGPT app, a ChatGPT Health launch partnership, a connector in Meta's new Muse agent, and a Connected App in Google Gemini. All four let members find classes, build training plans, and schedule workouts conversationally, without opening the Peloton app.
+
+**ChatGPT** — Peloton joined ChatGPT as a built-in app in November 2025 ("Peloton, can you recommend workouts for marathon training"), then signed on as a launch partner for ChatGPT Health in January 2026, where class recommendations can factor in health context like injury recovery or recent output trends.
+
+1. **Digital Trends** (2025-11): [*ChatGPT now lets you plan workouts and trips with Peloton and Tripadvisor*](https://www.digitaltrends.com/cool-tech/chatgpt-now-lets-you-plan-workouts-and-trips-with-peloton-and-tripadvisor/) (digitaltrends.com) Launch coverage of Peloton and Tripadvisor as new built-in ChatGPT apps.
+2. **Tom's Guide** (2025-11): [*TripAdvisor and Peloton are ChatGPT's first built-in apps - Apple and Google should be worried*](https://www.tomsguide.com/ai/tripadvisor-and-peloton-are-chatgpts-first-built-in-apps-apple-and-google-should-be-worried) (tomsguide.com) Early coverage framing the app integrations as a platform play.
+3. **Pelo Buddy** (2026-01): [*Peloton is part of new ChatGPT Health features*](https://www.pelobuddy.com/peloton-chatgpt-health/) (pelobuddy.com) Community-press rundown: Peloton as a ChatGPT Health launch partner, recommending classes from health history.
+4. **Athletech News** (2026-01): [*ChatGPT Health Debuts With Peloton, Weight Watchers as Early Partners*](https://athletechnews.com/chatgpt-health-debuts-with-peloton-weight-watchers-as-early-partners/) (athletechnews.com) Trade coverage of the Health launch, noting the tie-in with Peloton IQ coaching.
+
+**Meta Muse** — Peloton is a launch connector in Meta's Muse personal AI agent (Sept 2026): browse classes by instructor, discipline, or music style, check upcoming live classes, and book, reschedule, or cancel workouts through the agent. Auth runs through Peloton's own OAuth page, and Muse also supports MCP-based custom connectors.
+
+1. **The Clip Out** (2026-09): [*Peloton Muse Partnership Launches on Meta's New AI Agent*](https://theclipout.com/peloton-muse-partnership/) (theclipout.com) Independent explainer: what Muse is, and the partnership-not-a-feature distinction.
+2. **Pelo Buddy** (2026-09): [*First Look at Peloton Integration in Meta's New Muse AI Agent App*](https://www.pelobuddy.com/muse-peloton-first-look/) (pelobuddy.com) Hands-on first look: class search, schedule management, permission controls, and current limitations (no workout-history read).
+
+**Google Gemini** — Peloton joined Gemini's Connected Apps wave on September 23, 2026, in the Lifestyle category: search for classes, add them to your Peloton schedule, and create multi-day training plans via @mention or plain request. Rolling out gradually; Gemini also supports MCP-based custom apps.
+
+1. **Pelo Buddy** (2026-09): [*Peloton Added as Connected App for Google Gemini AI for Class Search, Scheduling & Training Plans*](https://www.pelobuddy.com/peloton-google-gemini-integration/) (pelobuddy.com) Community-press deep dive: what the integration does, the gradual rollout, and how to enable it.
+2. **The Clip Out** (2026-09): [*Peloton Gemini Integration Launches With Class Scheduling*](https://theclipout.com/peloton-gemini-integration-launches/) (theclipout.com) Independent launch coverage, noting it extends Peloton's AI strategy alongside Muse and ChatGPT.
+
 ## Wordle Reverse Engineering & Secondary Press Coverage
 
 *Back when Wordle was everywhere, I accidentally played a day's puzzle without my partner, Julianna. She was not pleased! As an olive branch, I reverse-engineered the client-side game logic and built "Wordle Time Machine." By monkey-patching JavaScript's Date object, I exposed the full 2,315-word solution array (including "Day 0"), allowing anyone to play any past or future game by calendar date.  Turns out this was something people really wanted: I casually tweeted about it which triggered an organic wave of coverage across (medium)stream tech press.*
