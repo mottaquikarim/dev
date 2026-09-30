@@ -1,5 +1,5 @@
 ---
-title: "Games"
+title: "Daily Games"
 description: "Daily games by Taq Karim — Freestyle, PopQuiz, Celebrity Eyes, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
 date: 2026-09-15T00:00:00Z
 ---
