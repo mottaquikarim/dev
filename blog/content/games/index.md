@@ -1,6 +1,6 @@
 ---
-title: "Word Games"
-description: "Daily games by Taq Karim — Freestyle, Celebrity Eyes, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
+title: "Games"
+description: "Daily games by Taq Karim — Freestyle, PopQuiz, Celebrity Eyes, Ditty, Skirmish, Across Times, Wordle Time Machine, Fall and Whodoku."
 date: 2026-09-15T00:00:00Z
 ---
 
@@ -27,7 +27,7 @@ date: 2026-09-15T00:00:00Z
 }
 </style>
 
-I enjoy thinking up (with friends and family) and building web-based word games. Some of them, like Freestyle and Wordle Time Machine, have gotten slightly popular or re-blogged/tweeted etc.
+I enjoy thinking up (with friends and family) and building web-based games. Some of them, like Freestyle and Wordle Time Machine, have gotten slightly popular or re-blogged/tweeted etc.
 
 <div class="games-list">
   <a class="game-card" href="https://playfreestyle.co">
@@ -35,6 +35,14 @@ I enjoy thinking up (with friends and family) and building web-based word games.
     <div class="g-body">
       <h3>Freestyle</h3>
       <p>The daily rhyming word game. Find words that rhyme with the seed — before your guesses run out.</p>
+    </div>
+    <span class="g-play">Play &rarr;</span>
+  </a>
+  <a class="game-card" href="https://taq.is/popquiz">
+    <img src="/dev/games/popquiz.png" alt="PopQuiz icon">
+    <div class="g-body">
+      <h3>PopQuiz</h3>
+      <p>A daily math game I built for my mom. Pop the balloons before they land.</p>
     </div>
     <span class="g-play">Play &rarr;</span>
   </a>
