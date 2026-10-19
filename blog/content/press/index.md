@@ -101,11 +101,13 @@ Peloton inside every AI assistant. In under a year: a built-in ChatGPT app, a Ch
 
 1. **The Clip Out** (2026-09): [*Peloton Muse Partnership Launches on Meta's New AI Agent*](https://theclipout.com/peloton-muse-partnership/) (theclipout.com) Independent explainer: what Muse is, and the partnership-not-a-feature distinction.
 2. **Pelo Buddy** (2026-09): [*First Look at Peloton Integration in Meta's New Muse AI Agent App*](https://www.pelobuddy.com/muse-peloton-first-look/) (pelobuddy.com) Hands-on first look: class search, schedule management, permission controls, and current limitations (no workout-history read).
+3. **Peloton (official)** (2026-10): [*Discovering Your Next Great Workout Is Easier Than Ever with New AI Integrations*](https://www.onepeloton.com/blog/new-gemini-meta-ai-integrations-2026) (onepeloton.com) Peloton's own launch post for the Muse and Gemini integrations: ask for a class, get a personalized recommendation, and have it added to your schedule without opening the app.
 
 **Google Gemini** — Peloton joined Gemini's Connected Apps wave on September 23, 2026, in the Lifestyle category: search for classes, add them to your Peloton schedule, and create multi-day training plans via @mention or plain request. Rolling out gradually; Gemini also supports MCP-based custom apps.
 
 1. **Pelo Buddy** (2026-09): [*Peloton Added as Connected App for Google Gemini AI for Class Search, Scheduling & Training Plans*](https://www.pelobuddy.com/peloton-google-gemini-integration/) (pelobuddy.com) Community-press deep dive: what the integration does, the gradual rollout, and how to enable it.
 2. **The Clip Out** (2026-09): [*Peloton Gemini Integration Launches With Class Scheduling*](https://theclipout.com/peloton-gemini-integration-launches/) (theclipout.com) Independent launch coverage, noting it extends Peloton's AI strategy alongside Muse and ChatGPT.
+3. **Peloton (official)** (2026-10): [*Discovering Your Next Great Workout Is Easier Than Ever with New AI Integrations*](https://www.onepeloton.com/blog/new-gemini-meta-ai-integrations-2026) (onepeloton.com) Peloton's own launch post for the Gemini and Muse integrations: class discovery and scheduling through Gemini, plus the Fitbit/Google Health activity sync.
 
 ## Wordle Reverse Engineering & Secondary Press Coverage
 
