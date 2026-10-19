@@ -108,6 +108,7 @@ Peloton inside every AI assistant. In under a year: a built-in ChatGPT app, a Ch
 1. **Pelo Buddy** (2026-09): [*Peloton Added as Connected App for Google Gemini AI for Class Search, Scheduling & Training Plans*](https://www.pelobuddy.com/peloton-google-gemini-integration/) (pelobuddy.com) Community-press deep dive: what the integration does, the gradual rollout, and how to enable it.
 2. **The Clip Out** (2026-09): [*Peloton Gemini Integration Launches With Class Scheduling*](https://theclipout.com/peloton-gemini-integration-launches/) (theclipout.com) Independent launch coverage, noting it extends Peloton's AI strategy alongside Muse and ChatGPT.
 3. **Peloton (official)** (2026-10): [*Discovering Your Next Great Workout Is Easier Than Ever with New AI Integrations*](https://www.onepeloton.com/blog/new-gemini-meta-ai-integrations-2026) (onepeloton.com) Peloton's own launch post for the Gemini and Muse integrations: class discovery and scheduling through Gemini, plus the Fitbit/Google Health activity sync.
+4. **Google (official)** (2026-09): [*New connected apps roll out to Gemini*](https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-gemini/) (blog.google) Google's own announcement on The Keyword: Peloton named in the Lifestyle category ("plan workouts with Peloton") in the Sep 23 Connected Apps wave, alongside apartments.com, Experian, and SeatGeek.
 
 ## Wordle Reverse Engineering & Secondary Press Coverage
 
