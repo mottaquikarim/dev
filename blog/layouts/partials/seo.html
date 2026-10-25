@@ -52,7 +52,7 @@
     /posts/, /digests/ and /fieldguides/ all render the same archive listing as the
     homepage. Keep the URLs working but stop them competing with it in search results.
 */ -}}
-{{- if eq .Kind "section" }}
+{{- if or (eq .Kind "section") .Params.unlisted }}
 <meta name="robots" content="noindex, follow">
 {{- end }}
 <meta name="description" content="{{ $description }}">

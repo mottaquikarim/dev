@@ -38,7 +38,8 @@
 <a href="https://www.pelobuddy.com/peloton-testing-production/">Pelo Buddy</a>
 
         {{/* Build the homepage entry set: posts not folded into a digest, plus digests and field guides. */}}
-        {{ $standalonePosts := where (where site.RegularPages "Type" "posts") "Params.digest" nil }}
+        {{/* Posts with `unlisted: true` are built and reachable by URL but left off the homepage. */}}
+        {{ $standalonePosts := where (where (where site.RegularPages "Type" "posts") "Params.digest" nil) "Params.unlisted" nil }}
         {{ $digests := where site.RegularPages "Type" "digests" }}
         {{ $fieldguides := where site.RegularPages "Type" "fieldguides" }}
         {{ $entries := $standalonePosts | union $digests | union $fieldguides }}

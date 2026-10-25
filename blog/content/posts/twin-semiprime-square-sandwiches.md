@@ -1,8 +1,11 @@
 ---
 title: "Twin Semiprime Square Sandwiches"
 date: 2026-10-25T00:00:00Z
-draft: true
-tags: ["math", "just for fun"]
+draft: false
+# Unlisted preview: live at its URL, but kept off the homepage, RSS and search engines.
+# To publish for real: delete the `unlisted` line and restore the tags line below.
+unlisted: true
+# tags: ["math", "just for fun"]
 katex: true
 ---
 
