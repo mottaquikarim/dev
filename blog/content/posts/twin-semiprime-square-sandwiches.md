@@ -30,7 +30,11 @@ For reasons still unclear to me, I thought this was a really cute finding, and I
 At some point last year, I revisited my explorations in this area and I was able to make new progress in enumerating additional properties of Semiprime Sandwiches. Primarily, I was able to show that amongst the Semiprime Sandwiches, there exists a more interesting subset: Semiprime ***Square*** Sandwiches. ([post]({{< relref "posts/the-semiprime-squared-sandwich.md" >}})) I was able to show that these sequences are of the form \\(r^2, 2p, 3s\\) (where \\(r\\), \\(p\\) and \\(s\\) are all prime) and that they adhere to a certain set of divisibility rules:
 
 $$
-r \equiv 1, 11, 19, \text{ or } 29 \pmod{30}, \qquad p \equiv 1 \pmod{60}, \qquad s \equiv 1 \text{ or } 17 \pmod{24}
+\begin{aligned}
+r &\equiv 1, 11, 19, \text{ or } 29 \pmod{30} \cr
+p &\equiv 1 \pmod{60} \cr
+s &\equiv 1 \text{ or } 17 \pmod{24}
+\end{aligned}
 $$
 
 In plain English: \\(r\\) always leaves a remainder of 1, 11, 19 or 29 when divided by 30, \\(p\\) is always 1 more than a multiple of 60, and \\(s\\) is always 1 or 17 more than a multiple of 24. (This, as it turns out, was *also* already known and listed, OEIS: [A179502](https://oeis.org/A179502), submitted in 2011).
@@ -56,7 +60,11 @@ So let's break this down with a simple prime number, say 11. We know that \\(11^
 Cool, now, as it turns out, 121, 122, 123 form a Semiprime Square Sandwich: 122 is a semiprime (\\(2 \times 61\\)) and 123 is a semiprime (\\(3 \times 41\\)). Now let's rewrite this in symbolic terms, suppose 121, which is \\(11 \times 11\\), is written as \\(r^2\\), where \\(r = 11\\). Then, we can rewrite 122 as \\(2p\\) where \\(p\\) is a prime and we can rewrite 123 as \\(3s\\), where \\(s\\) is a prime:
 
 $$
-121 = 11^2 = r^2, \qquad 122 = 2 \times 61 = 2p, \qquad 123 = 3 \times 41 = 3s
+\begin{aligned}
+121 &= 11^2 = r^2 \cr
+122 &= 2 \times 61 = 2p \cr
+123 &= 3 \times 41 = 3s
+\end{aligned}
 $$
 
 (PS: note that \\(r\\), which is 11, has a remainder of 11 when divided by 30, \\(p\\), which is 61, has a remainder of 1 when divided by 60 and \\(s\\), which is 41, has a remainder of 17 when divided by 24 - just as predicted by the divisibility rules for Semiprime Square Sandwiches I referenced earlier on in this post.)
