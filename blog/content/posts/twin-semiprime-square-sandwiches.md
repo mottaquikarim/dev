@@ -49,8 +49,6 @@ Let's start off by describing the observation that was accepted. (The comment I 
 
 ## The basics
 
-Ok so let's start with a recap of the basics:
-
 I want to start by establishing a few relevant properties of the Semiprime Square Sandwich (defined in [my previous post]({{< relref "posts/the-semiprime-squared-sandwich.md" >}})). The Semiprime Square Sandwich can be understood to be:
 
 > A prime number \\(r\\) forms a Semiprime Square Sandwich if \\(r^2\\), \\(r^2 + 1\\) and \\(r^2 + 2\\) are all semiprimes. When that happens, \\(r^2 + 1 = 2p\\) and \\(r^2 + 2 = 3s\\), where \\(p\\) and \\(s\\) are both prime.
