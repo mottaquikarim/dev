@@ -105,13 +105,11 @@ Thanks 3rd grade math!) That's what \\(r \equiv 29 \pmod{30}\\) means: divide \\
 
 ## How this looks on the OEIS
 
-And here is the comment that I submitted as part of the submission:
+And here is the comment that I submitted as part of the submission. Claude helped me take my overall argument (which I came up with mostly in my head while sitting, if I was lucky that day, on an immobile train in an internet dead zone somewhere in the swamps of Secaucus) and condense it into this format, which is in line with the terse style of commentary observed across the OEIS:
 
 > For each term r, let R = r^2 and R' = (r+2)^2. Then R, R+1, R+2 are consecutive semiprimes, and R', R'+1, R'+2 are consecutive semiprimes.<br><br>
 > Also, r, r+2, (R+1)/2, (R+2)/3, (R'+1)/2, (R'+2)/3 are all prime.<br><br>
 > All terms in this sequence are congruent to 29 (mod 30), so r+1 is divisible by 30. Proof: r and r+2 are both terms of [A179502](https://oeis.org/A179502), so both are primes greater than 3. Since r is odd, R is odd, so R+1 is an even semiprime: R+1 = 2\*p with p prime. If r == 2 or 3 (mod 5), then R+1 is divisible by 5 (since 2^2+1 = 5 and 3^2+1 = 10), so p is divisible by 5, so p = 5 and r = 3, a contradiction. Thus r == 1 or 4 (mod 5), and by the same argument, r+2 == 1 or 4 (mod 5). If r == 1 (mod 5), then r+2 == 3 (mod 5), which contradicts r+2 == 1 or 4 (mod 5). So r == 4 (mod 5), and then r+2 == 1 (mod 5). Since r and r+2 are primes greater than 3, r+1 is divisible by 6. So r+1 is divisible by 30.
-
-NOTE: Claude helped me take my overall argument (which I came up with mostly in my head while sitting, if I was lucky that day, on an immobile train in an internet dead zone somewhere in the swamps of Secaucus) and condense it into this format, which is in line with the terse style of commentary observed across the OEIS.
 
 # So what about cousins and sexy primes?
 
