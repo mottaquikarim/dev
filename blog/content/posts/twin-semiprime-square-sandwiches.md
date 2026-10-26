@@ -157,7 +157,7 @@ We don't know if this goes on forever, but a quick(ish) counting check shows the
 | 18 | 51 | 11 |
 | 20 | 24 | 2283551 |
 
-# Wrapping up
+# What I know, and what I don't
 
 So, two things I can say for sure about Twin Semiprime Square Sandwiches. First, every one of them starts one below a multiple of 30. Second, twins aren't the only option: two square sandwiches can only sit a gap \\(g\\) apart if \\(g\\) is even and ends in 0, 2 or 8. That rules out cousins, sexy primes and infinitely many other gaps for good.
 
