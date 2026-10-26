@@ -4,6 +4,9 @@ date: 2026-10-25T00:00:00Z
 draft: false
 tags: ["math", "just for fun"]
 katex: true
+images: ["images/a401114-cover.png"]
+ogimagewidth: 1584
+ogimageheight: 396
 ---
 
 Fair warning, Dear Reader: this post is not (really) about sandwiches. Not the edible kind, at least.
