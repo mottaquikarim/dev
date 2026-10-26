@@ -414,7 +414,7 @@ Based on this analysis, I propose three new sequences:
 
 **Definition:** \\(r^2\\) where \\(r\\) and \\(r+2\\) are twin valid sandwich primes.
 
-**Data:** 438176478601, 37736002324601, 69887806326561, 543120067418681, 4680332772466681, ...
+**Data:** 438176478601, 37735822416601, 69888245686561, 543121113991681, 4680332959135681, ...
 
 ---
 
