@@ -1,7 +1,7 @@
 ---
 title: "Press"
 description: "An index of press coverage, patents, talks, open source and side projects by Taq Karim, from Peloton platform engineering to reverse-engineering Wordle."
-date: 2026-09-08T00:00:00Z
+date: 2026-11-03T00:00:00Z
 katex: true
 ---
 
@@ -9,7 +9,7 @@ Please find below a fairly exhaustive list of mentions of me on the internet. Th
 
 ## Online Encyclopedia of Integer Sequences (OEIS) Contributions
 
-The [OEIS](https://oeis.org/) is the global, peer-reviewed registry for mathematical number sequences, universally cited across research publications. Getting a sequence accepted assigns it a permanent "A-number" identifier, formalizing its discovery in the permanent record of mathematical science.
+The [OEIS](https://oeis.org/) is the global, peer-reviewed registry for mathematical number sequences, universally cited across research publications. Getting a sequence accepted assigns it an "A-number" identifier, entering its discovery into the permanent record of mathematics.
 
 Starting in late 2026, two sequences from my years-long casual research into consecutive semiprime numbers (which I dubbed "Semiprime Sandwiches") were accepted into the OEIS, a milestone I'm personally incredibly proud of. A high level overview of each accepted sequence is listed below. I cover (1) more in depth in [this](https://mottaquikarim.github.io/dev/posts/twin-semiprime-square-sandwiches/) blog post. A similar analysis of (2) is on the way soon.
 
