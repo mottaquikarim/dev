@@ -127,6 +127,8 @@ Let's try again, for sexy primes. \\({r + 6}\\) must end in either 7 or 5. Using
 
 # Is there any "gap" number, g, greater than 2, that satisfies our condition?
 
+**Update (Nov 2026):** this gap analysis is now an OEIS sequence of its own: [A399557](https://oeis.org/A399557).
+
 Let's see! We know our gap, \\(g\\), can either be even or odd. Suppose \\(g\\) is odd (so ending in 1, 3, 5, 7, 9). Since \\(r\\) must be odd, \\(r\\) + an odd \\(g\\) would be even. So \\({r + g}\\) would be even, which doesn't work.
 
 Neat - let's look at \\(g\\) such that \\(g\\) is even. Here, \\({r + g}\\) would be odd, but remember, \\(r\\) must end in either 1 or 9. So we need to think of numbers that, when added to \\(r\\), would ALSO end in 1 or 9. Since there's a bounded set of endings for even numbers (0, 2, 4, 6, 8) we just have to test each with each possible ending of \\(r\\), to see if we get back to 1 or 9 endings for \\({r + g}\\).
